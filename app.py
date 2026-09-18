@@ -365,6 +365,7 @@ REFERENCES_DATA = [
     },
     {
         "title": "Virtual Labs Portal",
+        "authors": "Ministry of Education, Govt. of India",
         "publisher": "Virtual Labs Project (vlabs.ac.in)",
         "details": "Pedagogical lab guidelines and simulation paradigms for Computer Science & Engineering education.",
         "url": "https://vlabs.ac.in/"
@@ -1481,12 +1482,17 @@ def render_references_section():
     st.write("The following standard textbooks and research publications detail the algorithmic design of Inverted Indexes and Information Retrieval systems:")
 
     for idx, ref in enumerate(REFERENCES_DATA, start=1):
+        r_title = ref.get("title", f"Reference {idx}")
+        r_authors = ref.get("authors", "National Mission on Education through ICT")
+        r_publisher = ref.get("publisher", "Academic Resources")
+        r_details = ref.get("details", "Information Retrieval & Knowledge Graph Systems")
+        r_url = ref.get("url", "https://vlabs.ac.in/")
         st.markdown(f"""
-        ### [{idx}] {ref['title']}
-        * **Authors:** {ref['authors']}
-        * **Publication:** {ref['publisher']}
-        * **Topics Covered:** {ref['details']}
-        * **Resource Link:** [{ref['url']}]({ref['url']})
+        ### [{idx}] {r_title}
+        * **Authors:** {r_authors}
+        * **Publication:** {r_publisher}
+        * **Topics Covered:** {r_details}
+        * **Resource Link:** [{r_url}]({r_url})
         """)
         st.divider()
 
