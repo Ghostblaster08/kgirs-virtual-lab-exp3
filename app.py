@@ -40,7 +40,7 @@ EXPERIMENT_CONFIG = {
     "short_title": "Construction of an Inverted Index",
     "subject": "Knowledge Graphs & Information Retrieval Systems (KGIRS)",
     "course_code": "CS-KGIRS-03",
-    "target_rolls": "Roll Numbers 11 - 15 (Divisions A, B, C)",
+    "target_rolls": "Roll Numbers 11 - 15 (Division C)",
     "portal": "Virtual Labs - An Initiative of Ministry of Education (vlabs.ac.in)",
     "aim": (
         "To construct and analyze an Inverted Index data structure for a collection of textual documents, "
