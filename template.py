@@ -2,7 +2,6 @@
 Virtual Laboratory Experiment: Construction of an Inverted Index
 Course: Knowledge Graphs and Information Retrieval Systems (KGIRS)
 Experiment No: 3 (Allocated Roll Numbers: 11 - 15)
-Institute: Indian Institute of Technology Kharagpur (IIT Kharagpur) - Virtual Labs CA
 
 Wrapper module enabling seamless execution via either:
     streamlit run template.py

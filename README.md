@@ -2,7 +2,6 @@
 **Course:** Knowledge Graphs and Information Retrieval Systems (KGIRS)  
 **Experiment Number:** 3  
 **Target Student Allocation:** Roll Numbers 11 – 15 (Divisions A, B, C)  
-**Institutional Standard:** Indian Institute of Technology Kharagpur (IIT Kharagpur) - Virtual Labs CA  
 **Platform:** Streamlit  
 
 ---
@@ -16,9 +15,9 @@
 
 ---
 
-## 🏛️ IIT Kharagpur Virtual Lab Page Structure
+## 🏛️ VESIT Virtual Lab Page Structure
 
-The application strictly mirrors the pedagogical architecture of **IIT Kharagpur Virtual Labs** (`vlabs.ac.in`):
+The application strictly mirrors the pedagogical architecture of **VESIT Virtual Labs** (`vlabs.ac.in`):
 
 1. **Aim & Overview:**
    * Course & institution branding
@@ -68,7 +67,7 @@ The application strictly mirrors the pedagogical architecture of **IIT Kharagpur
    * Standard textbooks (Manning, Raghavan, Schütze; Baeza-Yates & Ribeiro-Neto; Witten, Moffat, Bell)
    * Direct links to canonical literature
 7. **Feedback:**
-   * IIT Kharagpur standard feedback questionnaire with 5-point Likert ratings and suggestions
+   * VESIT standard feedback questionnaire with 5-point Likert ratings and suggestions
 8. **Report Generation:**
    * Student details entry (Name, Roll Number, Class/Division, Date)
    * Discussion & analytical observations
@@ -116,7 +115,7 @@ The application includes a built-in **Theme Switcher** in the sidebar:
 
 ## 📋 Submission Checklist
 * [x] **Allocation Match:** Experiment 3: *Construction of an Inverted Index* (Target Rolls: 11 - 15).
-* [x] **Pedagogical Structure:** All 8 IIT Kharagpur tabs implemented (Aim, Theory, Procedure, Simulation, Self-Evaluation, References, Feedback, Report Generation).
+* [x] **Pedagogical Structure:** All 8 VESIT tabs implemented (Aim, Theory, Procedure, Simulation, Self-Evaluation, References, Feedback, Report Generation).
 * [x] **Execution Compatibility:** Both `app.py` and `template.py` function identically.
 * [x] **Verified PDF Report:** Downloadable PDF generation with student metadata, benchmark trials table, quiz score, and signature box.
 * [x] **Zero External Model Dependencies:** Offline pure-Python linguistic normalizer and Porter stemmer.

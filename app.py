@@ -1,10 +1,9 @@
 """
 Virtual Laboratory: Construction of an Inverted Index
 Course: Knowledge Graphs and Information Retrieval Systems (KGIRS)
-Institute: Indian Institute of Technology Kharagpur (IIT Kharagpur) - Virtual Labs CA
 Experiment No: 3 (Allocated Roll Numbers: 11 - 15)
 
-Built following the IIT Kharagpur Virtual Lab pedagogical structure:
+Built following the Virtual Lab pedagogical structure:
   1. Aim & Overview
   2. Theory
   3. Procedure
@@ -32,7 +31,7 @@ from fpdf import FPDF
 
 
 # ======================================================================================
-# 1. EXPERIMENT CONFIGURATION & EDUCATIONAL CONTENT (IIT KHARAGPUR FORMAT)
+# 1. EXPERIMENT CONFIGURATION & EDUCATIONAL CONTENT 
 # ======================================================================================
 
 EXPERIMENT_CONFIG = {
@@ -366,8 +365,7 @@ REFERENCES_DATA = [
         "url": "https://dl.acm.org/doi/book/10.5555/551717"
     },
     {
-        "title": "IIT Kharagpur Virtual Labs Portal",
-        "authors": "Indian Institute of Technology Kharagpur & Ministry of Education, Govt. of India",
+        "title": "Virtual Labs Portal",
         "publisher": "Virtual Labs Project (vlabs.ac.in)",
         "details": "Pedagogical lab guidelines and simulation paradigms for Computer Science & Engineering education.",
         "url": "https://vlabs.ac.in/"
@@ -786,7 +784,7 @@ def generate_pdf_report(student_name: str, student_id: str, student_div: str, da
                         trials_df: pd.DataFrame, quiz_score: int, quiz_total: int,
                         student_notes: str, corpus_name: str, vocab_size: int,
                         postings_count: int) -> bytes:
-    """Compiles verified experiment session data into an official IIT KGP Virtual Lab report."""
+    """Compiles verified experiment session data into an official Virtual Lab report."""
     pdf = IITKgpLabReportPDF()
     pdf.alias_nb_pages()
     pdf.set_auto_page_break(auto=True, margin=18)
@@ -1497,7 +1495,7 @@ def render_references_section():
 
 def render_feedback_section():
     """Renders IIT Kharagpur Virtual Lab Feedback Section."""
-    st.header("Virtual Lab Feedback: IIT Kharagpur Portal")
+    st.header("Virtual Lab Feedback: ")
     st.write("Your feedback helps us refine the pedagogical quality and simulation clarity of this Virtual Lab module.")
 
     with st.form("vlab_feedback_form"):
@@ -1507,7 +1505,7 @@ def render_feedback_section():
             fb_roll = st.text_input("Roll / Registration Number:", value=st.session_state["student_info"].get("id", ""))
         with col2:
             fb_college = st.text_input("Institute / Department:", value="Dept of Computer Science & Engineering")
-            fb_email = st.text_input("Student Email Address:", value="student@iitkgp.ac.in")
+            fb_email = st.text_input("Student Email Address:", value="student@ves.ac.in")
 
         st.subheader("Evaluation Metrics (1 = Unsatisfactory, 5 = Excellent)")
         r1 = st.slider("1. Clarity of Inverted Index theoretical concepts:", 1, 5, 5)
@@ -1672,7 +1670,7 @@ def init_session_state():
 
 def main():
     st.set_page_config(
-        page_title="VLab: Construction of an Inverted Index | IIT Kharagpur",
+        page_title="VLab: Construction of an Inverted Index",
         page_icon="🔬",
         layout="wide",
         initial_sidebar_state="expanded"
