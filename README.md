@@ -107,7 +107,7 @@ Then open your browser at `http://localhost:8501`.
 
 ## 🎨 Display Themes
 The application includes a built-in **Theme Switcher** in the sidebar:
-* **☀️ Light Mode (Default / Academic Standard):** Clean institutional aesthetic matching IIT Kharagpur Virtual Labs (`vlabs.ac.in`), crisp white surfaces, high-contrast typography, and `plotly_white` responsive graphs.
+* **☀️ Light Mode (Default / Academic Standard):** Clean aesthetic matching standard Virtual Labs (`vlabs.ac.in`), crisp white surfaces, high-contrast typography, and `plotly_white` responsive graphs.
 * **🌙 Dark Mode:** Modern dark slate background (`#0f172a`), neon accents, and `plotly_dark` charts.
 * **⚙️ System Default:** Adapts dynamically to your operating system or browser theme preference.
 

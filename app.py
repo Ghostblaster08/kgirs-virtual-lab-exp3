@@ -761,11 +761,11 @@ def sanitize_pdf_text(text: str) -> str:
     return unicodedata.normalize("NFKD", text).encode("latin-1", "ignore").decode("latin-1")
 
 
-class IITKgpLabReportPDF(FPDF):
+class VirtualLabReportPDF(FPDF):
     def header(self):
         self.set_font("Helvetica", "B", 10)
         self.set_text_color(30, 58, 138)
-        self.cell(0, 5, sanitize_pdf_text("VIRTUAL LABS CA "), 0, 1, "C")
+        self.cell(0, 5, sanitize_pdf_text("VIRTUAL LABS CA - EXPERIMENT REPORT"), 0, 1, "C")
         self.set_font("Helvetica", "I", 8)
         self.set_text_color(100, 116, 139)
         self.cell(0, 4, sanitize_pdf_text("Knowledge Graphs & Information Retrieval Systems (KGIRS) | Experiment 3"), 0, 1, "C")
@@ -784,7 +784,7 @@ def generate_pdf_report(student_name: str, student_id: str, student_div: str, da
                         student_notes: str, corpus_name: str, vocab_size: int,
                         postings_count: int) -> bytes:
     """Compiles verified experiment session data into an official Virtual Lab report."""
-    pdf = IITKgpLabReportPDF()
+    pdf = VirtualLabReportPDF()
     pdf.alias_nb_pages()
     pdf.set_auto_page_break(auto=True, margin=18)
     pdf.add_page()
@@ -963,7 +963,6 @@ def render_aim_section():
     st.markdown(f"""
     > **Course:** {EXPERIMENT_CONFIG['subject']} (`{EXPERIMENT_CONFIG['course_code']}`)  
     > **Target Roll Numbers:** **{EXPERIMENT_CONFIG['target_rolls']}**  
-    > **Institution:** {EXPERIMENT_CONFIG['institution']}  
     > **Platform:** {EXPERIMENT_CONFIG['portal']}
     """)
 
@@ -1493,7 +1492,7 @@ def render_references_section():
 
 
 def render_feedback_section():
-    """Renders IIT Kharagpur Virtual Lab Feedback Section."""
+    """Renders Virtual Lab Feedback Section."""
     st.header("Virtual Lab Feedback: ")
     st.write("Your feedback helps us refine the pedagogical quality and simulation clarity of this Virtual Lab module.")
 
@@ -1678,8 +1677,8 @@ def main():
     init_session_state()
 
     # Sidebar: Theme Switcher
-    st.sidebar.markdown(f"### {EXPERIMENT_CONFIG['institution']}")
-    st.sidebar.caption("Virtual Laboratory Portal (vlabs.ac.in)")
+    st.sidebar.markdown("### Virtual Laboratory")
+    st.sidebar.caption("Knowledge Graphs & Information Retrieval")
 
     theme_mode = st.sidebar.radio(
         "Display Mode",
@@ -1744,7 +1743,7 @@ def main():
 
     # Standard Streamlit Title
     st.title(EXPERIMENT_CONFIG["title"])
-    st.caption(f"{EXPERIMENT_CONFIG['portal']} | {EXPERIMENT_CONFIG['institution']} | {EXPERIMENT_CONFIG['subject']}")
+    st.caption(f"{EXPERIMENT_CONFIG['portal']} | {EXPERIMENT_CONFIG['subject']}")
 
     st.sidebar.divider()
 
