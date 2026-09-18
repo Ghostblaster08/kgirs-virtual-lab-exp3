@@ -41,7 +41,6 @@ EXPERIMENT_CONFIG = {
     "subject": "Knowledge Graphs & Information Retrieval Systems (KGIRS)",
     "course_code": "CS-KGIRS-03",
     "target_rolls": "Roll Numbers 11 - 15 (Divisions A, B, C)",
-    "institution": "Indian Institute of Technology Kharagpur",
     "portal": "Virtual Labs - An Initiative of Ministry of Education (vlabs.ac.in)",
     "aim": (
         "To construct and analyze an Inverted Index data structure for a collection of textual documents, "
@@ -766,7 +765,7 @@ class IITKgpLabReportPDF(FPDF):
     def header(self):
         self.set_font("Helvetica", "B", 10)
         self.set_text_color(30, 58, 138)
-        self.cell(0, 5, sanitize_pdf_text("VIRTUAL LABS CA - INDIAN INSTITUTE OF TECHNOLOGY KHARAGPUR"), 0, 1, "C")
+        self.cell(0, 5, sanitize_pdf_text("VIRTUAL LABS CA "), 0, 1, "C")
         self.set_font("Helvetica", "I", 8)
         self.set_text_color(100, 116, 139)
         self.cell(0, 4, sanitize_pdf_text("Knowledge Graphs & Information Retrieval Systems (KGIRS) | Experiment 3"), 0, 1, "C")
