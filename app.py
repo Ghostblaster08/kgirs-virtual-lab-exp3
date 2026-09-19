@@ -74,16 +74,22 @@ To deliver sub-second retrieval latencies, an IR system builds an offline **Inde
 * **Term-Document Incidence Matrix**: A binary matrix $M \in \{0, 1\}^{|V| \times N}$, where $|V|$ is the vocabulary size and $N$ is the number of documents. $M[t, d] = 1$ if term $t$ appears in document $d$, and $0$ otherwise.
   * **The Sparsity Problem**: In real-world natural language collections, a typical document contains only a small fraction of the total vocabulary (often $< 0.2\%$). Storing an explicit matrix of size $|V| \times N$ wastes over $99.8\%$ of memory storing zeroes.
 * **Forward Index**: Maps each document identifier ($DocID$) to the list of terms it contains:
-  $$\\text{Forward Index}: DocID \\longrightarrow [\\text{term}_1, \\text{term}_2, \\dots, \\text{term}_k]$$
+
+$$
+\text{Forward Index}: DocID \longrightarrow [\text{term}_1, \text{term}_2, \dots, \text{term}_k]
+$$
+
   While efficient for document parsing, searching for a keyword requires scanning every document entry.
 
 ---
 
 ### 3. Architecture of an Inverted Index
 
-The **Inverted Index** (or inverted file) inverts the forward mapping: it maps each unique vocabulary term to an ordered list of documents where that term occurs.
+The **Inverted Index** (or inverted file) inverts the forward mapping: it maps each unique vocabulary term to an ordered list of documents where that term occurs:
 
-$$\\text{Inverted Index}: \\text{term}_t \\longrightarrow [DocID_1, DocID_2, DocID_3, \\dots]$$
+$$
+\text{Inverted Index}: \text{term}_t \longrightarrow [DocID_1, DocID_2, DocID_3, \dots]
+$$
 
 An Inverted Index consists of two primary architectural components:
 
@@ -101,11 +107,11 @@ An Inverted Index consists of two primary architectural components:
 1. **Dictionary (Lexicon / Vocabulary)**:
    * Stores all unique terms appearing across the corpus.
    * For each term $t$, stores its **Document Frequency** ($df_t$: count of documents containing $t$) and **Collection Frequency** ($cf_t$: total occurrences across the entire corpus).
-   * Implemented using dynamic Hash Tables for $O(1)$ expected lookup, or B-Trees / Tries for $O(\\log |V|)$ lookup supporting prefix and wildcard queries.
+   * Implemented using dynamic Hash Tables for $O(1)$ expected lookup, or B-Trees / Tries for $O(\log |V|)$ lookup supporting prefix and wildcard queries.
 2. **Postings Lists**:
    * A variable-length linked list or contiguous dynamic array containing the document entries (postings) for each term.
-   * Maintained strictly in **sorted order of Document ID** ($DocID_1 < DocID_2 < \\dots < DocID_k$). Sorting is essential because it enables linear-time $O(L_1 + L_2)$ intersection algorithms.
-   * **Positional Postings Lists**: Extends each posting to record not just $DocID$ and term frequency $tf_{t,d}$, but also the exact token offset positions $[pos_1, pos_2, \\dots]$.
+   * Maintained strictly in **sorted order of Document ID** ($DocID_1 < DocID_2 < \dots < DocID_k$). Sorting is essential because it enables linear-time $O(L_1 + L_2)$ intersection algorithms.
+   * **Positional Postings Lists**: Extends each posting to record not just $DocID$ and term frequency $tf_{t,d}$, but also the exact token offset positions $[pos_1, pos_2, \dots]$.
 
 ---
 
@@ -114,7 +120,9 @@ An Inverted Index consists of two primary architectural components:
 #### Conjunction (`AND` Intersection)
 Given two sorted postings lists $P_1$ of length $L_1$ and $P_2$ of length $L_2$, the intersection algorithm uses two pointers $p_1$ and $p_2$ traversing both lists simultaneously:
 
-$$\\text{Time Complexity}: O(L_1 + L_2)$$
+$$
+\text{Time Complexity: } O(L_1 + L_2)
+$$
 
 * If $DocID(p_1) == DocID(p_2)$: Append $DocID(p_1)$ to result; advance both $p_1$ and $p_2$.
 * If $DocID(p_1) < DocID(p_2)$: Advance $p_1$.
@@ -124,8 +132,8 @@ $$\\text{Time Complexity}: O(L_1 + L_2)$$
 Traverse both lists with two pointers, appending the smaller $DocID$ to the output list and advancing that pointer. If identical, append once and advance both. Running time: $O(L_1 + L_2)$.
 
 #### Query Optimization via Document Frequency
-When evaluating a multi-term conjunctive query $t_1 \\text{ AND } t_2 \\text{ AND } t_3$:
-Search engines sort the query terms in **increasing order of document frequency** ($df_{t_1} \\le df_{t_2} \\le df_{t_3}$). Intersecting the shortest lists first produces the smallest intermediate candidate set, drastically reducing subsequent comparisons!
+When evaluating a multi-term conjunctive query $t_1 \land t_2 \land t_3$:
+Search engines sort the query terms in **increasing order of document frequency** ($df_{t_1} \le df_{t_2} \le df_{t_3}$). Intersecting the shortest lists first produces the smallest intermediate candidate set, drastically reducing subsequent comparisons!
 
 ---
 
@@ -133,21 +141,35 @@ Search engines sort the query terms in **increasing order of document frequency*
 
 A non-positional index can only verify that two words appear somewhere in the same document, failing on exact phrase queries such as `"information retrieval"`.
 In a **Positional Inverted Index**, each posting stores the token positions:
-$$\\text{Posting}: \\langle DocID, tf, [pos_1, pos_2, \\dots, pos_{tf}] \\rangle$$
+
+$$
+\text{Posting}: \langle DocID, tf, [pos_1, pos_2, \dots, pos_{tf}] \rangle
+$$
 
 For phrase query `"term1 term2"`, the query engine intersects their document postings and checks whether:
-$$\\exists p \\in \\text{positions}(term_1, d) \\quad \\text{such that} \\quad (p + 1) \\in \\text{positions}(term_2, d)$$
+
+$$
+\exists p \in \text{positions}(\text{term}_1, d) \quad \text{such that} \quad (p + 1) \in \text{positions}(\text{term}_2, d)
+$$
 
 ---
 
 ### 6. Empirical Laws: Zipf's Law & Heaps' Law
 
 * **Zipf's Law**: The frequency $f$ of any word is inversely proportional to its rank $r$ in the frequency table:
-  $$f(r) \\propto \\frac{1}{r^s} \\implies \\log f(r) = \\log C - s \\log r$$
+
+$$
+f(r) \propto \frac{1}{r^s} \implies \log f(r) = \log C - s \cdot \log r
+$$
+
   A tiny percentage of terms (stopwords) account for a massive fraction of all tokens.
 * **Heaps' Law**: Empirically models vocabulary growth $|V|$ as a function of total token count $N$:
-  $$|V| = k \\cdot N^\\beta$$
-  where $30 \\le k \\le 100$ and $\\beta \\approx 0.4 - 0.6$. The vocabulary continues growing with corpus size.
+
+$$
+|V| = k \cdot N^\beta
+$$
+
+  where $30 \le k \le 100$ and $\beta \approx 0.4 - 0.6$. The vocabulary continues growing with corpus size.
     """,
     "key_terms": {
         "Inverted Index": "Core IR data structure mapping terms to documents containing them.",
@@ -978,9 +1000,9 @@ def render_aim_section():
 
     with col2:
         st.subheader("Prerequisites & Foundational Knowledge")
-        st.markdown("""
+        st.markdown(r"""
         * **Data Structures:** Hash Tables, Arrays, Singly Linked Lists, Binary Search Trees.
-        * **Discrete Mathematics:** Set operations (Intersection $\\cap$, Union $\\cup$, Difference $\\setminus$).
+        * **Discrete Mathematics:** Set operations (Intersection $\cap$, Union $\cup$, Difference $\setminus$).
         * **Text Processing Fundamentals:** Tokenization, Regular Expressions, String Normalization.
         * **Algorithmic Complexity:** Big-O notation, Two-Pointer Merge Algorithms ($O(n + m)$).
         """)
