@@ -134,42 +134,6 @@ Traverse both lists with two pointers, appending the smaller $DocID$ to the outp
 #### Query Optimization via Document Frequency
 When evaluating a multi-term conjunctive query $t_1 \land t_2 \land t_3$:
 Search engines sort the query terms in **increasing order of document frequency** ($df_{t_1} \le df_{t_2} \le df_{t_3}$). Intersecting the shortest lists first produces the smallest intermediate candidate set, drastically reducing subsequent comparisons!
-
----
-
-### 5. Positional Indexing & Phrase Queries
-
-A non-positional index can only verify that two words appear somewhere in the same document, failing on exact phrase queries such as `"information retrieval"`.
-In a **Positional Inverted Index**, each posting stores the token positions:
-
-$$
-\text{Posting}: \langle DocID, tf, [pos_1, pos_2, \dots, pos_{tf}] \rangle
-$$
-
-For phrase query `"term1 term2"`, the query engine intersects their document postings and checks whether:
-
-$$
-\exists p \in \text{positions}(\text{term}_1, d) \quad \text{such that} \quad (p + 1) \in \text{positions}(\text{term}_2, d)
-$$
-
----
-
-### 6. Empirical Laws: Zipf's Law & Heaps' Law
-
-* **Zipf's Law**: The frequency $f$ of any word is inversely proportional to its rank $r$ in the frequency table:
-
-$$
-f(r) \propto \frac{1}{r^s} \implies \log f(r) = \log C - s \cdot \log r
-$$
-
-  A tiny percentage of terms (stopwords) account for a massive fraction of all tokens.
-* **Heaps' Law**: Empirically models vocabulary growth $|V|$ as a function of total token count $N$:
-
-$$
-|V| = k \cdot N^\beta
-$$
-
-  where $30 \le k \le 100$ and $\beta \approx 0.4 - 0.6$. The vocabulary continues growing with corpus size.
     """,
     "key_terms": {
         "Inverted Index": "Core IR data structure mapping terms to documents containing them.",
@@ -192,12 +156,9 @@ PROCEDURE_STEPS = [
     "Step 4: Configure the linguistic preprocessing switches (Case Folding, Stopword Removal, Porter Stemming).",
     "Step 5: Click 'Construct Inverted Index' and trace the 4 pipeline stages: Tokenization, Triples, Sorting, and Postings Inversion.",
     "Step 6: Inspect the Dictionary statistics (Vocabulary size, Document Frequency df, Collection Frequency cf).",
-    "Step 7: Execute Keyword, Boolean (AND, OR, NOT), Phrase, and Proximity search queries in the Query Console.",
-    "Step 8: Observe the step-by-step Pointer Comparison Trace to understand the linear-time merge algorithm.",
-    "Step 9: Analyze the analytical plots: Zipf's Law rank-frequency curve and Postings List Length distribution.",
-    "Step 10: Click 'Record Current Trial' to capture metrics across at least 3 distinct preprocessing configurations.",
-    "Step 11: Complete the Self-Evaluation Quiz to verify conceptual mastery and generate instant feedback.",
-    "Step 12: Open Report Generation, enter your Student Roll Number and Name, and download the verified PDF report."
+    "Step 7: Click 'Record Current Trial' to capture metrics across at least 3 distinct preprocessing configurations.",
+    "Step 8: Complete the Self-Evaluation Quiz to verify conceptual mastery and generate instant feedback.",
+    "Step 9: Open Report Generation, enter your Student Roll Number and Name, and download the verified PDF report."
 ]
 
 BENCHMARK_CORPORA = {
@@ -919,8 +880,8 @@ def generate_pdf_report(student_name: str, student_id: str, student_div: str, da
         pdf.set_font("Helvetica", "B", 7)
 
         # Select essential columns
-        cols = ["Trial #", "Corpus", "Stopwords", "Stemming", "Vocab |V|", "Query", "Hits", "Time (us)"]
-        col_widths = [14, 34, 18, 18, 18, 48, 14, 26]
+        cols = ["Trial #", "Corpus", "Stopwords", "Stemming", "Vocab |V|", "Total Postings", "Time"]
+        col_widths = [16, 54, 24, 24, 24, 26, 22]
 
         for c, w in zip(cols, col_widths):
             pdf.cell(w, 5, sanitize_pdf_text(c), 1, 0, "C", True)
@@ -934,13 +895,12 @@ def generate_pdf_report(student_name: str, student_id: str, student_div: str, da
         for _, row in trials_df.iterrows():
             row_vals = [
                 str(row.get("Trial #", "-")),
-                str(row.get("Corpus", "-"))[:18],
+                str(row.get("Corpus", "-"))[:24],
                 str(row.get("Stopwords", "-")),
                 str(row.get("Stemming", "-")),
                 str(row.get("Vocab |V|", "-")),
-                str(row.get("Query", "-"))[:24],
-                str(row.get("Hits", "-")),
-                str(row.get("Time (us)", "-"))
+                str(row.get("Total Postings", "-")),
+                str(row.get("Timestamp", "-"))
             ]
             for val, w in zip(row_vals, col_widths):
                 pdf.cell(w, 5, sanitize_pdf_text(val), 1, 0, "C", fill)
@@ -955,10 +915,9 @@ def generate_pdf_report(student_name: str, student_id: str, student_div: str, da
     pdf.set_font("Helvetica", "", 8)
     pdf.set_text_color(51, 65, 85)
     obs_text = student_notes.strip() if student_notes.strip() else (
-        "1. Stopword removal and Porter stemming significantly reduced vocabulary size |V|, validating Heaps' Law.\n"
-        "2. Conjunctive Boolean queries executed in sub-millisecond linear time O(L1 + L2) through sorted pointer intersection.\n"
-        "3. Positional postings allowed exact phrase verification with zero false positives by matching consecutive token offsets.\n"
-        "4. Empirical term frequency distribution conforms to the heavy-tailed power law modeled by Zipf's Law."
+        "1. Stopword removal and Porter stemming significantly reduced vocabulary size |V| while preserving collection recall.\n"
+        "2. The inverted index dictionary and postings lists provide compact storage compared to sparse incidence matrices.\n"
+        "3. Lexicographic sorting of extracted (term, docID, position) triples enables efficient posting list inversion."
     )
     pdf.multi_cell(0, 4, sanitize_pdf_text(obs_text))
     pdf.ln(6)
@@ -1211,205 +1170,13 @@ def render_simulation_section():
             })
         st.dataframe(pd.DataFrame(dict_records), hide_index=True, use_container_width=True, height=280)
 
-    # Interactive Query Engine
-    st.divider()
-    st.subheader("5. Interactive Query Processing Console")
-    query_mode = st.selectbox(
-        "Select Query Execution Type:",
-        options=[
-            "Conjunctive Boolean Query (AND)",
-            "Disjunctive Boolean Query (OR)",
-            "Negation Boolean Query (NOT)",
-            "Exact Phrase Query (\"term1 term2\")",
-            "Proximity Query (NEAR / k)",
-            "Single Keyword Lookup"
-        ]
-    )
-
-    col_q1, col_q2 = st.columns([3, 1])
-
-    with col_q1:
-        if query_mode == "Conjunctive Boolean Query (AND)":
-            q_input = st.text_input("Enter two terms separated by AND:", value="information AND retrieval")
-        elif query_mode == "Disjunctive Boolean Query (OR)":
-            q_input = st.text_input("Enter two terms separated by OR:", value="graph OR index")
-        elif query_mode == "Negation Boolean Query (NOT)":
-            q_input = st.text_input("Enter base term and excluded term (e.g., retrieval NOT graph):", value="retrieval NOT graph")
-        elif query_mode == "Exact Phrase Query (\"term1 term2\")":
-            q_input = st.text_input("Enter exact phrase:", value="information retrieval")
-        elif query_mode == "Proximity Query (NEAR / k)":
-            q_input = st.text_input("Enter two terms for proximity test:", value="index search")
-        else:
-            q_input = st.text_input("Enter single term:", value="retrieval")
-
-    with col_q2:
-        if query_mode == "Proximity Query (NEAR / k)":
-            k_dist = st.number_input("Max Token Distance (k):", min_value=1, max_value=10, value=3)
-        else:
-            k_dist = 3
-        exec_btn = st.button("Execute Query", type="primary", use_container_width=True)
-
-    # Execute and display search results
-    query_result_docs = []
-    query_latency_us = 0.0
-    query_trace = []
-    executed_query_str = q_input
-
-    if q_input.strip():
-        t_start = time.perf_counter()
-
-        if query_mode == "Conjunctive Boolean Query (AND)":
-            parts = [p.strip() for p in re.split(r"\bAND\b", q_input, flags=re.IGNORECASE)]
-            if len(parts) >= 2:
-                t1_clean = pure_porter_stem(parts[0].lower()) if opt_stemming else parts[0].lower()
-                t2_clean = pure_porter_stem(parts[1].lower()) if opt_stemming else parts[1].lower()
-                p1_docs = sorted(list(index_results["index"].get(t1_clean, {}).get("postings", {}).keys()))
-                p2_docs = sorted(list(index_results["index"].get(t2_clean, {}).get("postings", {}).keys()))
-                query_result_docs, query_trace = execute_boolean_and_with_trace(p1_docs, p2_docs, t1_clean, t2_clean)
-            else:
-                query_trace = ["Please enter two terms separated by AND (e.g. 'information AND retrieval')."]
-
-        elif query_mode == "Disjunctive Boolean Query (OR)":
-            parts = [p.strip() for p in re.split(r"\bOR\b", q_input, flags=re.IGNORECASE)]
-            if len(parts) >= 2:
-                t1_clean = pure_porter_stem(parts[0].lower()) if opt_stemming else parts[0].lower()
-                t2_clean = pure_porter_stem(parts[1].lower()) if opt_stemming else parts[1].lower()
-                p1_docs = sorted(list(index_results["index"].get(t1_clean, {}).get("postings", {}).keys()))
-                p2_docs = sorted(list(index_results["index"].get(t2_clean, {}).get("postings", {}).keys()))
-                query_result_docs, query_trace = execute_boolean_or_with_trace(p1_docs, p2_docs, t1_clean, t2_clean)
-            else:
-                query_trace = ["Please enter two terms separated by OR (e.g. 'graph OR index')."]
-
-        elif query_mode == "Negation Boolean Query (NOT)":
-            parts = [p.strip() for p in re.split(r"\bNOT\b", q_input, flags=re.IGNORECASE)]
-            if len(parts) >= 2:
-                t1_clean = pure_porter_stem(parts[0].lower()) if opt_stemming else parts[0].lower()
-                t2_clean = pure_porter_stem(parts[1].lower()) if opt_stemming else parts[1].lower()
-                p1_docs = set(index_results["index"].get(t1_clean, {}).get("postings", {}).keys())
-                p2_docs = set(index_results["index"].get(t2_clean, {}).get("postings", {}).keys())
-                query_result_docs = sorted(list(p1_docs - p2_docs))
-                query_trace = [
-                    f"Postings for '{t1_clean}': {sorted(list(p1_docs))}",
-                    f"Excluded postings for '{t2_clean}': {sorted(list(p2_docs))}",
-                    f"Set Difference ({t1_clean} \\ {t2_clean}): {query_result_docs}"
-                ]
-            else:
-                query_trace = ["Please enter query in format: 'term1 NOT term2'."]
-
-        elif query_mode == "Exact Phrase Query (\"term1 term2\")":
-            phrase_res = execute_phrase_query(q_input, index_results["index"], use_stemming=opt_stemming)
-            query_result_docs = phrase_res["docs"]
-            query_trace = phrase_res["trace"]
-
-        elif query_mode == "Proximity Query (NEAR / k)":
-            words = q_input.split()
-            if len(words) >= 2:
-                prox_res = execute_proximity_query(words[0], words[1], k_dist, index_results["index"], use_stemming=opt_stemming)
-                query_result_docs = prox_res["docs"]
-                query_trace = prox_res["trace"]
-            else:
-                query_trace = ["Enter at least two words for proximity check."]
-
-        else:  # Single Keyword
-            res = execute_keyword_query(q_input, index_results["index"], use_stemming=opt_stemming)
-            query_result_docs = res["docs"]
-            query_trace = res["trace"]
-
-        t_end = time.perf_counter()
-        query_latency_us = round((t_end - t_start) * 1_000_000, 2)
-
-    # Display Query Output
-    col_out1, col_out2 = st.columns([1.5, 2.5])
-    with col_out1:
-        st.markdown(f"**Query Latency:** `{query_latency_us} us`")
-        st.markdown(f"**Matching Documents:** `{len(query_result_docs)}` hit(s)")
-        if query_result_docs:
-            st.success(f"Matched DocIDs: {query_result_docs}")
-            for d in query_result_docs:
-                doc_text = active_corpus.get(d, "")
-                st.markdown(f"- **Doc {d}:** {doc_text}")
-        else:
-            st.warning("No documents matched the specified query conditions.")
-
-    with col_out2:
-        st.caption("Step-by-Step Query Pointer Execution Trace:")
-        with st.container(height=180):
-            for line in query_trace:
-                st.text(f"> {line}")
-
-    # Plotly Analytical Visualizations
-    st.divider()
-    st.subheader("6. Analytical Visualizations: Zipf's Law & Term Distribution")
-
-    plot_col1, plot_col2 = st.columns(2)
-
-    # Zipf's Law Plot
-    sorted_terms = sorted(index_results["index"].items(), key=lambda x: x[1]["cf"], reverse=True)
-    if sorted_terms:
-        ranks = list(range(1, len(sorted_terms) + 1))
-        frequencies = [m["cf"] for _, m in sorted_terms]
-        c_val = frequencies[0]
-        zipf_theoretical = [round(c_val / r, 2) for r in ranks]
-
-        # Theme-aware styling for Plotly figures
-        is_dark_mode = st.session_state.get("theme_mode", "") == "🌙 Dark Mode"
-        p_template = "plotly_dark" if is_dark_mode else "plotly_white"
-        p_font_color = "#f8fafc" if is_dark_mode else "#0f172a"
-        line_color = "#60a5fa" if is_dark_mode else "#2563eb"
-        bar_color = "#34d399" if is_dark_mode else "#10b981"
-
-        with plot_col1:
-            fig_zipf = go.Figure()
-            fig_zipf.add_trace(go.Scatter(
-                x=ranks, y=frequencies, mode="lines+markers",
-                name="Empirical Frequency (cf)", line=dict(color=line_color, width=2.5)
-            ))
-            fig_zipf.add_trace(go.Scatter(
-                x=ranks, y=zipf_theoretical, mode="lines",
-                name="Zipf's Theoretical (C/r)", line=dict(color="#ef4444", dash="dash", width=2)
-            ))
-            fig_zipf.update_layout(
-                title="Zipf's Law: Term Rank vs. Collection Frequency",
-                xaxis_title="Term Frequency Rank (r)",
-                yaxis_title="Collection Frequency (cf)",
-                hovermode="x unified",
-                template=p_template,
-                paper_bgcolor="rgba(0,0,0,0)",
-                plot_bgcolor="rgba(0,0,0,0)",
-                font=dict(color=p_font_color),
-                height=340,
-                margin=dict(l=20, r=20, t=40, b=20)
-            )
-            st.plotly_chart(fig_zipf, use_container_width=True)
-
-        # Postings Length Distribution
-        with plot_col2:
-            top_terms = sorted_terms[:15]
-            fig_df = go.Figure(go.Bar(
-                x=[t for t, _ in top_terms],
-                y=[m["df"] for _, m in top_terms],
-                marker_color=bar_color
-            ))
-            fig_df.update_layout(
-                title="Document Frequency (df) for Top Vocabulary Terms",
-                xaxis_title="Vocabulary Term",
-                yaxis_title="Document Frequency (df)",
-                template=p_template,
-                paper_bgcolor="rgba(0,0,0,0)",
-                plot_bgcolor="rgba(0,0,0,0)",
-                font=dict(color=p_font_color),
-                height=340,
-                margin=dict(l=20, r=20, t=40, b=20)
-            )
-            st.plotly_chart(fig_df, use_container_width=True)
-
     # Experimental Trial Logger
     st.divider()
-    st.subheader("7. Experimental Data Log Book")
+    st.subheader("5. Experimental Data Log Book")
     col_log1, col_log2 = st.columns([1.5, 3.5])
 
     with col_log1:
-        st.caption("Record experimental parameters and retrieval metrics into your session log:")
+        st.caption("Record experimental parameters and index metrics into your session log:")
         if st.button("Record Current Trial", type="primary", use_container_width=True):
             trial_record = {
                 "Trial #": len(st.session_state["trials"]) + 1,
@@ -1418,9 +1185,6 @@ def render_simulation_section():
                 "Stemming": "ON" if opt_stemming else "OFF",
                 "Vocab |V|": index_results["vocab_size"],
                 "Total Postings": index_results["total_postings"],
-                "Query": executed_query_str,
-                "Hits": len(query_result_docs),
-                "Time (us)": query_latency_us,
                 "Timestamp": datetime.now().strftime("%H:%M:%S")
             }
             st.session_state["trials"].append(trial_record)
@@ -1443,7 +1207,7 @@ def render_simulation_section():
                 use_container_width=True
             )
         else:
-            st.info("No trials recorded yet. Click 'Record Current Trial' to capture index and query metrics.")
+            st.info("No trials recorded yet. Click 'Record Current Trial' to capture index architecture metrics.")
 
 
 def render_quiz_section():
@@ -1577,9 +1341,8 @@ def render_report_section():
         value=st.session_state.get("student_notes", (
             "1. Linguistic preprocessing: Stopword removal and Porter stemming reduced the vocabulary size (|V|), "
             "substantially decreasing index storage while preserving keyword search effectiveness.\n"
-            "2. Boolean query processing: The linear-time two-pointer intersection algorithm evaluated conjunctive queries in O(L1 + L2) comparisons.\n"
-            "3. Positional indexing: Recording token positions enabled exact phrase queries without false positives.\n"
-            "4. Term distribution: Term frequencies follow Zipf's Law, demonstrating a power-law distribution across vocabulary ranks."
+            "2. Inverted index storage: The dictionary and sorted postings lists store only non-zero occurrences, avoiding incidence matrix sparsity.\n"
+            "3. Construction pipeline: Lexicographic sorting of (term, docID, position) triples enables linear-time postings list inversion."
         )),
         height=140
     )

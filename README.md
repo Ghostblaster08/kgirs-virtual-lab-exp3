@@ -31,12 +31,10 @@ The application strictly mirrors the pedagogical architecture of **VESIT Virtual
    * Conjunctive (`AND`), Disjunctive (`OR`), and Negation (`NOT`) algorithms
    * Query optimization via Document Frequency ($df$) ordering
    * Skip Pointers ($O(\sqrt{L})$)
-   * Positional Postings & Phrase Queries ($pos_{k+1} = pos_k + 1$)
-   * Empirical Laws: Zipf's Law ($f \cdot r \approx C$) and Heaps' Law ($V = k \cdot N^\beta$)
    * Comparative Complexity Analysis table
    * Key terminology glossary
 3. **Procedure:**
-   * Clear, 12-step guided experimental protocol
+   * Clear, 9-step guided experimental protocol
    * System workflow diagram
 4. **Simulation (The Interactive Workbench):**
    * **Corpus Selection:** Choose from 3 curated domain corpora (Information Retrieval, Knowledge Graphs/KGIRS, NLP) or interactive custom document authoring
@@ -47,18 +45,7 @@ The application strictly mirrors the pedagogical architecture of **VESIT Virtual
      * Stage 2: Raw $(Term, DocID, Position)$ Triples
      * Stage 3: Lexicographically Sorted Triples
      * Stage 4: Interactive Dictionary & Postings Explorer
-   * **Interactive Query Console:**
-     * Conjunctive Boolean (`AND`)
-     * Disjunctive Boolean (`OR`)
-     * Negation Boolean (`NOT`)
-     * Exact Phrase Search (`"term1 term2"`)
-     * Proximity Search (`term1 NEAR/k term2`)
-     * Single Keyword Search
-   * **Step-by-Step Pointer Trace:** Detailed live logs showing pointer indices ($p_1, p_2$), DocIDs compared, and merge decisions
-   * **Plotly Visualizations:**
-     * Zipf's Law rank-frequency curve (Empirical vs. Theoretical $C/r$)
-     * Document Frequency ($df$) bar chart for top vocabulary terms
-   * **Trial Logger:** Record trial runs, view session table, and export as CSV (`experiment_trials.csv`)
+   * **Trial Logger:** Record trial runs, view session table, and export as CSV (`inverted_index_trials.csv`)
 5. **Self-Evaluation (Quiz):**
    * 10 rigorous multiple-choice questions covering incidence matrix sparsity, pointer merge complexity, query optimization order, positional postings, skip pointers, Heaps' Law, Zipf's Law, $tf$ vs. $df$, phrase verification, and SPIMI vs. BSBI
    * Instant grading with detailed reasoning for each option
