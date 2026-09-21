@@ -1091,445 +1091,773 @@ def render_procedure_section():
     """)
 
 
-def inject_cinematic_styles():
-    """Injects high-fidelity cinematic movie styling for the simulation workbench."""
-    st.markdown("""
+def highlight_search_terms(text: str, query_str: str) -> str:
+    """Highlights query terms in bold within snippet text for Google SERP display."""
+    tokens = re.findall(r'\b[a-zA-Z0-9_]+\b', query_str)
+    stopwords = {"and", "or", "not", "near"}
+    terms = [t for t in tokens if t.lower() not in stopwords]
+    if not terms:
+        return text
+    pattern = re.compile(r'\b(' + '|'.join(re.escape(t) for t in terms) + r')\b', re.IGNORECASE)
+    return pattern.sub(r'<b>\1</b>', text)
+
+
+def inject_google_search_styles(is_dark_mode: bool = False):
+    """Injects authentic, clean Google Search Engine styling for the interactive simulator."""
+    bg_card = "#202124" if is_dark_mode else "#ffffff"
+    border_card = "#3c4043" if is_dark_mode else "#dadce0"
+    text_primary = "#e8eaed" if is_dark_mode else "#202124"
+    text_secondary = "#9aa0a6" if is_dark_mode else "#5f6368"
+    serp_title = "#8ab4f8" if is_dark_mode else "#1a0dab"
+    serp_url = "#bdc1c6" if is_dark_mode else "#202124"
+    chip_bg = "#303134" if is_dark_mode else "#f1f3f4"
+    chip_border = "#5f6368" if is_dark_mode else "#dadce0"
+    match_bg = "#0f3822" if is_dark_mode else "#e6f4ea"
+    match_border = "#1e8e3e" if is_dark_mode else "#81c995"
+    match_text = "#81c995" if is_dark_mode else "#137333"
+    post_node_bg = "#1a2733" if is_dark_mode else "#e8f0fe"
+    post_node_border = "#3c5678" if is_dark_mode else "#aecbfa"
+    post_node_text = "#8ab4f8" if is_dark_mode else "#1967d2"
+
+    st.markdown(f"""
     <style>
-    /* ==========================================================================
-       CINEMATIC MOVIE STYLING FOR INVERTED INDEX SIMULATOR
-       ========================================================================== */
-    .cinema-hero {
-        background: linear-gradient(135deg, #090d16 0%, #0f172a 50%, #1e1b4b 100%);
-        border: 1px solid rgba(99, 102, 241, 0.4);
-        border-radius: 16px;
-        padding: 22px 26px;
-        margin-bottom: 24px;
-        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4), inset 0 0 20px rgba(99, 102, 241, 0.15);
-        color: #ffffff !important;
-        position: relative;
-        overflow: hidden;
-    }
-    .cinema-hero::before {
-        content: "";
-        position: absolute;
-        top: 0; left: 0; right: 0; height: 4px;
-        background: linear-gradient(90deg, #ec4899, #8b5cf6, #3b82f6, #10b981);
-    }
-    .clapper-tag {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        background: linear-gradient(90deg, #ec4899, #8b5cf6);
-        color: #ffffff !important;
-        font-size: 11px;
-        font-weight: 800;
-        letter-spacing: 1.2px;
+    /* Google Search Header */
+    .google-header-wrap {{
+        text-align: center;
+        padding: 16px 0 10px 0;
+        margin-bottom: 8px;
+    }}
+    .google-logo-text {{
+        font-family: 'Product Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-size: 38px;
+        font-weight: 700;
+        letter-spacing: -1.2px;
+        display: inline-block;
+        user-select: none;
+    }}
+    .g-blue {{ color: #4285F4; }}
+    .g-red {{ color: #EA4335; }}
+    .g-yellow {{ color: #FBBC05; }}
+    .g-green {{ color: #34A853; }}
+    .google-edition-badge {{
+        font-size: 13px;
+        font-weight: 600;
+        color: {text_secondary};
+        letter-spacing: 0.5px;
         text-transform: uppercase;
-        padding: 4px 12px;
-        border-radius: 9999px;
-        box-shadow: 0 4px 14px rgba(236, 72, 153, 0.4);
-    }
-    .live-reel-tag {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        background: rgba(16, 185, 129, 0.15);
-        border: 1px solid rgba(16, 185, 129, 0.4);
-        color: #34d399 !important;
+        margin-left: 8px;
+        vertical-align: middle;
+    }}
+    .google-subtext {{
+        font-size: 14px;
+        color: {text_secondary};
+        margin-top: 4px;
+    }}
+
+    /* Search Bar Wrapper */
+    .google-search-container {{
+        max-width: 760px;
+        margin: 0 auto 14px auto;
+    }}
+
+    /* Stepper Navigation Bar */
+    .google-stepper-wrap {{
+        background: {bg_card};
+        border: 1px solid {border_card};
+        border-radius: 12px;
+        padding: 14px 18px;
+        margin: 16px 0;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }}
+    .stepper-label {{
         font-size: 11px;
         font-weight: 700;
-        padding: 4px 12px;
-        border-radius: 9999px;
-    }
-    .pulse-dot {
-        width: 8px;
-        height: 8px;
-        background-color: #10b981;
-        border-radius: 50%;
-        display: inline-block;
-        box-shadow: 0 0 8px #10b981;
-        animation: pulse-animation 1.5s infinite;
-    }
-    @keyframes pulse-animation {
-        0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-        70% { transform: scale(1.15); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
-        100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
-    }
-    .cinema-card {
-        background: #0f172a;
-        border: 1px solid rgba(56, 189, 248, 0.25);
-        border-radius: 12px;
-        padding: 16px 20px;
-        margin-bottom: 14px;
-        box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-        color: #f8fafc;
-        transition: transform 0.2s ease, border-color 0.2s ease;
-    }
-    .cinema-card:hover {
-        border-color: #38bdf8;
-        transform: translateY(-2px);
-        box-shadow: 0 12px 28px rgba(56, 189, 248, 0.2);
-    }
-    .token-chip-container {
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: #1a73e8;
+        margin-bottom: 8px;
+    }}
+    .stepper-pipeline-flow {{
         display: flex;
         flex-wrap: wrap;
         gap: 6px;
-        margin-top: 10px;
-    }
-    .token-chip {
+        align-items: center;
+        margin-bottom: 8px;
+    }}
+    .step-pill {{
+        background: {chip_bg};
+        border: 1px solid {chip_border};
+        border-radius: 20px;
+        padding: 5px 14px;
+        font-size: 12px;
+        font-weight: 600;
+        color: {text_secondary};
         display: inline-flex;
         align-items: center;
-        background: rgba(30, 41, 59, 0.9);
-        border: 1px solid rgba(56, 189, 248, 0.35);
-        border-radius: 6px;
-        padding: 4px 10px;
-        font-family: 'SFMono-Regular', Consolas, Menlo, monospace;
+        gap: 6px;
+    }}
+    .step-pill.active {{
+        background: #1a73e8;
+        border-color: #1a73e8;
+        color: #ffffff !important;
+        box-shadow: 0 2px 6px rgba(26, 115, 232, 0.35);
+    }}
+    .step-arrow {{
+        color: {text_secondary};
         font-size: 12px;
-        color: #e2e8f0;
-        transition: all 0.2s ease;
-    }
-    .token-chip:hover {
-        background: rgba(56, 189, 248, 0.2);
-        border-color: #38bdf8;
-        color: #38bdf8;
-        box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
-    }
-    .token-pos-badge {
-        background: rgba(56, 189, 248, 0.25);
-        color: #7dd3fc;
-        font-size: 10px;
-        font-weight: bold;
-        padding: 1px 6px;
-        border-radius: 4px;
-        margin-left: 6px;
-    }
-    .postings-chain-row {
-        background: #0f172a;
-        border: 1px solid rgba(148, 163, 184, 0.2);
+    }}
+
+    /* Cards */
+    .google-card {{
+        background: {bg_card};
+        border: 1px solid {border_card};
         border-radius: 10px;
+        padding: 16px 20px;
+        margin-bottom: 12px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }}
+    .google-doc-card {{
+        background: {bg_card};
+        border: 1px solid {border_card};
+        border-left: 4px solid #4285F4;
+        border-radius: 8px;
         padding: 12px 16px;
         margin-bottom: 10px;
-        display: flex;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 8px;
-        transition: all 0.2s ease;
-    }
-    .postings-chain-row:hover {
-        border-color: rgba(56, 189, 248, 0.5);
-        box-shadow: 0 4px 16px rgba(0,0,0,0.3);
-    }
-    .dict-term-pill {
-        background: linear-gradient(135deg, #1d4ed8, #2563eb);
-        color: #ffffff;
-        font-weight: 700;
-        font-size: 13px;
-        font-family: monospace;
-        padding: 6px 14px;
-        border-radius: 8px;
+    }}
+    .google-token-badge {{
         display: inline-flex;
         align-items: center;
+        background: {chip_bg};
+        border: 1px solid {chip_border};
+        border-radius: 6px;
+        padding: 3px 8px;
+        margin: 3px;
+        font-family: monospace;
+        font-size: 12px;
+        color: {text_primary};
+    }}
+    .google-token-badge small {{
+        color: #1a73e8;
+        font-weight: bold;
+        margin-left: 5px;
+    }}
+
+    /* Postings Chain */
+    .postings-row {{
+        background: {bg_card};
+        border: 1px solid {border_card};
+        border-radius: 8px;
+        padding: 10px 14px;
+        margin-bottom: 8px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
         gap: 8px;
-        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-    }
-    .dict-freq-tag {
-        background: rgba(255, 255, 255, 0.2);
+    }}
+    .dict-term-pill {{
+        background: #1a73e8;
+        color: #ffffff;
+        font-weight: 600;
+        font-family: monospace;
+        font-size: 13px;
+        padding: 4px 12px;
+        border-radius: 6px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }}
+    .dict-freq-tag {{
+        background: rgba(255, 255, 255, 0.25);
         color: #ffffff;
         font-size: 10px;
-        padding: 1px 6px;
+        padding: 1px 5px;
         border-radius: 4px;
-    }
-    .chain-arrow {
-        color: #64748b;
-        font-size: 14px;
-        font-weight: bold;
-    }
-    .posting-doc-node {
-        background: #1e293b;
-        border: 1px solid rgba(52, 211, 153, 0.4);
-        color: #f1f5f9;
-        border-radius: 8px;
-        padding: 5px 12px;
+    }}
+    .posting-node {{
+        background: {post_node_bg};
+        border: 1px solid {post_node_border};
+        color: {post_node_text};
         font-size: 12px;
+        border-radius: 6px;
+        padding: 4px 10px;
         display: inline-flex;
         align-items: center;
-        gap: 8px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-    }
-    .posting-doc-node .tf-tag {
-        background: rgba(52, 211, 153, 0.2);
-        color: #34d399;
+        gap: 6px;
+    }}
+    .chain-arrow {{
+        color: {text_secondary};
+        font-size: 14px;
         font-weight: bold;
-        padding: 1px 6px;
+    }}
+
+    /* Pointer Duel */
+    .pointer-film-track {{
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin: 6px 0;
+    }}
+    .track-pill {{
+        background: {chip_bg};
+        border: 1px solid {chip_border};
+        border-radius: 6px;
+        padding: 4px 10px;
+        font-size: 12px;
+        font-family: monospace;
+        color: {text_primary};
+    }}
+    .track-pill.matched {{
+        background: {match_bg};
+        border-color: {match_border};
+        color: {match_text} !important;
+        font-weight: 700;
+    }}
+
+    /* Real Google SERP Styling */
+    .serp-container {{
+        background: {bg_card};
+        border: 1px solid {border_card};
+        border-radius: 12px;
+        padding: 20px 24px;
+        margin-top: 14px;
+    }}
+    .serp-stats {{
+        font-size: 13px;
+        color: {text_secondary};
+        padding-bottom: 12px;
+        margin-bottom: 14px;
+        border-bottom: 1px solid {border_card};
+    }}
+    .serp-item {{
+        margin-bottom: 20px;
+        padding-bottom: 16px;
+        border-bottom: 1px dashed {border_card};
+    }}
+    .serp-item:last-child {{
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }}
+    .serp-url {{
+        font-size: 12px;
+        color: {serp_url};
+        margin-bottom: 3px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }}
+    .serp-favicon {{
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: #1a73e8;
+        color: #ffffff;
+        font-size: 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }}
+    .serp-title {{
+        font-size: 18px;
+        font-weight: 500;
+        color: {serp_title};
+        margin-bottom: 4px;
+    }}
+    .serp-snippet {{
+        font-size: 13.5px;
+        line-height: 1.5;
+        color: {text_primary};
+        margin-bottom: 6px;
+    }}
+    .serp-snippet b {{
+        font-weight: 700;
+        color: #1a73e8;
+    }}
+    .serp-meta-badge {{
+        display: inline-flex;
+        align-items: center;
+        background: {chip_bg};
+        border: 1px solid {chip_border};
         border-radius: 4px;
         font-size: 11px;
-    }
-    .radar-hud {
-        background: linear-gradient(135deg, #090d16 0%, #0f172a 100%);
-        border: 1px solid rgba(139, 92, 246, 0.4);
-        border-radius: 14px;
+        color: {text_secondary};
+        padding: 2px 8px;
+    }}
+    .no-results-box {{
         padding: 20px;
-        margin-top: 18px;
-        box-shadow: 0 16px 36px rgba(0,0,0,0.4), inset 0 0 16px rgba(139, 92, 246, 0.1);
-        color: #f8fafc;
-    }
-    .radar-stat-pill {
-        background: rgba(30, 41, 59, 0.8);
-        border: 1px solid rgba(148, 163, 184, 0.2);
-        padding: 8px 14px;
+        background: {chip_bg};
+        border: 1px solid {chip_border};
         border-radius: 8px;
+        color: {text_primary};
+    }}
+    .radar-stat-pill {{
+        background: {chip_bg};
+        border: 1px solid {chip_border};
+        padding: 6px 12px;
+        border-radius: 6px;
         font-size: 12px;
         display: inline-flex;
         align-items: center;
         gap: 6px;
         margin-right: 8px;
         margin-bottom: 8px;
-    }
-    .radar-match-card {
-        background: rgba(16, 185, 129, 0.1);
-        border: 1px solid rgba(16, 185, 129, 0.5);
-        border-radius: 8px;
-        padding: 10px 14px;
-        margin-top: 8px;
-        color: #f8fafc;
-        box-shadow: 0 4px 14px rgba(16, 185, 129, 0.15);
-    }
-    .pointer-film-track {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        margin: 8px 0;
-        overflow-x: auto;
-        padding: 6px 2px;
-    }
-    .track-pill {
-        padding: 5px 12px;
-        border-radius: 6px;
-        font-weight: bold;
-        font-size: 12px;
-        font-family: monospace;
-        border: 1px solid #475569;
-        background: #1e293b;
-        color: #cbd5e1;
-    }
-    .track-pill.matched {
-        background: #059669;
-        color: white;
-        border-color: #34d399;
-        box-shadow: 0 0 12px rgba(52, 211, 153, 0.6);
-        transform: scale(1.08);
-    }
-    .triple-capsule {
-        display: inline-flex;
-        align-items: center;
-        background: #0f172a;
-        border: 1px solid rgba(139, 92, 246, 0.3);
-        border-radius: 8px;
-        padding: 6px 12px;
-        margin: 4px;
-        font-family: monospace;
-        font-size: 12px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    }
-    .t-term { color: #c084fc; font-weight: bold; }
-    .t-sep { color: #64748b; margin: 0 6px; }
-    .t-doc { color: #38bdf8; font-weight: bold; }
-    .t-pos { color: #34d399; }
+    }}
     </style>
     """, unsafe_allow_html=True)
 
 
 def render_simulation_section():
-    """Renders Core Interactive Simulation Workbench with Cinematic Aesthetics."""
-    inject_cinematic_styles()
+    """Renders Google-Style Interactive Search Engine Simulation with Step-by-Step Pipeline."""
+    is_dark = st.session_state.get("theme_mode") == "🌙 Dark Mode"
+    inject_google_search_styles(is_dark_mode=is_dark)
 
-    # Cinematic Movie Studio Header
+    # Initialize Session States
+    if "sim_active_step" not in st.session_state:
+        st.session_state["sim_active_step"] = 5  # default to showing the Google SERP results
+    if "search_query" not in st.session_state:
+        st.session_state["search_query"] = "information AND retrieval"
+    if "query_type_select" not in st.session_state:
+        st.session_state["query_type_select"] = "Conjunctive Boolean Query (AND)"
+    if "selected_corpus_name" not in st.session_state:
+        st.session_state["selected_corpus_name"] = list(BENCHMARK_CORPORA.keys())[0]
+
+    # Google Search Header
     st.markdown("""
-    <div class="cinema-hero">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
-            <span class="clapper-tag">🎬 PRODUCTION STUDIO | INTERACTIVE SIMULATOR</span>
-            <span class="live-reel-tag"><span class="pulse-dot"></span> LIVE REEL ACTIVE</span>
+    <div class="google-header-wrap">
+        <div class="google-logo-text">
+            <span class="g-blue">G</span><span class="g-red">o</span><span class="g-yellow">o</span><span class="g-blue">g</span><span class="g-green">l</span><span class="g-red">e</span>
+            <span class="google-edition-badge">Search Engine Simulator</span>
         </div>
-        <h2 style="margin: 0; font-size: 26px; font-weight: 800; color: #ffffff; letter-spacing: -0.5px;">THE INVERTED INDEX EXPERIENCE</h2>
-        <p style="margin: 6px 0 0 0; color: #94a3b8; font-size: 14px;">An interactive cinematic journey: from raw screenplay corpus to lexicographical inversion and laser-speed Boolean retrieval.</p>
+        <div class="google-subtext">
+            Explore how Google's Information Retrieval engine works under the hood: Crawl, Linguistic Normalization, Inverted Indexing, Two-Pointer Postings Merge, and SERP Ranking.
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
-    # Top Controls: Corpus Selection & Customization
-    st.subheader("1. Corpus Configuration")
-    corpus_choice = st.radio(
-        "Select Corpus Source:",
-        options=list(BENCHMARK_CORPORA.keys()) + ["Custom Documents (Interactive Authoring)"],
-        horizontal=True
-    )
-
-    if corpus_choice == "Custom Documents (Interactive Authoring)":
-        st.info("Enter or modify custom documents below to test indexing on your own text:")
-        custom_docs = {}
-        cols = st.columns(3)
-        for i in range(1, 6):
-            col_idx = (i - 1) % 3
-            with cols[col_idx]:
-                default_text = st.session_state["custom_corpus"].get(
-                    i, f"Document {i} text describing information retrieval and graph systems."
-                )
-                txt = st.text_area(f"Doc {i} Content:", value=default_text, height=90, key=f"custom_doc_in_{i}")
-                custom_docs[i] = txt
-        st.session_state["custom_corpus"] = custom_docs
-        active_corpus = {k: v for k, v in custom_docs.items() if v.strip()}
+    # Active Corpus Selection (used across all steps)
+    active_corpus_name = st.session_state["selected_corpus_name"]
+    if active_corpus_name == "Custom Documents (Interactive Authoring)":
+        active_corpus = {k: v for k, v in st.session_state["custom_corpus"].items() if v.strip()}
     else:
-        active_corpus = BENCHMARK_CORPORA[corpus_choice]
+        active_corpus = BENCHMARK_CORPORA.get(active_corpus_name, list(BENCHMARK_CORPORA.values())[0])
 
-    with st.expander("🎞️ Preview Active Script Documents in Collection", expanded=False):
-        for doc_id, text in active_corpus.items():
-            st.markdown(f"**Scene / Doc {doc_id}**: _{text}_")
+    # Preprocessing Options (persisted in session_state)
+    if "opt_lowercase" not in st.session_state: st.session_state["opt_lowercase"] = True
+    if "opt_punct" not in st.session_state: st.session_state["opt_punct"] = True
+    if "opt_stopwords" not in st.session_state: st.session_state["opt_stopwords"] = True
+    if "opt_stemming" not in st.session_state: st.session_state["opt_stemming"] = True
 
-    st.divider()
-
-    # Preprocessing Controls
-    st.subheader("2. Linguistic Preprocessing Pipeline Controls")
-    c1, c2, c3, c4 = st.columns(4)
-    with c1:
-        opt_lowercase = st.checkbox("Case Folding (Lowercase)", value=True, help="Converts all tokens to lowercase.")
-    with c2:
-        opt_punct = st.checkbox("Strip Punctuation", value=True, help="Removes punctuation characters.")
-    with c3:
-        opt_stopwords = st.checkbox("Stopword Removal", value=True, help="Filters frequent grammatical words.")
-    with c4:
-        opt_stemming = st.checkbox("Porter Stemming", value=True, help="Applies rule-based suffix stripping to stems.")
-
-    # Build the Inverted Index
+    # Build Index
     index_results = build_inverted_index(
         corpus=active_corpus,
-        lowercase=opt_lowercase,
-        remove_punct=opt_punct,
-        remove_stopwords=opt_stopwords,
-        use_stemming=opt_stemming,
+        lowercase=st.session_state["opt_lowercase"],
+        remove_punct=st.session_state["opt_punct"],
+        remove_stopwords=st.session_state["opt_stopwords"],
+        use_stemming=st.session_state["opt_stemming"],
         stopwords_set=DEFAULT_STOPWORDS
     )
 
-    # Save active index stats in session state for report
-    st.session_state["last_active_corpus_name"] = corpus_choice
+    st.session_state["last_active_corpus_name"] = active_corpus_name
     st.session_state["last_vocab_size"] = index_results["vocab_size"]
     st.session_state["last_postings_count"] = index_results["total_postings"]
 
-    # Director's Movie Action Button
-    st.markdown("<br>", unsafe_allow_html=True)
-    c_btn, c_hint = st.columns([1.5, 3.5])
-    with c_btn:
-        play_movie = st.button("🎬 ACTION: Play Full Pipeline Movie", type="primary", use_container_width=True)
-    with c_hint:
-        st.caption("Press **ACTION** to stream an automated 4-scene montage animating ingestion, linguistic filtering, sorting, and master matrix inversion.")
+    # Google Search Bar Section
+    st.markdown('<div class="google-search-container">', unsafe_allow_html=True)
 
-    if play_movie:
+    col_input, col_mode = st.columns([3.2, 1.3])
+    with col_input:
+        user_query = st.text_input(
+            "Search Query:",
+            value=st.session_state["search_query"],
+            placeholder="Type a search query (e.g. information AND retrieval)...",
+            label_visibility="collapsed",
+            key="google_search_input"
+        )
+    with col_mode:
+        q_mode = st.selectbox(
+            "Query Mode:",
+            options=[
+                "Conjunctive Boolean Query (AND)",
+                "Disjunctive Boolean Query (OR)",
+                "Negation Boolean Query (NOT)",
+                "Exact Phrase Query (\"term1 term2\")",
+                "Proximity Query (NEAR / k)",
+                "Single Keyword Lookup"
+            ],
+            index=[
+                "Conjunctive Boolean Query (AND)",
+                "Disjunctive Boolean Query (OR)",
+                "Negation Boolean Query (NOT)",
+                "Exact Phrase Query (\"term1 term2\")",
+                "Proximity Query (NEAR / k)",
+                "Single Keyword Lookup"
+            ].index(st.session_state["query_type_select"]),
+            label_visibility="collapsed",
+            key="google_mode_select"
+        )
+        st.session_state["query_type_select"] = q_mode
+
+    # Quick Suggestion Chips
+    c_s1, c_s2, c_s3, c_s4, c_s5 = st.columns(5)
+    with c_s1:
+        if st.button("information AND retrieval", use_container_width=True):
+            st.session_state["search_query"] = "information AND retrieval"
+            st.session_state["query_type_select"] = "Conjunctive Boolean Query (AND)"
+            st.session_state["sim_active_step"] = 5
+            st.rerun()
+    with c_s2:
+        if st.button("graph OR index", use_container_width=True):
+            st.session_state["search_query"] = "graph OR index"
+            st.session_state["query_type_select"] = "Disjunctive Boolean Query (OR)"
+            st.session_state["sim_active_step"] = 5
+            st.rerun()
+    with c_s3:
+        if st.button("retrieval NOT graph", use_container_width=True):
+            st.session_state["search_query"] = "retrieval NOT graph"
+            st.session_state["query_type_select"] = "Negation Boolean Query (NOT)"
+            st.session_state["sim_active_step"] = 5
+            st.rerun()
+    with c_s4:
+        if st.button('"information retrieval"', use_container_width=True):
+            st.session_state["search_query"] = "information retrieval"
+            st.session_state["query_type_select"] = 'Exact Phrase Query ("term1 term2")'
+            st.session_state["sim_active_step"] = 5
+            st.rerun()
+    with c_s5:
+        if st.button("retrieval", use_container_width=True):
+            st.session_state["search_query"] = "retrieval"
+            st.session_state["query_type_select"] = "Single Keyword Lookup"
+            st.session_state["sim_active_step"] = 5
+            st.rerun()
+
+    # The Google Search Action Buttons
+    c_btn1, c_btn2 = st.columns(2)
+    with c_btn1:
+        do_search = st.button("🔍 Google Search", type="primary", use_container_width=True)
+    with c_btn2:
+        inspect_pipeline = st.button("⚙️ Inspect Pipeline (Step 1: Crawl & Corpus)", use_container_width=True)
+
+    if do_search:
+        st.session_state["search_query"] = user_query
+        st.session_state["sim_active_step"] = 5
+        st.rerun()
+    if inspect_pipeline:
+        st.session_state["search_query"] = user_query
+        st.session_state["sim_active_step"] = 1
+        st.rerun()
+
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    # Execute Search Query Logic
+    query_result_docs = []
+    query_latency_us = 0.0
+    query_trace = []
+    executed_query_str = user_query.strip()
+    p1_docs_global = []
+    p2_docs_global = []
+    t1_label = ""
+    t2_label = ""
+
+    if executed_query_str:
+        t_start = time.perf_counter()
+        opt_stem = st.session_state["opt_stemming"]
+
+        if q_mode == "Conjunctive Boolean Query (AND)":
+            parts = [p.strip() for p in re.split(r"\bAND\b", executed_query_str, flags=re.IGNORECASE)]
+            if len(parts) >= 2:
+                t1_clean = pure_porter_stem(parts[0].lower()) if opt_stem else parts[0].lower()
+                t2_clean = pure_porter_stem(parts[1].lower()) if opt_stem else parts[1].lower()
+                t1_label, t2_label = t1_clean, t2_clean
+                p1_docs = sorted(list(index_results["index"].get(t1_clean, {}).get("postings", {}).keys()))
+                p2_docs = sorted(list(index_results["index"].get(t2_clean, {}).get("postings", {}).keys()))
+                p1_docs_global, p2_docs_global = p1_docs, p2_docs
+                query_result_docs, query_trace = execute_boolean_and_with_trace(p1_docs, p2_docs, t1_clean, t2_clean)
+            else:
+                query_trace = ["Please enter two terms separated by AND (e.g. 'information AND retrieval')."]
+
+        elif q_mode == "Disjunctive Boolean Query (OR)":
+            parts = [p.strip() for p in re.split(r"\bOR\b", executed_query_str, flags=re.IGNORECASE)]
+            if len(parts) >= 2:
+                t1_clean = pure_porter_stem(parts[0].lower()) if opt_stem else parts[0].lower()
+                t2_clean = pure_porter_stem(parts[1].lower()) if opt_stem else parts[1].lower()
+                t1_label, t2_label = t1_clean, t2_clean
+                p1_docs = sorted(list(index_results["index"].get(t1_clean, {}).get("postings", {}).keys()))
+                p2_docs = sorted(list(index_results["index"].get(t2_clean, {}).get("postings", {}).keys()))
+                p1_docs_global, p2_docs_global = p1_docs, p2_docs
+                query_result_docs, query_trace = execute_boolean_or_with_trace(p1_docs, p2_docs, t1_clean, t2_clean)
+            else:
+                query_trace = ["Please enter two terms separated by OR (e.g. 'graph OR index')."]
+
+        elif q_mode == "Negation Boolean Query (NOT)":
+            parts = [p.strip() for p in re.split(r"\bNOT\b", executed_query_str, flags=re.IGNORECASE)]
+            if len(parts) >= 2:
+                t1_clean = pure_porter_stem(parts[0].lower()) if opt_stem else parts[0].lower()
+                t2_clean = pure_porter_stem(parts[1].lower()) if opt_stem else parts[1].lower()
+                p1_docs = set(index_results["index"].get(t1_clean, {}).get("postings", {}).keys())
+                p2_docs = set(index_results["index"].get(t2_clean, {}).get("postings", {}).keys())
+                query_result_docs = sorted(list(p1_docs - p2_docs))
+                query_trace = [
+                    f"Postings for '{t1_clean}': {sorted(list(p1_docs))}",
+                    f"Excluded postings for '{t2_clean}': {sorted(list(p2_docs))}",
+                    f"Set Difference ({t1_clean} \\ {t2_clean}): {query_result_docs}"
+                ]
+            else:
+                query_trace = ["Please enter query in format: 'term1 NOT term2'."]
+
+        elif q_mode == 'Exact Phrase Query (\"term1 term2\")':
+            phrase_res = execute_phrase_query(executed_query_str, index_results["index"], use_stemming=opt_stem)
+            query_result_docs = phrase_res["docs"]
+            query_trace = phrase_res["trace"]
+
+        elif q_mode == "Proximity Query (NEAR / k)":
+            words = executed_query_str.split()
+            if len(words) >= 2:
+                prox_res = execute_proximity_query(words[0], words[1], 3, index_results["index"], use_stemming=opt_stem)
+                query_result_docs = prox_res["docs"]
+                query_trace = prox_res["trace"]
+            else:
+                query_trace = ["Enter at least two words for proximity check."]
+
+        else:  # Single Keyword
+            res = execute_keyword_query(executed_query_str, index_results["index"], use_stemming=opt_stem)
+            query_result_docs = res["docs"]
+            query_trace = res["trace"]
+
+        t_end = time.perf_counter()
+        query_latency_us = round((t_end - t_start) * 1_000_000, 2)
+
+    # Pipeline Stepper & Controls
+    st.divider()
+    active_step = st.session_state["sim_active_step"]
+
+    # Stepper Indicator Pills
+    step_titles = {
+        1: "Step 1: Document Corpus (Web Crawl)",
+        2: "Step 2: Linguistic Preprocessing",
+        3: "Step 3: Inverted Index (Lexicon & Postings)",
+        4: "Step 4: Two-Pointer Merge Duel",
+        5: "Step 5: Google SERP (Search Results)"
+    }
+
+    st.markdown(f"""
+    <div class="google-stepper-wrap">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap;">
+            <span class="stepper-label">HOW GOOGLE SEARCH WORKS: 5-STAGE PIPELINE</span>
+            <span style="font-size: 12px; color: #1a73e8; font-weight: 600;">Currently Active: {step_titles[active_step]}</span>
+        </div>
+        <div class="stepper-pipeline-flow">
+            <span class="step-pill {'active' if active_step == 1 else ''}">1. Web Crawl & Corpus</span>
+            <span class="step-arrow">➔</span>
+            <span class="step-pill {'active' if active_step == 2 else ''}">2. Linguistic Parser</span>
+            <span class="step-arrow">➔</span>
+            <span class="step-pill {'active' if active_step == 3 else ''}">3. Inverted Index</span>
+            <span class="step-arrow">➔</span>
+            <span class="step-pill {'active' if active_step == 4 else ''}">4. Two-Pointer Merge</span>
+            <span class="step-arrow">➔</span>
+            <span class="step-pill {'active' if active_step == 5 else ''}">5. Google SERP</span>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Step Navigation Buttons: Prev, Direct 1-5 buttons, Next, Auto-Play
+    c_prev, c_s1_btn, c_s2_btn, c_s3_btn, c_s4_btn, c_s5_btn, c_next, c_auto = st.columns([1, 1, 1, 1, 1, 1, 1, 1.8])
+    with c_prev:
+        if st.button("◀ Prev", disabled=(active_step == 1), use_container_width=True):
+            st.session_state["sim_active_step"] = max(1, active_step - 1)
+            st.rerun()
+    with c_s1_btn:
+        if st.button("Step 1", type="primary" if active_step == 1 else "secondary", use_container_width=True):
+            st.session_state["sim_active_step"] = 1
+            st.rerun()
+    with c_s2_btn:
+        if st.button("Step 2", type="primary" if active_step == 2 else "secondary", use_container_width=True):
+            st.session_state["sim_active_step"] = 2
+            st.rerun()
+    with c_s3_btn:
+        if st.button("Step 3", type="primary" if active_step == 3 else "secondary", use_container_width=True):
+            st.session_state["sim_active_step"] = 3
+            st.rerun()
+    with c_s4_btn:
+        if st.button("Step 4", type="primary" if active_step == 4 else "secondary", use_container_width=True):
+            st.session_state["sim_active_step"] = 4
+            st.rerun()
+    with c_s5_btn:
+        if st.button("Step 5", type="primary" if active_step == 5 else "secondary", use_container_width=True):
+            st.session_state["sim_active_step"] = 5
+            st.rerun()
+    with c_next:
+        if st.button("Next ▶", disabled=(active_step == 5), use_container_width=True):
+            st.session_state["sim_active_step"] = min(5, active_step + 1)
+            st.rerun()
+    with c_auto:
+        play_pipeline = st.button("▶️ Auto-Play (1-by-1)", use_container_width=True)
+
+    if play_pipeline:
         progress_bar = st.progress(0)
         status_box = st.empty()
-        scenes = [
-            ("🎬 SCENE 1: SCRIPT INGESTION", "Ingesting document collection into memory buffers & streaming raw tokens...", 25),
-            ("🔬 SCENE 2: QUANTUM EXTRACTION", "Emitting (Term, DocID, Position) 3-tuples through linguistic filters...", 50),
-            ("⚡ SCENE 3: THE LEXICOGRAPHICAL SORT", "Executing alphabetical sorting in O(N log N) memory space...", 75),
-            ("🍿 SCENE 4: MASTER INVERTED REEL", "Inverting matrix into Dictionary & linked Postings Lists... COMPLETE!", 100)
+        anim_steps = [
+            (1, "🌐 Step 1: Crawling & Ingesting web documents into memory...", 20),
+            (2, "⚙️ Step 2: Running Linguistic Normalization (Case Folding, Stopwords, Stemming)...", 40),
+            (3, "📑 Step 3: Inverting Matrix into Lexicon Dictionary & Sorted Postings Lists...", 60),
+            (4, f"⚡ Step 4: Executing Two-Pointer Merge on query '{executed_query_str}'...", 80),
+            (5, "🔍 Step 5: Formatting Ranked Results into Google SERP...", 100)
         ]
-        for sc_title, sc_desc, pct in scenes:
-            status_box.markdown(f"""
-            <div class="cinema-card" style="text-align: center; border-color: #a855f7;">
-                <span class="clapper-tag">{sc_title}</span>
-                <h3 style="color: #38bdf8; margin: 10px 0 4px 0;">{sc_desc}</h3>
+        for s_idx, s_desc, pct in anim_steps:
+            status_box.info(s_desc)
+            progress_bar.progress(pct)
+            time.sleep(0.4)
+        status_box.empty()
+        progress_bar.empty()
+        st.session_state["sim_active_step"] = 5
+        st.rerun()
+
+    # =========================================================================
+    # STEP CONTENTS (Rendered one-by-one according to active_step)
+    # =========================================================================
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # -------------------------------------------------------------------------
+    # STEP 1: Web Crawl & Document Corpus
+    # -------------------------------------------------------------------------
+    if active_step == 1:
+        st.markdown("### 🌐 Step 1: Document Corpus Collection (Web Crawling)")
+        st.write(
+            "Before any user query can be processed, a search engine's web crawler fetches pages across the web "
+            "and stores them in a document repository. Below you can select the active collection or input custom documents."
+        )
+
+        c_corp1, c_corp2 = st.columns([2.5, 1.5])
+        with c_corp1:
+            sel_corp = st.radio(
+                "Select Corpus Source:",
+                options=list(BENCHMARK_CORPORA.keys()) + ["Custom Documents (Interactive Authoring)"],
+                index=(list(BENCHMARK_CORPORA.keys()) + ["Custom Documents (Interactive Authoring)"]).index(active_corpus_name),
+                horizontal=True
+            )
+            if sel_corp != active_corpus_name:
+                st.session_state["selected_corpus_name"] = sel_corp
+                st.rerun()
+
+        if sel_corp == "Custom Documents (Interactive Authoring)":
+            st.info("Enter or modify custom documents below to test indexing on your own text:")
+            custom_docs = {}
+            cols = st.columns(3)
+            for i in range(1, 6):
+                col_idx = (i - 1) % 3
+                with cols[col_idx]:
+                    default_text = st.session_state["custom_corpus"].get(
+                        i, f"Document {i} text describing information retrieval and graph systems."
+                    )
+                    txt = st.text_area(f"Doc {i} Content:", value=default_text, height=90, key=f"custom_doc_in_{i}")
+                    custom_docs[i] = txt
+            st.session_state["custom_corpus"] = custom_docs
+            active_corpus = {k: v for k, v in custom_docs.items() if v.strip()}
+
+        st.caption(f"Displaying {len(active_corpus)} crawled documents in repository:")
+        for doc_id, text in active_corpus.items():
+            word_count = len(text.split())
+            st.markdown(f"""
+            <div class="google-doc-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                    <span style="font-weight: 600; color: #1a73e8; font-size: 13px;">https://corpus.google.internal › documents › doc{doc_id}</span>
+                    <span style="font-size: 11px; color: #9aa0a6;">DocID: {doc_id} | {word_count} words</span>
+                </div>
+                <div style="font-size: 14px; font-weight: 500; margin-bottom: 4px;">Document {doc_id} Content</div>
+                <div style="font-size: 13px; color: #5f6368;">"{text}"</div>
             </div>
             """, unsafe_allow_html=True)
-            progress_bar.progress(pct)
-            time.sleep(0.35)
-        st.balloons()
-        st.toast("🎬 Cut! That's a wrap. Pipeline successfully animated!", icon="🍿")
 
-    # KPI Metrics HUD
-    st.divider()
-    st.subheader("3. Inverted Index Performance & Architecture Metrics")
-    k1, k2, k3, k4, k5 = st.columns(5)
-    with k1:
-        st.metric("Total Documents (N)", f"{index_results['num_docs']}")
-    with k2:
-        st.metric("Total Tokens", f"{index_results['total_tokens']}")
-    with k3:
-        st.metric("Vocabulary Size (|V|)", f"{index_results['vocab_size']}")
-    with k4:
-        st.metric("Total Postings", f"{index_results['total_postings']}")
-    with k5:
-        st.metric("Index Sparsity", f"{index_results['sparsity_pct']}%")
+        if st.button("Proceed to Step 2: Linguistic Preprocessing ➔", type="primary"):
+            st.session_state["sim_active_step"] = 2
+            st.rerun()
 
-    # Step-by-Step 4-Stage Construction Visualizer
-    st.divider()
-    st.subheader("4. Step-by-Step Construction Stages Tracker")
-    stage_tabs = st.tabs([
-        "🎬 Scene 1: Token Streams",
-        "🔬 Scene 2: Extracted Triples",
-        "⚡ Scene 3: Lexicographical Sorting",
-        "🍿 Scene 4: Postings List Explorer"
-    ])
+    # -------------------------------------------------------------------------
+    # STEP 2: Linguistic Preprocessing
+    # -------------------------------------------------------------------------
+    elif active_step == 2:
+        st.markdown("### ⚙️ Step 2: Linguistic Preprocessing Pipeline")
+        st.write(
+            "Search engines do not index raw text verbatim. They perform linguistic normalization "
+            "to ensure queries like *'retrieval'*, *'Retrieval'*, and *'retrieving'* find the same documents."
+        )
 
-    with stage_tabs[0]:
-        st.caption("Document Filmstrip: Raw token streams extracted per document after linguistic normalization:")
+        st.markdown("#### 1. Preprocessing Configuration Controls")
+        c1, c2, c3, c4 = st.columns(4)
+        with c1:
+            opt_lower = st.checkbox("Case Folding (Lowercase)", value=st.session_state["opt_lowercase"], help="Converts all tokens to lowercase.")
+        with c2:
+            opt_punc = st.checkbox("Strip Punctuation", value=st.session_state["opt_punct"], help="Removes punctuation characters.")
+        with c3:
+            opt_stop = st.checkbox("Stopword Removal", value=st.session_state["opt_stopwords"], help="Filters frequent non-informative words like 'the', 'is'.")
+        with c4:
+            opt_stem = st.checkbox("Porter Stemming", value=st.session_state["opt_stemming"], help="Applies Martin Porter's suffix stripping algorithm.")
+
+        if (opt_lower != st.session_state["opt_lowercase"] or
+            opt_punc != st.session_state["opt_punct"] or
+            opt_stop != st.session_state["opt_stopwords"] or
+            opt_stem != st.session_state["opt_stemming"]):
+            st.session_state["opt_lowercase"] = opt_lower
+            st.session_state["opt_punct"] = opt_punc
+            st.session_state["opt_stopwords"] = opt_stop
+            st.session_state["opt_stemming"] = opt_stem
+            st.rerun()
+
+        st.markdown("#### 2. Normalized Token Stream per Document")
+        st.caption("Inspect the token stream emitted for each document after normalization:")
         for doc_id, tokens in index_results["stage1_tokens"].items():
             chips_html = "".join([
-                f'<span class="token-chip">{term}<span class="token-pos-badge">#{pos}</span></span>'
+                f'<span class="google-token-badge">{term}<small>#{pos}</small></span>'
                 for term, pos, _ in tokens
             ])
             raw_text = active_corpus.get(doc_id, "")
             st.markdown(f"""
-            <div class="cinema-card">
-                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(148, 163, 184, 0.15); padding-bottom: 6px; margin-bottom: 8px;">
-                    <span style="font-weight: 800; color: #38bdf8; font-size: 13px;">🎞️ SCENE / DOC {doc_id}</span>
-                    <span style="font-size: 11px; color: #94a3b8;">{len(tokens)} normalized tokens</span>
+            <div class="google-card">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                    <span style="font-weight: 600; font-size: 13px; color: #1a73e8;">Doc {doc_id} Normalized Stream</span>
+                    <span style="font-size: 11px; color: #9aa0a6;">{len(tokens)} normalized tokens</span>
                 </div>
-                <div style="color: #cbd5e1; font-size: 13px; font-style: italic; margin-bottom: 8px;">"{raw_text}"</div>
-                <div class="token-chip-container">{chips_html}</div>
+                <div style="font-size: 12px; color: #70757a; margin-bottom: 6px; font-style: italic;">Original: "{raw_text}"</div>
+                <div>{chips_html}</div>
             </div>
             """, unsafe_allow_html=True)
 
-    with stage_tabs[1]:
-        st.caption("Raw unsorted (Term, DocID, Position) 3-tuples emitted by the lexical parser:")
-        view_mode_2 = st.radio("Display Mode:", ["🎞️ Visual Capsule Stream", "📊 Data Table"], horizontal=True, key="view_stage2")
-        if view_mode_2 == "🎞️ Visual Capsule Stream":
-            capsules_html = "".join([
-                f'<span class="triple-capsule"><span class="t-term">{item["term"]}</span><span class="t-sep">→</span><span class="t-doc">Doc {item["doc_id"]}</span><span class="t-sep">@</span><span class="t-pos">pos:{item["pos"]}</span></span>'
-                for item in index_results["stage2_triples"][:40]
-            ])
-            st.markdown(f"""
-            <div class="cinema-card">
-                <div style="margin-bottom: 8px; font-size: 12px; color: #94a3b8;">Displaying first 40 emitted triples stream:</div>
-                <div style="display: flex; flex-wrap: wrap;">{capsules_html}</div>
-            </div>
-            """, unsafe_allow_html=True)
-            if len(index_results["stage2_triples"]) > 40:
-                st.caption(f"... and {len(index_results['stage2_triples']) - 40} more triples in memory.")
-        else:
+        with st.expander("🔬 View Emitted (Term, DocID, Position) 3-Tuples", expanded=False):
             triples_df = pd.DataFrame(index_results["stage2_triples"])
-            st.dataframe(triples_df, hide_index=True, use_container_width=True, height=240)
+            st.dataframe(triples_df, hide_index=True, use_container_width=True, height=220)
 
-    with stage_tabs[2]:
-        st.caption("Sorted 3-tuples ordered primarily by Term, secondarily by DocID and Position:")
-        view_mode_3 = st.radio("Display Mode:", ["⚡ Visual Sorted Flow", "📊 Data Table"], horizontal=True, key="view_stage3")
-        if view_mode_3 == "⚡ Visual Sorted Flow":
-            sorted_capsules = "".join([
-                f'<span class="triple-capsule" style="border-color: rgba(56, 189, 248, 0.4);"><span class="t-term" style="color: #38bdf8;">{item["term"]}</span><span class="t-sep">→</span><span class="t-doc">Doc {item["doc_id"]}</span><span class="t-sep">@</span><span class="t-pos">pos:{item["pos"]}</span></span>'
-                for item in index_results["stage3_sorted"][:40]
-            ])
-            st.markdown(f"""
-            <div class="cinema-card">
-                <div style="margin-bottom: 8px; font-size: 12px; color: #94a3b8;">Displaying first 40 lexicographically sorted triples:</div>
-                <div style="display: flex; flex-wrap: wrap;">{sorted_capsules}</div>
-            </div>
-            """, unsafe_allow_html=True)
-            if len(index_results["stage3_sorted"]) > 40:
-                st.caption(f"... and {len(index_results['stage3_sorted']) - 40} more sorted triples in memory.")
-        else:
-            sorted_df = pd.DataFrame(index_results["stage3_sorted"])
-            st.dataframe(sorted_df, hide_index=True, use_container_width=True, height=240)
+        if st.button("Proceed to Step 3: Inverted Index Construction ➔", type="primary"):
+            st.session_state["sim_active_step"] = 3
+            st.rerun()
 
-    with stage_tabs[3]:
-        st.caption("Master Inverted Index: Term Dictionary mapping to sorted Postings Lists with frequencies & positions:")
-        term_filter = st.text_input("🔍 Quick Filter Vocabulary Term:", value="", placeholder="Type to filter (e.g. retrieval)...")
-        
+    # -------------------------------------------------------------------------
+    # STEP 3: Inverted Index (Lexicon & Postings)
+    # -------------------------------------------------------------------------
+    elif active_step == 3:
+        st.markdown("### 📑 Step 3: Inverted Index Construction")
+        st.write(
+            "Searching documents linearly would take $O(N \\cdot L)$ time, which is prohibitively slow for billions of web pages. "
+            "Instead, the search engine inverts the document-term matrix into an **Inverted Index**: "
+            "a Vocabulary Dictionary mapping to sorted Postings Lists."
+        )
+
+        st.markdown("#### 1. Architecture & Compression Metrics")
+        k1, k2, k3, k4, k5 = st.columns(5)
+        with k1:
+            st.metric("Total Documents (N)", f"{index_results['num_docs']}")
+        with k2:
+            st.metric("Total Tokens", f"{index_results['total_tokens']}")
+        with k3:
+            st.metric("Vocabulary Size (|V|)", f"{index_results['vocab_size']}")
+        with k4:
+            st.metric("Total Postings", f"{index_results['total_postings']}")
+        with k5:
+            st.metric("Index Sparsity", f"{index_results['sparsity_pct']}%")
+
+        st.markdown("#### 2. Visual Dictionary & Postings Chains Explorer")
+        st.caption("Each vocabulary entry maps to a postings list containing Document IDs, term frequency (tf), and positions:")
+        term_filter = st.text_input("🔍 Filter vocabulary dictionary:", value="", placeholder="Type term (e.g. retrieval)...")
+
         filtered_items = sorted(index_results["index"].items())
         if term_filter.strip():
             filtered_items = [item for item in filtered_items if term_filter.strip().lower() in item[0].lower()]
@@ -1539,19 +1867,19 @@ def render_simulation_section():
             nodes_html = []
             for d, data in sorted(meta["postings"].items()):
                 nodes_html.append(f"""
-                <span class="posting-doc-node">
-                    <span style="font-weight: bold; color: #ffffff;">Doc {d}</span>
-                    <span class="tf-tag">tf:{data['tf']}</span>
-                    <span style="color: #94a3b8; font-size: 11px;">pos:{data['positions']}</span>
+                <span class="posting-node">
+                    <b>Doc {d}</b>
+                    <span style="color: #1a73e8;">tf:{data['tf']}</span>
+                    <span style="color: #70757a; font-size: 11px;">pos:{data['positions']}</span>
                 </span>
                 """)
             nodes_rendered = '<span class="chain-arrow">──►</span>'.join(nodes_html)
             st.markdown(f"""
-            <div class="postings-chain-row">
+            <div class="postings-row">
                 <div class="dict-term-pill">
                     <span>{term}</span>
                     <span class="dict-freq-tag">df: {meta['df']}</span>
-                    <span class="dict-freq-tag" style="background: rgba(16, 185, 129, 0.3);">cf: {meta['cf']}</span>
+                    <span class="dict-freq-tag">cf: {meta['cf']}</span>
                 </div>
                 <span class="chain-arrow">──►</span>
                 {nodes_rendered}
@@ -1574,192 +1902,131 @@ def render_simulation_section():
                     "Collection Frequency (cf)": meta["cf"],
                     "Postings List": postings_str
                 })
-            st.dataframe(pd.DataFrame(dict_records), hide_index=True, use_container_width=True, height=280)
+            st.dataframe(pd.DataFrame(dict_records), hide_index=True, use_container_width=True, height=260)
 
-    # Interactive Query Engine
-    st.divider()
-    st.subheader("5. Interactive Query Processing Console")
-    query_mode = st.selectbox(
-        "Select Query Execution Type:",
-        options=[
-            "Conjunctive Boolean Query (AND)",
-            "Disjunctive Boolean Query (OR)",
-            "Negation Boolean Query (NOT)",
-            "Exact Phrase Query (\"term1 term2\")",
-            "Proximity Query (NEAR / k)",
-            "Single Keyword Lookup"
-        ]
-    )
+        if st.button("Proceed to Step 4: Two-Pointer Query Merge ➔", type="primary"):
+            st.session_state["sim_active_step"] = 4
+            st.rerun()
 
-    col_q1, col_q2 = st.columns([3, 1])
+    # -------------------------------------------------------------------------
+    # STEP 4: Two-Pointer Merge Duel
+    # -------------------------------------------------------------------------
+    elif active_step == 4:
+        st.markdown("### ⚡ Step 4: Two-Pointer Postings Merge Algorithm")
+        st.write(
+            f"When evaluating multi-term queries like `'{executed_query_str}'`, Google does NOT inspect the documents directly. "
+            "Instead, it fetches the pre-sorted postings lists for each query term from the Inverted Index and merges them "
+            "using the **Two-Pointer Intersection Algorithm** in linear time $O(L_1 + L_2)$."
+        )
 
-    with col_q1:
-        if query_mode == "Conjunctive Boolean Query (AND)":
-            q_input = st.text_input("Enter two terms separated by AND:", value="information AND retrieval")
-        elif query_mode == "Disjunctive Boolean Query (OR)":
-            q_input = st.text_input("Enter two terms separated by OR:", value="graph OR index")
-        elif query_mode == "Negation Boolean Query (NOT)":
-            q_input = st.text_input("Enter base term and excluded term (e.g., retrieval NOT graph):", value="retrieval NOT graph")
-        elif query_mode == "Exact Phrase Query (\"term1 term2\")":
-            q_input = st.text_input("Enter exact phrase:", value="information retrieval")
-        elif query_mode == "Proximity Query (NEAR / k)":
-            q_input = st.text_input("Enter two terms for proximity test:", value="index search")
-        else:
-            q_input = st.text_input("Enter single term:", value="retrieval")
-
-    with col_q2:
-        if query_mode == "Proximity Query (NEAR / k)":
-            k_dist = st.number_input("Max Token Distance (k):", min_value=1, max_value=10, value=3)
-        else:
-            k_dist = 3
-        exec_btn = st.button("⚡ Execute Query", type="primary", use_container_width=True)
-
-    # Execute and display search results
-    query_result_docs = []
-    query_latency_us = 0.0
-    query_trace = []
-    executed_query_str = q_input
-    p1_docs_global = []
-    p2_docs_global = []
-    t1_label = ""
-    t2_label = ""
-
-    if q_input.strip():
-        t_start = time.perf_counter()
-
-        if query_mode == "Conjunctive Boolean Query (AND)":
-            parts = [p.strip() for p in re.split(r"\bAND\b", q_input, flags=re.IGNORECASE)]
-            if len(parts) >= 2:
-                t1_clean = pure_porter_stem(parts[0].lower()) if opt_stemming else parts[0].lower()
-                t2_clean = pure_porter_stem(parts[1].lower()) if opt_stemming else parts[1].lower()
-                t1_label = t1_clean
-                t2_label = t2_clean
-                p1_docs = sorted(list(index_results["index"].get(t1_clean, {}).get("postings", {}).keys()))
-                p2_docs = sorted(list(index_results["index"].get(t2_clean, {}).get("postings", {}).keys()))
-                p1_docs_global = p1_docs
-                p2_docs_global = p2_docs
-                query_result_docs, query_trace = execute_boolean_and_with_trace(p1_docs, p2_docs, t1_clean, t2_clean)
-            else:
-                query_trace = ["Please enter two terms separated by AND (e.g. 'information AND retrieval')."]
-
-        elif query_mode == "Disjunctive Boolean Query (OR)":
-            parts = [p.strip() for p in re.split(r"\bOR\b", q_input, flags=re.IGNORECASE)]
-            if len(parts) >= 2:
-                t1_clean = pure_porter_stem(parts[0].lower()) if opt_stemming else parts[0].lower()
-                t2_clean = pure_porter_stem(parts[1].lower()) if opt_stemming else parts[1].lower()
-                t1_label = t1_clean
-                t2_label = t2_clean
-                p1_docs = sorted(list(index_results["index"].get(t1_clean, {}).get("postings", {}).keys()))
-                p2_docs = sorted(list(index_results["index"].get(t2_clean, {}).get("postings", {}).keys()))
-                p1_docs_global = p1_docs
-                p2_docs_global = p2_docs
-                query_result_docs, query_trace = execute_boolean_or_with_trace(p1_docs, p2_docs, t1_clean, t2_clean)
-            else:
-                query_trace = ["Please enter two terms separated by OR (e.g. 'graph OR index')."]
-
-        elif query_mode == "Negation Boolean Query (NOT)":
-            parts = [p.strip() for p in re.split(r"\bNOT\b", q_input, flags=re.IGNORECASE)]
-            if len(parts) >= 2:
-                t1_clean = pure_porter_stem(parts[0].lower()) if opt_stemming else parts[0].lower()
-                t2_clean = pure_porter_stem(parts[1].lower()) if opt_stemming else parts[1].lower()
-                p1_docs = set(index_results["index"].get(t1_clean, {}).get("postings", {}).keys())
-                p2_docs = set(index_results["index"].get(t2_clean, {}).get("postings", {}).keys())
-                query_result_docs = sorted(list(p1_docs - p2_docs))
-                query_trace = [
-                    f"Postings for '{t1_clean}': {sorted(list(p1_docs))}",
-                    f"Excluded postings for '{t2_clean}': {sorted(list(p2_docs))}",
-                    f"Set Difference ({t1_clean} \\ {t2_clean}): {query_result_docs}"
-                ]
-            else:
-                query_trace = ["Please enter query in format: 'term1 NOT term2'."]
-
-        elif query_mode == "Exact Phrase Query (\"term1 term2\")":
-            phrase_res = execute_phrase_query(q_input, index_results["index"], use_stemming=opt_stemming)
-            query_result_docs = phrase_res["docs"]
-            query_trace = phrase_res["trace"]
-
-        elif query_mode == "Proximity Query (NEAR / k)":
-            words = q_input.split()
-            if len(words) >= 2:
-                prox_res = execute_proximity_query(words[0], words[1], k_dist, index_results["index"], use_stemming=opt_stemming)
-                query_result_docs = prox_res["docs"]
-                query_trace = prox_res["trace"]
-            else:
-                query_trace = ["Enter at least two words for proximity check."]
-
-        else:  # Single Keyword
-            res = execute_keyword_query(q_input, index_results["index"], use_stemming=opt_stemming)
-            query_result_docs = res["docs"]
-            query_trace = res["trace"]
-
-        t_end = time.perf_counter()
-        query_latency_us = round((t_end - t_start) * 1_000_000, 2)
-
-    # Cinematic Radar HUD & Match Duel
-    st.markdown(f"""
-    <div class="radar-hud">
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(148, 163, 184, 0.15); padding-bottom: 10px; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
-            <span style="font-weight: 800; font-size: 14px; color: #a855f7; letter-spacing: 0.5px;">📡 SEARCH RADAR TELEMETRY</span>
-            <span style="font-size: 12px; color: #94a3b8;">Query: <code style="color: #38bdf8;">{executed_query_str}</code></span>
-        </div>
-        <div style="display: flex; flex-wrap: wrap;">
-            <span class="radar-stat-pill">⚡ <b>Latency:</b> <span style="color: #38bdf8;">{query_latency_us} µs</span></span>
-            <span class="radar-stat-pill">🎯 <b>Matched Hits:</b> <span style="color: #34d399;">{len(query_result_docs)} Document(s)</span></span>
-            <span class="radar-stat-pill">🚀 <b>Algorithm:</b> <span style="color: #facc15;">Two-Pointer Merge O(L1 + L2)</span></span>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-    # Pointer Duel Tracks for Boolean queries
-    if p1_docs_global and p2_docs_global:
-        st.markdown(f"**🎞️ Pointer Duel Track: Two-Pointer Merge Intersection Radar**")
-        t1_pills = "".join([
-            f'<span class="track-pill {"matched" if d in query_result_docs else ""}">Doc {d}</span>'
-            for d in p1_docs_global
-        ])
-        t2_pills = "".join([
-            f'<span class="track-pill {"matched" if d in query_result_docs else ""}">Doc {d}</span>'
-            for d in p2_docs_global
-        ])
         st.markdown(f"""
-        <div class="cinema-card">
-            <div style="margin-bottom: 4px; font-size: 12px; color: #38bdf8;"><b>Pointer 1:</b> Term '{t1_label}' Postings</div>
-            <div class="pointer-film-track">{t1_pills}</div>
-            <div style="margin-top: 8px; margin-bottom: 4px; font-size: 12px; color: #c084fc;"><b>Pointer 2:</b> Term '{t2_label}' Postings</div>
-            <div class="pointer-film-track">{t2_pills}</div>
-            <div style="margin-top: 6px; font-size: 11px; color: #34d399;">● Highlighted green boxes denote intersected matching documents.</div>
+        <div class="google-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #dadce0; padding-bottom: 8px; margin-bottom: 10px; flex-wrap: wrap;">
+                <span style="font-weight: 600; font-size: 13px; color: #1a73e8;">QUERY EXECUTION TELEMETRY</span>
+                <span style="font-size: 12px; color: #5f6368;">Active Query: <code style="color: #1a73e8;">{executed_query_str}</code></span>
+            </div>
+            <div style="display: flex; flex-wrap: wrap;">
+                <span class="radar-stat-pill">⚡ <b>Engine Latency:</b> <span style="color: #1a73e8;">{query_latency_us} µs</span></span>
+                <span class="radar-stat-pill">🎯 <b>Matched Documents:</b> <span style="color: #1e8e3e;">{len(query_result_docs)}</span></span>
+                <span class="radar-stat-pill">🚀 <b>Algorithm:</b> Two-Pointer Linear Merge O(L1 + L2)</span>
+            </div>
         </div>
         """, unsafe_allow_html=True)
 
-    # Display Matched Results Cards
-    col_out1, col_out2 = st.columns([1.5, 2.5])
-    with col_out1:
-        st.markdown(f"#### 🎯 Matched Screenplay Hits ({len(query_result_docs)})")
-        if query_result_docs:
-            for d in query_result_docs:
-                doc_text = active_corpus.get(d, "")
-                st.markdown(f"""
-                <div class="radar-match-card">
-                    <div style="font-weight: bold; color: #34d399; font-size: 12px;">🎬 MATCHED DOC {d}</div>
-                    <div style="font-size: 13px; margin-top: 4px; color: #e2e8f0;">"{doc_text}"</div>
-                </div>
-                """, unsafe_allow_html=True)
-        else:
-            st.warning("No documents matched the specified query conditions.")
+        if p1_docs_global and p2_docs_global:
+            st.markdown("#### 1. Visual Two-Pointer Intersection Tracks")
+            st.caption("Pointers walk down the two postings lists simultaneously. Matching DocIDs are highlighted in green:")
+            t1_pills = "".join([
+                f'<span class="track-pill {"matched" if d in query_result_docs else ""}">Doc {d}</span>'
+                for d in p1_docs_global
+            ])
+            t2_pills = "".join([
+                f'<span class="track-pill {"matched" if d in query_result_docs else ""}">Doc {d}</span>'
+                for d in p2_docs_global
+            ])
+            st.markdown(f"""
+            <div class="google-card">
+                <div style="margin-bottom: 4px; font-size: 12px; color: #1a73e8; font-weight: 600;"><b>Pointer 1:</b> Term '{t1_label}' Postings ({len(p1_docs_global)} docs)</div>
+                <div class="pointer-film-track">{t1_pills}</div>
+                <div style="margin-top: 10px; margin-bottom: 4px; font-size: 12px; color: #5f6368; font-weight: 600;"><b>Pointer 2:</b> Term '{t2_label}' Postings ({len(p2_docs_global)} docs)</div>
+                <div class="pointer-film-track">{t2_pills}</div>
+                <div style="margin-top: 8px; font-size: 11.5px; color: #1e8e3e;">● Highlighted green boxes indicate intersected matching documents added to the results list.</div>
+            </div>
+            """, unsafe_allow_html=True)
 
-    with col_out2:
-        st.caption("Step-by-Step Query Pointer Execution Trace:")
-        with st.container(height=200):
+        st.markdown("#### 2. Step-by-Step Pointer Trace Log")
+        st.caption("Detailed chronological trace of comparisons performed by the pointer algorithm:")
+        with st.container(height=180):
             for line in query_trace:
                 st.text(f"> {line}")
 
-    # Plotly Analytical Visualizations (Cyberpunk Palette)
+        if st.button("Proceed to Step 5: Google SERP Results ➔", type="primary"):
+            st.session_state["sim_active_step"] = 5
+            st.rerun()
+
+    # -------------------------------------------------------------------------
+    # STEP 5: Google SERP (Search Engine Results Page)
+    # -------------------------------------------------------------------------
+    else:
+        st.markdown("### 🔍 Step 5: Google Search Results Page (SERP)")
+        st.write(
+            "The final phase of the search engine: Documents matched by the index traversal are retrieved, "
+            "ranked, and presented as a Search Engine Results Page (SERP) with relevant snippets and highlighted keywords."
+        )
+
+        st.markdown(f"""
+        <div class="serp-container">
+            <div class="serp-stats">
+                About {len(query_result_docs)} results ({query_latency_us / 1_000_000:.6f} seconds) for <b>{executed_query_str}</b>
+            </div>
+        """, unsafe_allow_html=True)
+
+        if query_result_docs:
+            for d in query_result_docs:
+                raw_text = active_corpus.get(d, "")
+                highlighted_snippet = highlight_search_terms(raw_text, executed_query_str)
+                title_preview = " ".join(raw_text.split()[:7]) + ("..." if len(raw_text.split()) > 7 else "")
+
+                st.markdown(f"""
+                <div class="serp-item">
+                    <div class="serp-url">
+                        <span class="serp-favicon">G</span>
+                        <span>https://corpus.google.internal › documents › doc{d}</span>
+                    </div>
+                    <div class="serp-title">Document {d}: {title_preview}</div>
+                    <div class="serp-snippet">"{highlighted_snippet}"</div>
+                    <div>
+                        <span class="serp-meta-badge">DocID: {d}</span>
+                        <span class="serp-meta-badge" style="margin-left: 6px;">Corpus: {active_corpus_name.split(':')[0]}</span>
+                        <span class="serp-meta-badge" style="margin-left: 6px; color: #1e8e3e; font-weight: bold;">✓ Matched</span>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+        else:
+            st.markdown(f"""
+            <div class="no-results-box">
+                <p>Your search - <b>{executed_query_str}</b> - did not match any documents in the active index.</p>
+                <p style="margin-top: 10px; font-size: 13px;">Suggestions:</p>
+                <ul style="font-size: 13px; color: #5f6368;">
+                    <li>Make sure all words are spelled correctly.</li>
+                    <li>Try different keywords or terms present in the corpus.</li>
+                    <li>Try a disjunctive query with <code>OR</code> instead of <code>AND</code>.</li>
+                    <li>Check if your terms were filtered out by the stopword list in Step 2.</li>
+                </ul>
+            </div>
+            """, unsafe_allow_html=True)
+
+        st.markdown("</div>", unsafe_allow_html=True)
+
+        st.markdown("<br>", unsafe_allow_html=True)
+        st.info("💡 **How did Google get these results?** Click **Step 1 - 4** in the pipeline above to inspect the step-by-step crawl, normalization, index, and pointer duel!")
+
+    # Plotly Analytical Visualizations (Google Palette)
     st.divider()
     st.subheader("6. Analytical Visualizations: Zipf's Law & Term Distribution")
 
     plot_col1, plot_col2 = st.columns(2)
 
-    # Zipf's Law Plot
     sorted_terms = sorted(index_results["index"].items(), key=lambda x: x[1]["cf"], reverse=True)
     if sorted_terms:
         ranks = list(range(1, len(sorted_terms) + 1))
@@ -1767,54 +2034,57 @@ def render_simulation_section():
         c_val = frequencies[0]
         zipf_theoretical = [round(c_val / r, 2) for r in ranks]
 
+        p_template = "plotly_dark" if is_dark else "plotly_white"
+        p_paper_bg = "#202124" if is_dark else "#ffffff"
+        p_plot_bg = "#303134" if is_dark else "#f8f9fa"
+        p_font_color = "#e8eaed" if is_dark else "#202124"
+
         with plot_col1:
             fig_zipf = go.Figure()
             fig_zipf.add_trace(go.Scatter(
                 x=ranks, y=frequencies, mode="lines+markers",
                 name="Empirical Frequency (cf)",
-                line=dict(color="#00f2fe", width=3),
-                marker=dict(size=7, color="#38bdf8", line=dict(width=1.5, color="#ffffff"))
+                line=dict(color="#4285F4", width=3),
+                marker=dict(size=6, color="#4285F4")
             ))
             fig_zipf.add_trace(go.Scatter(
                 x=ranks, y=zipf_theoretical, mode="lines",
                 name="Zipf's Theoretical (C/r)",
-                line=dict(color="#ff0844", dash="dash", width=2.5)
+                line=dict(color="#EA4335", dash="dash", width=2)
             ))
             fig_zipf.update_layout(
-                title="📽️ Zipf's Law: Term Rank vs. Collection Frequency",
+                title="📈 Zipf's Law: Term Rank vs. Collection Frequency",
                 xaxis_title="Term Frequency Rank (r)",
                 yaxis_title="Collection Frequency (cf)",
                 hovermode="x unified",
-                template="plotly_dark",
-                paper_bgcolor="#090d16",
-                plot_bgcolor="#0f172a",
-                font=dict(color="#f8fafc", family="monospace"),
-                height=360,
+                template=p_template,
+                paper_bgcolor=p_paper_bg,
+                plot_bgcolor=p_plot_bg,
+                font=dict(color=p_font_color),
+                height=340,
                 margin=dict(l=20, r=20, t=45, b=20)
             )
             st.plotly_chart(fig_zipf, use_container_width=True)
 
-        # Postings Length Distribution
         with plot_col2:
             top_terms = sorted_terms[:15]
             fig_df = go.Figure(go.Bar(
                 x=[t for t, _ in top_terms],
                 y=[m["df"] for _, m in top_terms],
                 marker=dict(
-                    color=[m["df"] for _, m in top_terms],
-                    colorscale="Viridis",
-                    line=dict(color="#38bdf8", width=1.5)
+                    color="#34A853",
+                    line=dict(color="#1e8e3e", width=1)
                 )
             ))
             fig_df.update_layout(
                 title="📊 Document Frequency (df) for Top Vocabulary Terms",
                 xaxis_title="Vocabulary Term",
                 yaxis_title="Document Frequency (df)",
-                template="plotly_dark",
-                paper_bgcolor="#090d16",
-                plot_bgcolor="#0f172a",
-                font=dict(color="#f8fafc", family="monospace"),
-                height=360,
+                template=p_template,
+                paper_bgcolor=p_paper_bg,
+                plot_bgcolor=p_plot_bg,
+                font=dict(color=p_font_color),
+                height=340,
                 margin=dict(l=20, r=20, t=45, b=20)
             )
             st.plotly_chart(fig_df, use_container_width=True)
@@ -1829,9 +2099,9 @@ def render_simulation_section():
         if st.button("Record Current Trial", type="primary", use_container_width=True):
             trial_record = {
                 "Trial #": len(st.session_state["trials"]) + 1,
-                "Corpus": corpus_choice.split(":")[0],
-                "Stopwords": "ON" if opt_stopwords else "OFF",
-                "Stemming": "ON" if opt_stemming else "OFF",
+                "Corpus": active_corpus_name.split(":")[0],
+                "Stopwords": "ON" if st.session_state["opt_stopwords"] else "OFF",
+                "Stemming": "ON" if st.session_state["opt_stemming"] else "OFF",
                 "Vocab |V|": index_results["vocab_size"],
                 "Total Postings": index_results["total_postings"],
                 "Query": executed_query_str,
@@ -1840,7 +2110,7 @@ def render_simulation_section():
                 "Timestamp": datetime.now().strftime("%H:%M:%S")
             }
             st.session_state["trials"].append(trial_record)
-            st.toast(f"Trial #{trial_record['Trial #']} successfully recorded into session log!", icon="🎞️")
+            st.toast(f"Trial #{trial_record['Trial #']} successfully recorded into session log!", icon="✅")
 
         if st.button("Clear Logged Trials", use_container_width=True):
             st.session_state["trials"] = []
@@ -1860,6 +2130,7 @@ def render_simulation_section():
             )
         else:
             st.info("No trials recorded yet. Click 'Record Current Trial' to capture index and query metrics.")
+
 
 
 def render_quiz_section():
