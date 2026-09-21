@@ -1091,10 +1091,269 @@ def render_procedure_section():
     """)
 
 
+def inject_cinematic_styles():
+    """Injects high-fidelity cinematic movie styling for the simulation workbench."""
+    st.markdown("""
+    <style>
+    /* ==========================================================================
+       CINEMATIC MOVIE STYLING FOR INVERTED INDEX SIMULATOR
+       ========================================================================== */
+    .cinema-hero {
+        background: linear-gradient(135deg, #090d16 0%, #0f172a 50%, #1e1b4b 100%);
+        border: 1px solid rgba(99, 102, 241, 0.4);
+        border-radius: 16px;
+        padding: 22px 26px;
+        margin-bottom: 24px;
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4), inset 0 0 20px rgba(99, 102, 241, 0.15);
+        color: #ffffff !important;
+        position: relative;
+        overflow: hidden;
+    }
+    .cinema-hero::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; right: 0; height: 4px;
+        background: linear-gradient(90deg, #ec4899, #8b5cf6, #3b82f6, #10b981);
+    }
+    .clapper-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: linear-gradient(90deg, #ec4899, #8b5cf6);
+        color: #ffffff !important;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        padding: 4px 12px;
+        border-radius: 9999px;
+        box-shadow: 0 4px 14px rgba(236, 72, 153, 0.4);
+    }
+    .live-reel-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(16, 185, 129, 0.15);
+        border: 1px solid rgba(16, 185, 129, 0.4);
+        color: #34d399 !important;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 4px 12px;
+        border-radius: 9999px;
+    }
+    .pulse-dot {
+        width: 8px;
+        height: 8px;
+        background-color: #10b981;
+        border-radius: 50%;
+        display: inline-block;
+        box-shadow: 0 0 8px #10b981;
+        animation: pulse-animation 1.5s infinite;
+    }
+    @keyframes pulse-animation {
+        0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+        70% { transform: scale(1.15); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+        100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+    .cinema-card {
+        background: #0f172a;
+        border: 1px solid rgba(56, 189, 248, 0.25);
+        border-radius: 12px;
+        padding: 16px 20px;
+        margin-bottom: 14px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        color: #f8fafc;
+        transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .cinema-card:hover {
+        border-color: #38bdf8;
+        transform: translateY(-2px);
+        box-shadow: 0 12px 28px rgba(56, 189, 248, 0.2);
+    }
+    .token-chip-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 10px;
+    }
+    .token-chip {
+        display: inline-flex;
+        align-items: center;
+        background: rgba(30, 41, 59, 0.9);
+        border: 1px solid rgba(56, 189, 248, 0.35);
+        border-radius: 6px;
+        padding: 4px 10px;
+        font-family: 'SFMono-Regular', Consolas, Menlo, monospace;
+        font-size: 12px;
+        color: #e2e8f0;
+        transition: all 0.2s ease;
+    }
+    .token-chip:hover {
+        background: rgba(56, 189, 248, 0.2);
+        border-color: #38bdf8;
+        color: #38bdf8;
+        box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+    }
+    .token-pos-badge {
+        background: rgba(56, 189, 248, 0.25);
+        color: #7dd3fc;
+        font-size: 10px;
+        font-weight: bold;
+        padding: 1px 6px;
+        border-radius: 4px;
+        margin-left: 6px;
+    }
+    .postings-chain-row {
+        background: #0f172a;
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        border-radius: 10px;
+        padding: 12px 16px;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        transition: all 0.2s ease;
+    }
+    .postings-chain-row:hover {
+        border-color: rgba(56, 189, 248, 0.5);
+        box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    }
+    .dict-term-pill {
+        background: linear-gradient(135deg, #1d4ed8, #2563eb);
+        color: #ffffff;
+        font-weight: 700;
+        font-size: 13px;
+        font-family: monospace;
+        padding: 6px 14px;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+    .dict-freq-tag {
+        background: rgba(255, 255, 255, 0.2);
+        color: #ffffff;
+        font-size: 10px;
+        padding: 1px 6px;
+        border-radius: 4px;
+    }
+    .chain-arrow {
+        color: #64748b;
+        font-size: 14px;
+        font-weight: bold;
+    }
+    .posting-doc-node {
+        background: #1e293b;
+        border: 1px solid rgba(52, 211, 153, 0.4);
+        color: #f1f5f9;
+        border-radius: 8px;
+        padding: 5px 12px;
+        font-size: 12px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    .posting-doc-node .tf-tag {
+        background: rgba(52, 211, 153, 0.2);
+        color: #34d399;
+        font-weight: bold;
+        padding: 1px 6px;
+        border-radius: 4px;
+        font-size: 11px;
+    }
+    .radar-hud {
+        background: linear-gradient(135deg, #090d16 0%, #0f172a 100%);
+        border: 1px solid rgba(139, 92, 246, 0.4);
+        border-radius: 14px;
+        padding: 20px;
+        margin-top: 18px;
+        box-shadow: 0 16px 36px rgba(0,0,0,0.4), inset 0 0 16px rgba(139, 92, 246, 0.1);
+        color: #f8fafc;
+    }
+    .radar-stat-pill {
+        background: rgba(30, 41, 59, 0.8);
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        padding: 8px 14px;
+        border-radius: 8px;
+        font-size: 12px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-right: 8px;
+        margin-bottom: 8px;
+    }
+    .radar-match-card {
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.5);
+        border-radius: 8px;
+        padding: 10px 14px;
+        margin-top: 8px;
+        color: #f8fafc;
+        box-shadow: 0 4px 14px rgba(16, 185, 129, 0.15);
+    }
+    .pointer-film-track {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 8px 0;
+        overflow-x: auto;
+        padding: 6px 2px;
+    }
+    .track-pill {
+        padding: 5px 12px;
+        border-radius: 6px;
+        font-weight: bold;
+        font-size: 12px;
+        font-family: monospace;
+        border: 1px solid #475569;
+        background: #1e293b;
+        color: #cbd5e1;
+    }
+    .track-pill.matched {
+        background: #059669;
+        color: white;
+        border-color: #34d399;
+        box-shadow: 0 0 12px rgba(52, 211, 153, 0.6);
+        transform: scale(1.08);
+    }
+    .triple-capsule {
+        display: inline-flex;
+        align-items: center;
+        background: #0f172a;
+        border: 1px solid rgba(139, 92, 246, 0.3);
+        border-radius: 8px;
+        padding: 6px 12px;
+        margin: 4px;
+        font-family: monospace;
+        font-size: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    .t-term { color: #c084fc; font-weight: bold; }
+    .t-sep { color: #64748b; margin: 0 6px; }
+    .t-doc { color: #38bdf8; font-weight: bold; }
+    .t-pos { color: #34d399; }
+    </style>
+    """, unsafe_allow_html=True)
+
+
 def render_simulation_section():
-    """Renders Core Interactive Simulation Workbench."""
-    st.header("Inverted Index Construction & Retrieval Simulator")
-    st.caption("Interactively build an Inverted Index, trace pipeline stages, execute Boolean and phrase queries, and log trial data.")
+    """Renders Core Interactive Simulation Workbench with Cinematic Aesthetics."""
+    inject_cinematic_styles()
+
+    # Cinematic Movie Studio Header
+    st.markdown("""
+    <div class="cinema-hero">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+            <span class="clapper-tag">🎬 PRODUCTION STUDIO | INTERACTIVE SIMULATOR</span>
+            <span class="live-reel-tag"><span class="pulse-dot"></span> LIVE REEL ACTIVE</span>
+        </div>
+        <h2 style="margin: 0; font-size: 26px; font-weight: 800; color: #ffffff; letter-spacing: -0.5px;">THE INVERTED INDEX EXPERIENCE</h2>
+        <p style="margin: 6px 0 0 0; color: #94a3b8; font-size: 14px;">An interactive cinematic journey: from raw screenplay corpus to lexicographical inversion and laser-speed Boolean retrieval.</p>
+    </div>
+    """, unsafe_allow_html=True)
 
     # Top Controls: Corpus Selection & Customization
     st.subheader("1. Corpus Configuration")
@@ -1121,9 +1380,9 @@ def render_simulation_section():
     else:
         active_corpus = BENCHMARK_CORPORA[corpus_choice]
 
-    with st.expander("Preview Active Documents in Collection", expanded=False):
+    with st.expander("🎞️ Preview Active Script Documents in Collection", expanded=False):
         for doc_id, text in active_corpus.items():
-            st.markdown(f"**Doc {doc_id}**: _{text}_")
+            st.markdown(f"**Scene / Doc {doc_id}**: _{text}_")
 
     st.divider()
 
@@ -1154,7 +1413,36 @@ def render_simulation_section():
     st.session_state["last_vocab_size"] = index_results["vocab_size"]
     st.session_state["last_postings_count"] = index_results["total_postings"]
 
-    # KPI Metrics
+    # Director's Movie Action Button
+    st.markdown("<br>", unsafe_allow_html=True)
+    c_btn, c_hint = st.columns([1.5, 3.5])
+    with c_btn:
+        play_movie = st.button("🎬 ACTION: Play Full Pipeline Movie", type="primary", use_container_width=True)
+    with c_hint:
+        st.caption("Press **ACTION** to stream an automated 4-scene montage animating ingestion, linguistic filtering, sorting, and master matrix inversion.")
+
+    if play_movie:
+        progress_bar = st.progress(0)
+        status_box = st.empty()
+        scenes = [
+            ("🎬 SCENE 1: SCRIPT INGESTION", "Ingesting document collection into memory buffers & streaming raw tokens...", 25),
+            ("🔬 SCENE 2: QUANTUM EXTRACTION", "Emitting (Term, DocID, Position) 3-tuples through linguistic filters...", 50),
+            ("⚡ SCENE 3: THE LEXICOGRAPHICAL SORT", "Executing alphabetical sorting in O(N log N) memory space...", 75),
+            ("🍿 SCENE 4: MASTER INVERTED REEL", "Inverting matrix into Dictionary & linked Postings Lists... COMPLETE!", 100)
+        ]
+        for sc_title, sc_desc, pct in scenes:
+            status_box.markdown(f"""
+            <div class="cinema-card" style="text-align: center; border-color: #a855f7;">
+                <span class="clapper-tag">{sc_title}</span>
+                <h3 style="color: #38bdf8; margin: 10px 0 4px 0;">{sc_desc}</h3>
+            </div>
+            """, unsafe_allow_html=True)
+            progress_bar.progress(pct)
+            time.sleep(0.35)
+        st.balloons()
+        st.toast("🎬 Cut! That's a wrap. Pipeline successfully animated!", icon="🍿")
+
+    # KPI Metrics HUD
     st.divider()
     st.subheader("3. Inverted Index Performance & Architecture Metrics")
     k1, k2, k3, k4, k5 = st.columns(5)
@@ -1173,43 +1461,120 @@ def render_simulation_section():
     st.divider()
     st.subheader("4. Step-by-Step Construction Stages Tracker")
     stage_tabs = st.tabs([
-        "Stage 1: Token Streams",
-        "Stage 2: Extracted Triples",
-        "Stage 3: Lexicographical Sorting",
-        "Stage 4: Postings List Explorer"
+        "🎬 Scene 1: Token Streams",
+        "🔬 Scene 2: Extracted Triples",
+        "⚡ Scene 3: Lexicographical Sorting",
+        "🍿 Scene 4: Postings List Explorer"
     ])
 
     with stage_tabs[0]:
-        st.caption("Raw token streams extracted per document after linguistic normalization:")
+        st.caption("Document Filmstrip: Raw token streams extracted per document after linguistic normalization:")
         for doc_id, tokens in index_results["stage1_tokens"].items():
-            tokens_repr = ", ".join([f"({term} @ pos:{pos})" for term, pos, _ in tokens])
-            st.markdown(f"**Doc {doc_id} [{len(tokens)} terms]:** {tokens_repr}")
+            chips_html = "".join([
+                f'<span class="token-chip">{term}<span class="token-pos-badge">#{pos}</span></span>'
+                for term, pos, _ in tokens
+            ])
+            raw_text = active_corpus.get(doc_id, "")
+            st.markdown(f"""
+            <div class="cinema-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(148, 163, 184, 0.15); padding-bottom: 6px; margin-bottom: 8px;">
+                    <span style="font-weight: 800; color: #38bdf8; font-size: 13px;">🎞️ SCENE / DOC {doc_id}</span>
+                    <span style="font-size: 11px; color: #94a3b8;">{len(tokens)} normalized tokens</span>
+                </div>
+                <div style="color: #cbd5e1; font-size: 13px; font-style: italic; margin-bottom: 8px;">"{raw_text}"</div>
+                <div class="token-chip-container">{chips_html}</div>
+            </div>
+            """, unsafe_allow_html=True)
 
     with stage_tabs[1]:
-        st.caption("Raw unsorted (Term, DocID, Position) 3-tuples emitted by parser:")
-        triples_df = pd.DataFrame(index_results["stage2_triples"])
-        st.dataframe(triples_df, hide_index=True, use_container_width=True, height=220)
+        st.caption("Raw unsorted (Term, DocID, Position) 3-tuples emitted by the lexical parser:")
+        view_mode_2 = st.radio("Display Mode:", ["🎞️ Visual Capsule Stream", "📊 Data Table"], horizontal=True, key="view_stage2")
+        if view_mode_2 == "🎞️ Visual Capsule Stream":
+            capsules_html = "".join([
+                f'<span class="triple-capsule"><span class="t-term">{item["term"]}</span><span class="t-sep">→</span><span class="t-doc">Doc {item["doc_id"]}</span><span class="t-sep">@</span><span class="t-pos">pos:{item["pos"]}</span></span>'
+                for item in index_results["stage2_triples"][:40]
+            ])
+            st.markdown(f"""
+            <div class="cinema-card">
+                <div style="margin-bottom: 8px; font-size: 12px; color: #94a3b8;">Displaying first 40 emitted triples stream:</div>
+                <div style="display: flex; flex-wrap: wrap;">{capsules_html}</div>
+            </div>
+            """, unsafe_allow_html=True)
+            if len(index_results["stage2_triples"]) > 40:
+                st.caption(f"... and {len(index_results['stage2_triples']) - 40} more triples in memory.")
+        else:
+            triples_df = pd.DataFrame(index_results["stage2_triples"])
+            st.dataframe(triples_df, hide_index=True, use_container_width=True, height=240)
 
     with stage_tabs[2]:
         st.caption("Sorted 3-tuples ordered primarily by Term, secondarily by DocID and Position:")
-        sorted_df = pd.DataFrame(index_results["stage3_sorted"])
-        st.dataframe(sorted_df, hide_index=True, use_container_width=True, height=220)
+        view_mode_3 = st.radio("Display Mode:", ["⚡ Visual Sorted Flow", "📊 Data Table"], horizontal=True, key="view_stage3")
+        if view_mode_3 == "⚡ Visual Sorted Flow":
+            sorted_capsules = "".join([
+                f'<span class="triple-capsule" style="border-color: rgba(56, 189, 248, 0.4);"><span class="t-term" style="color: #38bdf8;">{item["term"]}</span><span class="t-sep">→</span><span class="t-doc">Doc {item["doc_id"]}</span><span class="t-sep">@</span><span class="t-pos">pos:{item["pos"]}</span></span>'
+                for item in index_results["stage3_sorted"][:40]
+            ])
+            st.markdown(f"""
+            <div class="cinema-card">
+                <div style="margin-bottom: 8px; font-size: 12px; color: #94a3b8;">Displaying first 40 lexicographically sorted triples:</div>
+                <div style="display: flex; flex-wrap: wrap;">{sorted_capsules}</div>
+            </div>
+            """, unsafe_allow_html=True)
+            if len(index_results["stage3_sorted"]) > 40:
+                st.caption(f"... and {len(index_results['stage3_sorted']) - 40} more sorted triples in memory.")
+        else:
+            sorted_df = pd.DataFrame(index_results["stage3_sorted"])
+            st.dataframe(sorted_df, hide_index=True, use_container_width=True, height=240)
 
     with stage_tabs[3]:
-        st.caption("Inverted Index Structure: Dictionary of terms mapping to sorted postings lists with frequencies & positions:")
-        dict_records = []
-        for term, meta in sorted(index_results["index"].items()):
-            postings_str = " -> ".join([
-                f"[Doc {d} (tf:{data['tf']}) | pos:{data['positions']}]"
-                for d, data in sorted(meta["postings"].items())
-            ])
-            dict_records.append({
-                "Vocabulary Term": term,
-                "Document Frequency (df)": meta["df"],
-                "Collection Frequency (cf)": meta["cf"],
-                "Postings List": postings_str
-            })
-        st.dataframe(pd.DataFrame(dict_records), hide_index=True, use_container_width=True, height=280)
+        st.caption("Master Inverted Index: Term Dictionary mapping to sorted Postings Lists with frequencies & positions:")
+        term_filter = st.text_input("🔍 Quick Filter Vocabulary Term:", value="", placeholder="Type to filter (e.g. retrieval)...")
+        
+        filtered_items = sorted(index_results["index"].items())
+        if term_filter.strip():
+            filtered_items = [item for item in filtered_items if term_filter.strip().lower() in item[0].lower()]
+
+        st.caption(f"Showing {len(filtered_items)} dictionary entries:")
+        for term, meta in filtered_items[:25]:
+            nodes_html = []
+            for d, data in sorted(meta["postings"].items()):
+                nodes_html.append(f"""
+                <span class="posting-doc-node">
+                    <span style="font-weight: bold; color: #ffffff;">Doc {d}</span>
+                    <span class="tf-tag">tf:{data['tf']}</span>
+                    <span style="color: #94a3b8; font-size: 11px;">pos:{data['positions']}</span>
+                </span>
+                """)
+            nodes_rendered = '<span class="chain-arrow">──►</span>'.join(nodes_html)
+            st.markdown(f"""
+            <div class="postings-chain-row">
+                <div class="dict-term-pill">
+                    <span>{term}</span>
+                    <span class="dict-freq-tag">df: {meta['df']}</span>
+                    <span class="dict-freq-tag" style="background: rgba(16, 185, 129, 0.3);">cf: {meta['cf']}</span>
+                </div>
+                <span class="chain-arrow">──►</span>
+                {nodes_rendered}
+            </div>
+            """, unsafe_allow_html=True)
+
+        if len(filtered_items) > 25:
+            st.caption(f"... and {len(filtered_items) - 25} more terms in dictionary.")
+
+        with st.expander("📊 View Complete Tabular Postings Table", expanded=False):
+            dict_records = []
+            for term, meta in sorted(index_results["index"].items()):
+                postings_str = " -> ".join([
+                    f"[Doc {d} (tf:{data['tf']}) | pos:{data['positions']}]"
+                    for d, data in sorted(meta["postings"].items())
+                ])
+                dict_records.append({
+                    "Vocabulary Term": term,
+                    "Document Frequency (df)": meta["df"],
+                    "Collection Frequency (cf)": meta["cf"],
+                    "Postings List": postings_str
+                })
+            st.dataframe(pd.DataFrame(dict_records), hide_index=True, use_container_width=True, height=280)
 
     # Interactive Query Engine
     st.divider()
@@ -1247,13 +1612,17 @@ def render_simulation_section():
             k_dist = st.number_input("Max Token Distance (k):", min_value=1, max_value=10, value=3)
         else:
             k_dist = 3
-        exec_btn = st.button("Execute Query", type="primary", use_container_width=True)
+        exec_btn = st.button("⚡ Execute Query", type="primary", use_container_width=True)
 
     # Execute and display search results
     query_result_docs = []
     query_latency_us = 0.0
     query_trace = []
     executed_query_str = q_input
+    p1_docs_global = []
+    p2_docs_global = []
+    t1_label = ""
+    t2_label = ""
 
     if q_input.strip():
         t_start = time.perf_counter()
@@ -1263,8 +1632,12 @@ def render_simulation_section():
             if len(parts) >= 2:
                 t1_clean = pure_porter_stem(parts[0].lower()) if opt_stemming else parts[0].lower()
                 t2_clean = pure_porter_stem(parts[1].lower()) if opt_stemming else parts[1].lower()
+                t1_label = t1_clean
+                t2_label = t2_clean
                 p1_docs = sorted(list(index_results["index"].get(t1_clean, {}).get("postings", {}).keys()))
                 p2_docs = sorted(list(index_results["index"].get(t2_clean, {}).get("postings", {}).keys()))
+                p1_docs_global = p1_docs
+                p2_docs_global = p2_docs
                 query_result_docs, query_trace = execute_boolean_and_with_trace(p1_docs, p2_docs, t1_clean, t2_clean)
             else:
                 query_trace = ["Please enter two terms separated by AND (e.g. 'information AND retrieval')."]
@@ -1274,8 +1647,12 @@ def render_simulation_section():
             if len(parts) >= 2:
                 t1_clean = pure_porter_stem(parts[0].lower()) if opt_stemming else parts[0].lower()
                 t2_clean = pure_porter_stem(parts[1].lower()) if opt_stemming else parts[1].lower()
+                t1_label = t1_clean
+                t2_label = t2_clean
                 p1_docs = sorted(list(index_results["index"].get(t1_clean, {}).get("postings", {}).keys()))
                 p2_docs = sorted(list(index_results["index"].get(t2_clean, {}).get("postings", {}).keys()))
+                p1_docs_global = p1_docs
+                p2_docs_global = p2_docs
                 query_result_docs, query_trace = execute_boolean_or_with_trace(p1_docs, p2_docs, t1_clean, t2_clean)
             else:
                 query_trace = ["Please enter two terms separated by OR (e.g. 'graph OR index')."]
@@ -1318,26 +1695,65 @@ def render_simulation_section():
         t_end = time.perf_counter()
         query_latency_us = round((t_end - t_start) * 1_000_000, 2)
 
-    # Display Query Output
+    # Cinematic Radar HUD & Match Duel
+    st.markdown(f"""
+    <div class="radar-hud">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(148, 163, 184, 0.15); padding-bottom: 10px; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+            <span style="font-weight: 800; font-size: 14px; color: #a855f7; letter-spacing: 0.5px;">📡 SEARCH RADAR TELEMETRY</span>
+            <span style="font-size: 12px; color: #94a3b8;">Query: <code style="color: #38bdf8;">{executed_query_str}</code></span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap;">
+            <span class="radar-stat-pill">⚡ <b>Latency:</b> <span style="color: #38bdf8;">{query_latency_us} µs</span></span>
+            <span class="radar-stat-pill">🎯 <b>Matched Hits:</b> <span style="color: #34d399;">{len(query_result_docs)} Document(s)</span></span>
+            <span class="radar-stat-pill">🚀 <b>Algorithm:</b> <span style="color: #facc15;">Two-Pointer Merge O(L1 + L2)</span></span>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Pointer Duel Tracks for Boolean queries
+    if p1_docs_global and p2_docs_global:
+        st.markdown(f"**🎞️ Pointer Duel Track: Two-Pointer Merge Intersection Radar**")
+        t1_pills = "".join([
+            f'<span class="track-pill {"matched" if d in query_result_docs else ""}">Doc {d}</span>'
+            for d in p1_docs_global
+        ])
+        t2_pills = "".join([
+            f'<span class="track-pill {"matched" if d in query_result_docs else ""}">Doc {d}</span>'
+            for d in p2_docs_global
+        ])
+        st.markdown(f"""
+        <div class="cinema-card">
+            <div style="margin-bottom: 4px; font-size: 12px; color: #38bdf8;"><b>Pointer 1:</b> Term '{t1_label}' Postings</div>
+            <div class="pointer-film-track">{t1_pills}</div>
+            <div style="margin-top: 8px; margin-bottom: 4px; font-size: 12px; color: #c084fc;"><b>Pointer 2:</b> Term '{t2_label}' Postings</div>
+            <div class="pointer-film-track">{t2_pills}</div>
+            <div style="margin-top: 6px; font-size: 11px; color: #34d399;">● Highlighted green boxes denote intersected matching documents.</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    # Display Matched Results Cards
     col_out1, col_out2 = st.columns([1.5, 2.5])
     with col_out1:
-        st.markdown(f"**Query Latency:** `{query_latency_us} us`")
-        st.markdown(f"**Matching Documents:** `{len(query_result_docs)}` hit(s)")
+        st.markdown(f"#### 🎯 Matched Screenplay Hits ({len(query_result_docs)})")
         if query_result_docs:
-            st.success(f"Matched DocIDs: {query_result_docs}")
             for d in query_result_docs:
                 doc_text = active_corpus.get(d, "")
-                st.markdown(f"- **Doc {d}:** {doc_text}")
+                st.markdown(f"""
+                <div class="radar-match-card">
+                    <div style="font-weight: bold; color: #34d399; font-size: 12px;">🎬 MATCHED DOC {d}</div>
+                    <div style="font-size: 13px; margin-top: 4px; color: #e2e8f0;">"{doc_text}"</div>
+                </div>
+                """, unsafe_allow_html=True)
         else:
             st.warning("No documents matched the specified query conditions.")
 
     with col_out2:
         st.caption("Step-by-Step Query Pointer Execution Trace:")
-        with st.container(height=180):
+        with st.container(height=200):
             for line in query_trace:
                 st.text(f"> {line}")
 
-    # Plotly Analytical Visualizations
+    # Plotly Analytical Visualizations (Cyberpunk Palette)
     st.divider()
     st.subheader("6. Analytical Visualizations: Zipf's Law & Term Distribution")
 
@@ -1351,34 +1767,30 @@ def render_simulation_section():
         c_val = frequencies[0]
         zipf_theoretical = [round(c_val / r, 2) for r in ranks]
 
-        # Theme-aware styling for Plotly figures
-        is_dark_mode = st.session_state.get("theme_mode", "") == "🌙 Dark Mode"
-        p_template = "plotly_dark" if is_dark_mode else "plotly_white"
-        p_font_color = "#f8fafc" if is_dark_mode else "#0f172a"
-        line_color = "#60a5fa" if is_dark_mode else "#2563eb"
-        bar_color = "#34d399" if is_dark_mode else "#10b981"
-
         with plot_col1:
             fig_zipf = go.Figure()
             fig_zipf.add_trace(go.Scatter(
                 x=ranks, y=frequencies, mode="lines+markers",
-                name="Empirical Frequency (cf)", line=dict(color=line_color, width=2.5)
+                name="Empirical Frequency (cf)",
+                line=dict(color="#00f2fe", width=3),
+                marker=dict(size=7, color="#38bdf8", line=dict(width=1.5, color="#ffffff"))
             ))
             fig_zipf.add_trace(go.Scatter(
                 x=ranks, y=zipf_theoretical, mode="lines",
-                name="Zipf's Theoretical (C/r)", line=dict(color="#ef4444", dash="dash", width=2)
+                name="Zipf's Theoretical (C/r)",
+                line=dict(color="#ff0844", dash="dash", width=2.5)
             ))
             fig_zipf.update_layout(
-                title="Zipf's Law: Term Rank vs. Collection Frequency",
+                title="📽️ Zipf's Law: Term Rank vs. Collection Frequency",
                 xaxis_title="Term Frequency Rank (r)",
                 yaxis_title="Collection Frequency (cf)",
                 hovermode="x unified",
-                template=p_template,
-                paper_bgcolor="rgba(0,0,0,0)",
-                plot_bgcolor="rgba(0,0,0,0)",
-                font=dict(color=p_font_color),
-                height=340,
-                margin=dict(l=20, r=20, t=40, b=20)
+                template="plotly_dark",
+                paper_bgcolor="#090d16",
+                plot_bgcolor="#0f172a",
+                font=dict(color="#f8fafc", family="monospace"),
+                height=360,
+                margin=dict(l=20, r=20, t=45, b=20)
             )
             st.plotly_chart(fig_zipf, use_container_width=True)
 
@@ -1388,18 +1800,22 @@ def render_simulation_section():
             fig_df = go.Figure(go.Bar(
                 x=[t for t, _ in top_terms],
                 y=[m["df"] for _, m in top_terms],
-                marker_color=bar_color
+                marker=dict(
+                    color=[m["df"] for _, m in top_terms],
+                    colorscale="Viridis",
+                    line=dict(color="#38bdf8", width=1.5)
+                )
             ))
             fig_df.update_layout(
-                title="Document Frequency (df) for Top Vocabulary Terms",
+                title="📊 Document Frequency (df) for Top Vocabulary Terms",
                 xaxis_title="Vocabulary Term",
                 yaxis_title="Document Frequency (df)",
-                template=p_template,
-                paper_bgcolor="rgba(0,0,0,0)",
-                plot_bgcolor="rgba(0,0,0,0)",
-                font=dict(color=p_font_color),
-                height=340,
-                margin=dict(l=20, r=20, t=40, b=20)
+                template="plotly_dark",
+                paper_bgcolor="#090d16",
+                plot_bgcolor="#0f172a",
+                font=dict(color="#f8fafc", family="monospace"),
+                height=360,
+                margin=dict(l=20, r=20, t=45, b=20)
             )
             st.plotly_chart(fig_df, use_container_width=True)
 
@@ -1424,7 +1840,7 @@ def render_simulation_section():
                 "Timestamp": datetime.now().strftime("%H:%M:%S")
             }
             st.session_state["trials"].append(trial_record)
-            st.toast(f"Trial #{trial_record['Trial #']} successfully recorded into session log!")
+            st.toast(f"Trial #{trial_record['Trial #']} successfully recorded into session log!", icon="🎞️")
 
         if st.button("Clear Logged Trials", use_container_width=True):
             st.session_state["trials"] = []
