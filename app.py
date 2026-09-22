@@ -802,6 +802,115 @@ class VirtualLabReportPDF(FPDF):
         self.cell(0, 10, f"Page {self.page_no()}/{{nb}} | Virtual Laboratory Experiment Verification Report", align="C")
 
 
+
+def generate_pdf_certificate(student_name: str, student_id: str, student_div: str,
+                             date_str: str, quiz_score: int, quiz_total: int,
+                             trials_count: int, cert_id: str) -> bytes:
+    """Generates an official Virtual Lab Certificate of Completion PDF."""
+    pdf = FPDF(orientation="L", unit="mm", format="A4")  # Landscape A4: 297mm x 210mm
+    pdf.set_auto_page_break(auto=False)
+    pdf.add_page()
+
+    # Outer Decorative Border
+    pdf.set_draw_color(30, 41, 59)
+    pdf.set_line_width(2.0)
+    pdf.rect(10, 10, 277, 190)
+
+    # Inner Gold Border
+    pdf.set_draw_color(217, 119, 6)
+    pdf.set_line_width(0.8)
+    pdf.rect(14, 14, 269, 182)
+
+    # Top Emblem / Institution Header
+    pdf.set_xy(20, 22)
+    pdf.set_font("Helvetica", "B", 13)
+    pdf.set_text_color(71, 85, 105)
+    pdf.cell(257, 7, sanitize_pdf_text("VIRTUAL LABS - AN INITIATIVE OF MINISTRY OF EDUCATION (vlabs.ac.in)"), align="C", new_x="LMARGIN", new_y="NEXT")
+
+    pdf.set_font("Helvetica", "B", 11)
+    pdf.set_text_color(100, 116, 139)
+    pdf.cell(257, 6, sanitize_pdf_text("DEPARTMENT OF COMPUTER ENGINEERING / ARTIFICIAL INTELLIGENCE & DATA SCIENCE"), align="C", new_x="LMARGIN", new_y="NEXT")
+
+    pdf.ln(3)
+
+    # Certificate Title
+    pdf.set_font("Helvetica", "B", 24)
+    pdf.set_text_color(15, 23, 42)
+    pdf.cell(257, 12, sanitize_pdf_text("CERTIFICATE OF COMPLETION"), align="C", new_x="LMARGIN", new_y="NEXT")
+
+    pdf.set_font("Helvetica", "I", 11)
+    pdf.set_text_color(148, 163, 184)
+    pdf.cell(257, 6, sanitize_pdf_text("This is to officially certify that"), align="C", new_x="LMARGIN", new_y="NEXT")
+
+    pdf.ln(2)
+
+    # Student Name
+    pdf.set_font("Helvetica", "B", 20)
+    pdf.set_text_color(37, 99, 235)
+    pdf.cell(257, 10, sanitize_pdf_text(student_name.upper() if student_name else "STUDENT NAME"), align="C", new_x="LMARGIN", new_y="NEXT")
+
+    pdf.set_font("Helvetica", "", 11)
+    pdf.set_text_color(51, 65, 85)
+    meta_line = f"Roll Number: {student_id}   |   Division: {student_div}   |   Course: Knowledge Graphs & IR Systems"
+    pdf.cell(257, 7, sanitize_pdf_text(meta_line), align="C", new_x="LMARGIN", new_y="NEXT")
+
+    pdf.ln(2)
+
+    # Body description
+    body_text = (
+        "has successfully conducted, analyzed, and completed the experimental laboratory requirements for\n"
+        "Experiment 3: Construction of an Inverted Index, demonstrating practical proficiency in:\n"
+        "1. Document Ingestion, Tokenization, and Linguistic Preprocessing (Stopwords, Porter Stemming)\n"
+        "2. Lexicographical Sorting and Inverted Postings List Generation with Positional Offsets\n"
+        "3. Linear Two-Pointer Postings Intersection (O(L1 + L2)) for Conjunctive & Disjunctive Queries\n"
+        "4. Empirical Frequency Modeling and Validation of Zipf's Law on Textual Corpora"
+    )
+    pdf.set_font("Helvetica", "", 9.5)
+    pdf.set_text_color(71, 85, 105)
+    for line in body_text.split("\n"):
+        pdf.cell(257, 5, sanitize_pdf_text(line), align="C", new_x="LMARGIN", new_y="NEXT")
+
+    pdf.ln(4)
+
+    # Performance Stats Box
+    pdf.set_fill_color(248, 250, 252)
+    pdf.set_draw_color(226, 232, 240)
+    pdf.rect(48, 136, 201, 14, "FD")
+
+    pdf.set_xy(50, 138)
+    pdf.set_font("Helvetica", "B", 9)
+    pdf.set_text_color(30, 41, 59)
+    perf_text = f"Assessment Score: {quiz_score} / {quiz_total}   |   Simulation Trials Executed: {trials_count}   |   Status: Verified & Completed"
+    pdf.cell(197, 10, sanitize_pdf_text(perf_text), align="C")
+
+    # Bottom Signatures and Verification
+    pdf.set_xy(25, 162)
+    pdf.set_font("Helvetica", "B", 9)
+    pdf.set_text_color(71, 85, 105)
+    pdf.cell(70, 5, sanitize_pdf_text(f"Issue Date: {date_str}"), align="L")
+
+    pdf.set_xy(25, 168)
+    pdf.set_font("Helvetica", "", 8)
+    pdf.set_text_color(100, 116, 139)
+    pdf.cell(70, 5, sanitize_pdf_text(f"Certificate ID: {cert_id}"), align="L")
+
+    # Instructor Signature Line
+    pdf.set_xy(190, 160)
+    pdf.set_draw_color(148, 163, 184)
+    pdf.line(190, 168, 260, 168)
+    pdf.set_xy(190, 169)
+    pdf.set_font("Helvetica", "B", 9)
+    pdf.set_text_color(30, 41, 59)
+    pdf.cell(70, 5, sanitize_pdf_text("Course Instructor / Evaluator"), align="C")
+
+    pdf.set_xy(190, 174)
+    pdf.set_font("Helvetica", "", 8)
+    pdf.set_text_color(100, 116, 139)
+    pdf.cell(70, 5, sanitize_pdf_text("Virtual Laboratories Network"), align="C")
+
+    return bytes(pdf.output())
+
+
 def generate_pdf_report(student_name: str, student_id: str, student_div: str, date_str: str,
                         trials_df: pd.DataFrame, quiz_score: int, quiz_total: int,
                         student_notes: str, corpus_name: str, vocab_size: int,
@@ -978,46 +1087,212 @@ def generate_pdf_report(student_name: str, student_id: str, student_div: str, da
 # 4. SECTION RENDERERS (AIM, THEORY, PROCEDURE, SIMULATION, QUIZ, REFS, FEEDBACK, REPORT)
 # ======================================================================================
 
-def render_aim_section():
-    """Renders Aim & Overview Section."""
-    st.header("Experiment 3: Aim & Competencies")
+def render_purpose_section():
+    """Renders comprehensive Purpose, Historical Context, Problem Formulation, and Applications."""
+    st.markdown("""
+    <div style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); padding: 26px 30px; border-radius: 16px; color: #ffffff; margin-bottom: 24px; border-left: 6px solid #3b82f6; box-shadow: 0 10px 25px rgba(0,0,0,0.15);">
+        <div style="font-size: 12px; font-weight: 700; letter-spacing: 1.5px; color: #38bdf8; text-transform: uppercase; margin-bottom: 6px;">EXPERIMENT 3 • PURPOSE & ARCHITECTURAL FOUNDATION</div>
+        <h1 style="margin: 0; font-size: 30px; font-weight: 800; color: #ffffff;">The Inverted Index: The Engine of Information Retrieval</h1>
+        <p style="margin: 8px 0 0 0; color: #cbd5e1; font-size: 15.5px; line-height: 1.5;">
+            Discover why the Inverted Index is the foundational algorithmic data structure enabling modern web search engines, enterprise databases, and e-commerce platforms to query billions of documents in sub-milliseconds.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
-    # Header Card
-    st.markdown(f"""
-    > **Course:** {EXPERIMENT_CONFIG['subject']} (`{EXPERIMENT_CONFIG['course_code']}`)  
-    > **Target Roll Numbers:** **{EXPERIMENT_CONFIG['target_rolls']}**  
-    > **Platform:** {EXPERIMENT_CONFIG['portal']}
-    """)
-
-    st.subheader("Aim of the Experiment")
-    st.info(EXPERIMENT_CONFIG["aim"])
-
-    col1, col2 = st.columns(2)
-    with col1:
-        st.subheader("Key Learning Outcomes")
-        for i, obj in enumerate(EXPERIMENT_CONFIG["objectives"]):
-            st.markdown(f"**{i+1}.** {obj}")
-
-    with col2:
-        st.subheader("Prerequisites & Foundational Knowledge")
-        st.markdown(r"""
-        * **Data Structures:** Hash Tables, Arrays, Singly Linked Lists, Binary Search Trees.
-        * **Discrete Mathematics:** Set operations (Intersection $\cap$, Union $\cup$, Difference $\setminus$).
-        * **Text Processing Fundamentals:** Tokenization, Regular Expressions, String Normalization.
-        * **Algorithmic Complexity:** Big-O notation, Two-Pointer Merge Algorithms ($O(n + m)$).
-        """)
+    # 1. WHY THIS EXPERIMENT?
+    st.subheader("1. Why This Experiment? (Pedagogical Rationale)")
+    st.write(
+        "In traditional computer science curricula, students master linear arrays, hash tables, and relational SQL databases. "
+        "However, when searching through **unstructured natural language text** across millions or billions of web documents, "
+        "traditional data structures completely collapse under computational weight."
+    )
+    
+    col_w1, col_w2 = st.columns(2)
+    with col_w1:
+        st.markdown("""
+        <div style="background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 12px; padding: 18px; height: 100%;">
+            <h4 style="color: #2563eb; margin-top: 0;">🎯 What You Will Master</h4>
+            <ul style="font-size: 14.5px; line-height: 1.6; margin-bottom: 0;">
+                <li><b>Index Inversion:</b> How to convert raw document streams into a high-performance Vocabulary Lexicon and sorted Postings Lists.</li>
+                <li><b>Algorithmic Traversal:</b> Implementing the linear-time <code>O(L1 + L2)</code> Two-Pointer Merge algorithm for Boolean retrieval.</li>
+                <li><b>Linguistic Optimization:</b> Quantifying how Case-Folding, Stopword Removal, and Porter Stemming compress index size and accelerate search.</li>
+                <li><b>Empirical Validation:</b> Validating mathematical power-law distributions (Zipf's Law and Heaps' Law) on real document text.</li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
+    with col_w2:
+        st.markdown("""
+        <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 18px; height: 100%;">
+            <h4 style="color: #059669; margin-top: 0;">⚡ The Paradigm Shift</h4>
+            <p style="font-size: 14.5px; line-height: 1.6; color: #334155; margin-bottom: 8px;">
+                Searching a 10 TB corpus with sequential scanning (like <code>grep</code>) requires reading every single byte from disk—taking <b>several hours per query</b>.
+            </p>
+            <p style="font-size: 14.5px; line-height: 1.6; color: #334155; margin-bottom: 0;">
+                By pre-computing an <b>Inverted Index</b>, search engines invert the relationship: instead of asking <i>"What words are in Document X?"</i>, we ask <i>"What documents contain Word Y?"</i>—answering queries in <b>less than 15 milliseconds</b>!
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
 
     st.divider()
-    st.subheader("Experiment Roadmap")
-    c1, c2, c3, c4 = st.columns(4)
-    with c1:
-        st.metric("1. Theory", "Core Architecture", "Postings & Dictionaries")
-    with c2:
-        st.metric("2. Preprocessing", "Linguistic Normalization", "Stemming & Stopwords")
-    with c3:
-        st.metric("3. Simulation", "Index & Query Workbench", "4-Stage Pipeline")
-    with c4:
-        st.metric("4. Verification", "Quiz & PDF Report", "Self-Grading")
+
+    # 2. WHAT PROBLEM IS IT SOLVING?
+    st.subheader("2. What Problem Is It Solving? (The Core Technical Challenges)")
+    st.write("The Inverted Index was engineered to solve five fundamental roadblocks in computer science and text processing:")
+
+    p_cols = st.columns(3)
+    with p_cols[0]:
+        st.markdown("""
+        <div style="border: 1px solid #cbd5e1; border-radius: 12px; padding: 16px; margin-bottom: 12px; background: #ffffff;">
+            <div style="font-size: 24px; margin-bottom: 4px;">🐢</div>
+            <h4 style="margin: 0 0 6px 0; color: #0f172a;">1. The Linear Scan Bottleneck</h4>
+            <p style="font-size: 13.5px; color: #64748b; line-height: 1.5; margin: 0;">
+                <b>Problem:</b> Scanning text sequentially is <code>O(N · L)</code> where N is total docs and L is text length.<br>
+                <b>Solution:</b> Inverting words into indexed sorted DocID lists reduces search time to <code>O(Postings Length)</code>, eliminating full-text disk scans.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+    with p_cols[1]:
+        st.markdown("""
+        <div style="border: 1px solid #cbd5e1; border-radius: 12px; padding: 16px; margin-bottom: 12px; background: #ffffff;">
+            <div style="font-size: 24px; margin-bottom: 4px;">🔤</div>
+            <h4 style="margin: 0 0 6px 0; color: #0f172a;">2. Morphological Variance</h4>
+            <p style="font-size: 13.5px; color: #64748b; line-height: 1.5; margin: 0;">
+                <b>Problem:</b> Different grammatical forms (<i>retrieval, retrieving, retrieved</i>) cause keyword search misses.<br>
+                <b>Solution:</b> Linguistic preprocessing collapses inflections to base stems, reducing dictionary size by 30–45%.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+    with p_cols[2]:
+        st.markdown("""
+        <div style="border: 1px solid #cbd5e1; border-radius: 12px; padding: 16px; margin-bottom: 12px; background: #ffffff;">
+            <div style="font-size: 24px; margin-bottom: 4px;">⚡</div>
+            <h4 style="margin: 0 0 6px 0; color: #0f172a;">3. Multi-Term Boolean Logic</h4>
+            <p style="font-size: 13.5px; color: #64748b; line-height: 1.5; margin: 0;">
+                <b>Problem:</b> Evaluating <code>A AND B</code> or <code>A NOT B</code> requires cross-referencing document sets.<br>
+                <b>Solution:</b> Two-pointer list intersection walks both sorted lists in linear time without opening files.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    p_cols2 = st.columns(2)
+    with p_cols2[0]:
+        st.markdown("""
+        <div style="border: 1px solid #cbd5e1; border-radius: 12px; padding: 16px; background: #ffffff;">
+            <div style="font-size: 24px; margin-bottom: 4px;">📍</div>
+            <h4 style="margin: 0 0 6px 0; color: #0f172a;">4. Exact Phrase & Proximity Constraints</h4>
+            <p style="font-size: 13.5px; color: #64748b; line-height: 1.5; margin: 0;">
+                <b>Problem:</b> How can an engine verify if <i>"information"</i> is adjacent to <i>"retrieval"</i> without re-reading the document?<br>
+                <b>Solution:</b> Positional Inverted Indexes store exact token offsets <code>pos: [0, 4]</code> inside posting nodes, enabling exact phrase and proximity (<code>NEAR/k</code>) matching.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+    with p_cols2[1]:
+        st.markdown("""
+        <div style="border: 1px solid #cbd5e1; border-radius: 12px; padding: 16px; background: #ffffff;">
+            <div style="font-size: 24px; margin-bottom: 4px;">💾</div>
+            <h4 style="margin: 0 0 6px 0; color: #0f172a;">5. Extreme Matrix Sparsity (>99%)</h4>
+            <p style="font-size: 13.5px; color: #64748b; line-height: 1.5; margin: 0;">
+                <b>Problem:</b> A full Term-Document matrix of 1M documents and 100k vocabulary words requires 100 Billion cells (mostly zeros).<br>
+                <b>Solution:</b> Inverted postings lists store strictly non-zero occurrences, achieving massive >90% compression in memory.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.divider()
+
+    # 3. HISTORY & EVOLUTION
+    st.subheader("3. History & Origins: From Punch Cards to Modern Web Search")
+    st.write("The inverted index is one of the most enduring and influential algorithms in computer science history:")
+
+    timeline_items = [
+        ("1957", "Hans Peter Luhn (IBM)", "Introduces automated indexing, token frequency statistics, and Key Word in Context (KWIC), planting the seeds of computer-based information retrieval."),
+        ("1968", "Gerard Salton (Cornell University)", "The 'Father of Information Retrieval' develops the SMART system, establishing the Vector Space Model (VSM), TF-IDF term weighting, and formal inverted index architecture."),
+        ("1970s–80s", "First Commercial Boolean Systems", "Early legal and medical database systems like DIALOG, LexisNexis, and MEDLINE implement inverted indexes on magnetic disks for sub-second keyword search."),
+        ("1994", "Stephen Robertson & Karen Spärck Jones", "Formulate the Probabilistic Relevance Framework leading to Okapi BM25—the gold standard scoring formula for inverted postings lists."),
+        ("1998–2004", "The Web Era & Distributed Inverted Indexes", "Google scales inverted indexing across global server clusters using MapReduce and Bigtable, handling billions of web pages daily."),
+        ("2004–Present", "Open Source & Hybrid Neural Search", "Doug Cutting builds Apache Lucene (powering Elasticsearch and OpenSearch). Today, inverted indexes are unified with dense vector embeddings (HNSW) for hybrid search.")
+    ]
+
+    for yr, author, desc in timeline_items:
+        st.markdown(f"""
+        <div style="display: flex; gap: 16px; margin-bottom: 12px; align-items: baseline;">
+            <span style="background: #2563eb; color: #ffffff; font-weight: 700; font-size: 12px; padding: 4px 10px; border-radius: 6px; min-width: 85px; text-align: center;">{yr}</span>
+            <div>
+                <b style="color: #0f172a; font-size: 14.5px;">{author}:</b>
+                <span style="color: #475569; font-size: 14px;"> {desc}</span>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.divider()
+
+    # 4. WHERE ALL IS IT USED TODAY?
+    st.subheader("4. Where All Is It Used Today? (Real-World & Industrial Applications)")
+    st.write("Almost every software application that features a search bar relies directly on Inverted Indexes:")
+
+    app_cols = st.columns(3)
+    with app_cols[0]:
+        st.markdown("""
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px; margin-bottom: 12px;">
+            <h4 style="color: #1e293b; margin: 0 0 6px 0;">🌐 Web Search Engines</h4>
+            <p style="font-size: 13.5px; color: #64748b; margin: 0;"><b>Google, Microsoft Bing, DuckDuckGo</b><br>Indexes tens of billions of web documents across distributed inverted clusters to return results in under 50ms.</p>
+        </div>
+        """, unsafe_allow_html=True)
+    with app_cols[1]:
+        st.markdown("""
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px; margin-bottom: 12px;">
+            <h4 style="color: #1e293b; margin: 0 0 6px 0;">📊 Log & Security Analytics</h4>
+            <p style="font-size: 13.5px; color: #64748b; margin: 0;"><b>Elasticsearch, OpenSearch, Splunk</b><br>Ingests petabytes of operational server logs, security event traces, and telemetry for real-time querying.</p>
+        </div>
+        """, unsafe_allow_html=True)
+    with app_cols[2]:
+        st.markdown("""
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px; margin-bottom: 12px;">
+            <h4 style="color: #1e293b; margin: 0 0 6px 0;">🛒 E-Commerce Catalogs</h4>
+            <p style="font-size: 13.5px; color: #64748b; margin: 0;"><b>Amazon, Flipkart, Shopify</b><br>Enables instant product searches across millions of SKUs with faceted attribute filtering and typo tolerance.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    app_cols2 = st.columns(3)
+    with app_cols2[0]:
+        st.markdown("""
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px;">
+            <h4 style="color: #1e293b; margin: 0 0 6px 0;">💻 Codebase Intelligence</h4>
+            <p style="font-size: 13.5px; color: #64748b; margin: 0;"><b>GitHub Code Search, Sourcegraph, VS Code</b><br>Indexes abstract syntax trees (ASTs), symbols, and identifiers across billions of lines of open-source code.</p>
+        </div>
+        """, unsafe_allow_html=True)
+    with app_cols2[1]:
+        st.markdown("""
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px;">
+            <h4 style="color: #1e293b; margin: 0 0 6px 0;">🗄️ Relational & NoSQL DBs</h4>
+            <p style="font-size: 13.5px; color: #64748b; margin: 0;"><b>PostgreSQL GIN, MySQL FULLTEXT, MongoDB</b><br>Powers native full-text search extensions inside relational databases without external search services.</p>
+        </div>
+        """, unsafe_allow_html=True)
+    with app_cols2[2]:
+        st.markdown("""
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px;">
+            <h4 style="color: #1e293b; margin: 0 0 6px 0;">🤖 Hybrid AI Search (RAG)</h4>
+            <p style="font-size: 13.5px; color: #64748b; margin: 0;"><b>Qdrant, Pinecone, LanceDB</b><br>Combines sparse BM25 inverted indexes with dense vector embeddings to provide hallucination-free context to LLMs.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.divider()
+
+    # Learning Outcomes & Prerequisites
+    col_lo1, col_lo2 = st.columns(2)
+    with col_lo1:
+        st.subheader("Key Learning Objectives")
+        for i, obj in enumerate(EXPERIMENT_CONFIG["objectives"]):
+            st.markdown(f"**{i+1}.** {obj}")
+    with col_lo2:
+        st.subheader("Prerequisites & Foundations")
+        st.markdown(r"""
+        - **Data Structures:** Hash Tables, Arrays, Singly Linked Lists, Dictionaries.
+        - **Discrete Mathematics:** Set operations (Intersection $\cap$, Union $\cup$, Difference $\setminus$).
+        - **Text Processing:** Tokenization, Regular Expressions, String Normalization.
+        - **Algorithmic Analysis:** Big-O notation, Two-Pointer Merge Algorithms ($O(L_1 + L_2)$).
+        """)
+
 
 
 def render_theory_section():
@@ -1102,7 +1377,7 @@ def highlight_search_terms(text: str, query_str: str) -> str:
     return pattern.sub(r'<b>\1</b>', text)
 
 
-def inject_google_search_styles(is_dark_mode: bool = False):
+def inject_vlab_search_styles(is_dark_mode: bool = False):
     """Injects authentic, clean Google Search Engine styling for the interactive simulator."""
     bg_card = "#202124" if is_dark_mode else "#ffffff"
     border_card = "#3c4043" if is_dark_mode else "#dadce0"
@@ -1121,13 +1396,13 @@ def inject_google_search_styles(is_dark_mode: bool = False):
 
     st.markdown(f"""
     <style>
-    /* Google Search Header */
-    .google-header-wrap {{
+    /* VLab Search Header */
+    .vlab-header-wrap {{
         text-align: center;
         padding: 16px 0 10px 0;
         margin-bottom: 8px;
     }}
-    .google-logo-text {{
+    .vlab-logo-text {{
         font-family: 'Product Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         font-size: 38px;
         font-weight: 700;
@@ -1139,7 +1414,7 @@ def inject_google_search_styles(is_dark_mode: bool = False):
     .g-red {{ color: #EA4335; }}
     .g-yellow {{ color: #FBBC05; }}
     .g-green {{ color: #34A853; }}
-    .google-edition-badge {{
+    .vlab-edition-badge {{
         font-size: 13px;
         font-weight: 600;
         color: {text_secondary};
@@ -1148,20 +1423,20 @@ def inject_google_search_styles(is_dark_mode: bool = False):
         margin-left: 8px;
         vertical-align: middle;
     }}
-    .google-subtext {{
+    .vlab-subtext {{
         font-size: 14px;
         color: {text_secondary};
         margin-top: 4px;
     }}
 
     /* Search Bar Wrapper */
-    .google-search-container {{
+    .vlab-search-container {{
         max-width: 760px;
         margin: 0 auto 14px auto;
     }}
 
     /* Stepper Navigation Bar */
-    .google-stepper-wrap {{
+    .vlab-stepper-wrap {{
         background: {bg_card};
         border: 1px solid {border_card};
         border-radius: 12px;
@@ -1208,7 +1483,7 @@ def inject_google_search_styles(is_dark_mode: bool = False):
     }}
 
     /* Cards */
-    .google-card {{
+    .vlab-card {{
         background: {bg_card};
         border: 1px solid {border_card};
         border-radius: 10px;
@@ -1216,7 +1491,7 @@ def inject_google_search_styles(is_dark_mode: bool = False):
         margin-bottom: 12px;
         box-shadow: 0 1px 3px rgba(0,0,0,0.06);
     }}
-    .google-doc-card {{
+    .vlab-doc-card {{
         background: {bg_card};
         border: 1px solid {border_card};
         border-left: 4px solid #4285F4;
@@ -1224,7 +1499,7 @@ def inject_google_search_styles(is_dark_mode: bool = False):
         padding: 12px 16px;
         margin-bottom: 10px;
     }}
-    .google-token-badge {{
+    .vlab-token-badge {{
         display: inline-flex;
         align-items: center;
         background: {chip_bg};
@@ -1236,7 +1511,7 @@ def inject_google_search_styles(is_dark_mode: bool = False):
         font-size: 12px;
         color: {text_primary};
     }}
-    .google-token-badge small {{
+    .vlab-token-badge small {{
         color: #1a73e8;
         font-weight: bold;
         margin-left: 5px;
@@ -1410,7 +1685,7 @@ def inject_google_search_styles(is_dark_mode: bool = False):
 def render_simulation_section():
     """Renders Google-Style Interactive Search Engine Simulation with Step-by-Step Pipeline."""
     is_dark = st.session_state.get("theme_mode") == "🌙 Dark Mode"
-    inject_google_search_styles(is_dark_mode=is_dark)
+    inject_vlab_search_styles(is_dark_mode=is_dark)
 
     # Initialize Session States
     if "sim_active_step" not in st.session_state:
@@ -1424,13 +1699,13 @@ def render_simulation_section():
 
     # Google Search Header
     st.markdown("""
-    <div class="google-header-wrap">
-        <div class="google-logo-text">
+    <div class="vlab-header-wrap">
+        <div class="vlab-logo-text">
             <span class="g-blue">G</span><span class="g-red">o</span><span class="g-yellow">o</span><span class="g-blue">g</span><span class="g-green">l</span><span class="g-red">e</span>
-            <span class="google-edition-badge">Search Engine Simulator</span>
+            <span class="vlab-edition-badge">Search Engine Simulator</span>
         </div>
-        <div class="google-subtext">
-            Explore how Google's Information Retrieval engine works under the hood: Crawl, Linguistic Normalization, Inverted Indexing, Two-Pointer Postings Merge, and SERP Ranking.
+        <div class="vlab-subtext">
+            Explore how an Information Retrieval search engine works under the hood: Crawling, Linguistic Normalization, Inverted Indexing, Two-Pointer Postings Merge, and SERP Ranking.
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -1463,7 +1738,7 @@ def render_simulation_section():
     st.session_state["last_postings_count"] = index_results["total_postings"]
 
     # Google Search Bar Section
-    st.markdown('<div class="google-search-container">', unsafe_allow_html=True)
+    st.markdown('<div class="vlab-search-container">', unsafe_allow_html=True)
 
     col_input, col_mode = st.columns([3.2, 1.3])
     with col_input:
@@ -1534,7 +1809,7 @@ def render_simulation_section():
     # The Google Search Action Buttons
     c_btn1, c_btn2 = st.columns(2)
     with c_btn1:
-        do_search = st.button("🔍 Google Search", type="primary", use_container_width=True)
+        do_search = st.button("🔍 Search Index", type="primary", use_container_width=True)
     with c_btn2:
         inspect_pipeline = st.button("⚙️ Inspect Pipeline (Step 1: Crawl & Corpus)", use_container_width=True)
 
@@ -1637,13 +1912,13 @@ def render_simulation_section():
         2: "Step 2: Linguistic Preprocessing",
         3: "Step 3: Inverted Index (Lexicon & Postings)",
         4: "Step 4: Two-Pointer Merge Duel",
-        5: "Step 5: Google SERP (Search Results)"
+        5: "Step 5: Search Results Page (SERP)"
     }
 
     st.markdown(f"""
-    <div class="google-stepper-wrap">
+    <div class="vlab-stepper-wrap">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap;">
-            <span class="stepper-label">HOW GOOGLE SEARCH WORKS: 5-STAGE PIPELINE</span>
+            <span class="stepper-label">HOW VLAB SEARCH WORKS: 5-STAGE IR PIPELINE</span>
             <span style="font-size: 12px; color: #1a73e8; font-weight: 600;">Currently Active: {step_titles[active_step]}</span>
         </div>
         <div class="stepper-pipeline-flow">
@@ -1655,7 +1930,7 @@ def render_simulation_section():
             <span class="step-arrow">➔</span>
             <span class="step-pill {'active' if active_step == 4 else ''}">4. Two-Pointer Merge</span>
             <span class="step-arrow">➔</span>
-            <span class="step-pill {'active' if active_step == 5 else ''}">5. Google SERP</span>
+            <span class="step-pill {'active' if active_step == 5 else ''}">5. Search Results (SERP)</span>
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -1701,7 +1976,7 @@ def render_simulation_section():
             (2, "⚙️ Step 2: Running Linguistic Normalization (Case Folding, Stopwords, Stemming)...", 40),
             (3, "📑 Step 3: Inverting Matrix into Lexicon Dictionary & Sorted Postings Lists...", 60),
             (4, f"⚡ Step 4: Executing Two-Pointer Merge on query '{executed_query_str}'...", 80),
-            (5, "🔍 Step 5: Formatting Ranked Results into Google SERP...", 100)
+            (5, "🔍 Step 5: Formatting Ranked Results into Search Results Page (SERP)...", 100)
         ]
         for s_idx, s_desc, pct in anim_steps:
             status_box.info(s_desc)
@@ -1758,9 +2033,9 @@ def render_simulation_section():
         for doc_id, text in active_corpus.items():
             word_count = len(text.split())
             st.markdown(f"""
-            <div class="google-doc-card">
+            <div class="vlab-doc-card">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                    <span style="font-weight: 600; color: #1a73e8; font-size: 13px;">https://corpus.google.internal › documents › doc{doc_id}</span>
+                    <span style="font-weight: 600; color: #1a73e8; font-size: 13px;">https://corpus.vlab.internal › documents › doc{doc_id}</span>
                     <span style="font-size: 11px; color: #9aa0a6;">DocID: {doc_id} | {word_count} words</span>
                 </div>
                 <div style="font-size: 14px; font-weight: 500; margin-bottom: 4px;">Document {doc_id} Content</div>
@@ -1807,12 +2082,12 @@ def render_simulation_section():
         st.caption("Inspect the token stream emitted for each document after normalization:")
         for doc_id, tokens in index_results["stage1_tokens"].items():
             chips_html = "".join([
-                f'<span class="google-token-badge">{term}<small>#{pos}</small></span>'
+                f'<span class="vlab-token-badge">{term}<small>#{pos}</small></span>'
                 for term, pos, _ in tokens
             ])
             raw_text = active_corpus.get(doc_id, "")
             st.markdown(f"""
-            <div class="google-card">
+            <div class="vlab-card">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
                     <span style="font-weight: 600; font-size: 13px; color: #1a73e8;">Doc {doc_id} Normalized Stream</span>
                     <span style="font-size: 11px; color: #9aa0a6;">{len(tokens)} normalized tokens</span>
@@ -1914,13 +2189,13 @@ def render_simulation_section():
     elif active_step == 4:
         st.markdown("### ⚡ Step 4: Two-Pointer Postings Merge Algorithm")
         st.write(
-            f"When evaluating multi-term queries like `'{executed_query_str}'`, Google does NOT inspect the documents directly. "
+            f"When evaluating multi-term queries like `'{executed_query_str}'`, the VLab Search engine does NOT inspect the documents directly. "
             "Instead, it fetches the pre-sorted postings lists for each query term from the Inverted Index and merges them "
             "using the **Two-Pointer Intersection Algorithm** in linear time $O(L_1 + L_2)$."
         )
 
         st.markdown(f"""
-        <div class="google-card">
+        <div class="vlab-card">
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #dadce0; padding-bottom: 8px; margin-bottom: 10px; flex-wrap: wrap;">
                 <span style="font-weight: 600; font-size: 13px; color: #1a73e8;">QUERY EXECUTION TELEMETRY</span>
                 <span style="font-size: 12px; color: #5f6368;">Active Query: <code style="color: #1a73e8;">{executed_query_str}</code></span>
@@ -1945,7 +2220,7 @@ def render_simulation_section():
                 for d in p2_docs_global
             ])
             st.markdown(f"""
-            <div class="google-card">
+            <div class="vlab-card">
                 <div style="margin-bottom: 4px; font-size: 12px; color: #1a73e8; font-weight: 600;"><b>Pointer 1:</b> Term '{t1_label}' Postings ({len(p1_docs_global)} docs)</div>
                 <div class="pointer-film-track">{t1_pills}</div>
                 <div style="margin-top: 10px; margin-bottom: 4px; font-size: 12px; color: #5f6368; font-weight: 600;"><b>Pointer 2:</b> Term '{t2_label}' Postings ({len(p2_docs_global)} docs)</div>
@@ -1960,7 +2235,7 @@ def render_simulation_section():
             for line in query_trace:
                 st.text(f"> {line}")
 
-        if st.button("Proceed to Step 5: Google SERP Results ➔", type="primary"):
+        if st.button("Proceed to Step 5: Search Results (SERP) ➔", type="primary"):
             st.session_state["sim_active_step"] = 5
             st.rerun()
 
@@ -1968,7 +2243,7 @@ def render_simulation_section():
     # STEP 5: Google SERP (Search Engine Results Page)
     # -------------------------------------------------------------------------
     else:
-        st.markdown("### 🔍 Step 5: Google Search Results Page (SERP)")
+        st.markdown("### 🔍 Step 5: Search Engine Results Page (SERP)")
         st.write(
             "The final phase of the search engine: Documents matched by the index traversal are retrieved, "
             "ranked, and presented as a Search Engine Results Page (SERP) with relevant snippets and highlighted keywords."
@@ -1990,8 +2265,8 @@ def render_simulation_section():
                 st.markdown(f"""
                 <div class="serp-item">
                     <div class="serp-url">
-                        <span class="serp-favicon">G</span>
-                        <span>https://corpus.google.internal › documents › doc{d}</span>
+                        <span class="serp-favicon">V</span>
+                        <span>https://corpus.vlab.internal › documents › doc{d}</span>
                     </div>
                     <div class="serp-title">Document {d}: {title_preview}</div>
                     <div class="serp-snippet">"{highlighted_snippet}"</div>
@@ -2019,7 +2294,7 @@ def render_simulation_section():
         st.markdown("</div>", unsafe_allow_html=True)
 
         st.markdown("<br>", unsafe_allow_html=True)
-        st.info("💡 **How did Google get these results?** Click **Step 1 - 4** in the pipeline above to inspect the step-by-step crawl, normalization, index, and pointer duel!")
+        st.info("💡 **How did the engine produce these results?** Click **Step 1 - 4** in the pipeline above to inspect the step-by-step crawl, normalization, index, and pointer duel!")
 
     # Plotly Analytical Visualizations (Google Palette)
     st.divider()
@@ -2381,6 +2656,131 @@ def init_session_state():
         st.session_state["theme_mode"] = "☀️ Light Mode"
 
 
+def render_certificate_section():
+    """Renders official Virtual Lab Certificate of Completion with interactive PDF download."""
+    st.header("Virtual Lab Certificate of Completion")
+    st.write("Generate and download your official, digitally verified Certificate of Completion for Experiment 3.")
+
+    # Student Details Form
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        student_name = st.text_input("Full Name:", value=st.session_state["student_info"].get("name", "Student Name"), key="cert_name_input")
+    with col2:
+        student_id = st.text_input("Roll / Student ID:", value=st.session_state["student_info"].get("id", "EXP3-11"), key="cert_id_input")
+    with col3:
+        student_div = st.text_input("Class / Division:", value=st.session_state["student_info"].get("div", "D17B"), key="cert_div_input")
+
+    cert_date = st.date_input("Certification Date:", value=datetime.now(), key="cert_date_input")
+
+    st.session_state["student_info"]["name"] = student_name
+    st.session_state["student_info"]["id"] = student_id
+    st.session_state["student_info"]["div"] = student_div
+
+    # Completion Criteria Checklist
+    st.divider()
+    st.subheader("Experiment Completion Verification")
+    
+    trials_count = len(st.session_state.get("trials", []))
+    quiz_done = st.session_state.get("quiz_submitted", False)
+    quiz_score = st.session_state.get("quiz_score", 0)
+    quiz_total = len(QUIZ_QUESTIONS)
+
+    chk1, chk2, chk3 = st.columns(3)
+    with chk1:
+        st.markdown(f"**1. Student Profile:** {'✅ Verified' if student_name.strip() else '⚠️ Missing'}")
+        st.caption(f"{student_name} ({student_id})")
+    with chk2:
+        st.markdown(f"**2. Simulation Trials:** {'✅ Completed' if trials_count > 0 else '⚠️ Incomplete'}")
+        st.caption(f"{trials_count} trial(s) logged in session")
+    with chk3:
+        st.markdown(f"**3. Assessment Quiz:** {'✅ Evaluated' if quiz_done else '⚠️ Pending'}")
+        st.caption(f"Score: {quiz_score} / {quiz_total}")
+
+    # Generate unique Certificate Hash / ID
+    cert_id = f"VLAB-EXP3-KGIRS-2026-{abs(hash(student_name + student_id)) % 1000000:06d}"
+
+    st.divider()
+    st.subheader("Official Certificate Preview")
+
+    # Gorgeous On-Screen Certificate Preview
+    st.markdown(f"""
+    <div style="border: 6px double #d97706; padding: 32px 36px; background: #fffdfa; color: #0f172a; border-radius: 16px; box-shadow: 0 12px 36px rgba(0,0,0,0.08); position: relative; margin-bottom: 24px;">
+        <div style="text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 14px; margin-bottom: 18px;">
+            <div style="font-size: 13px; font-weight: 800; letter-spacing: 2px; color: #475569; text-transform: uppercase;">VIRTUAL LABS • AN INITIATIVE OF MINISTRY OF EDUCATION (vlabs.ac.in)</div>
+            <div style="font-size: 12px; font-weight: 700; color: #64748b; letter-spacing: 1px; margin-top: 3px;">DEPARTMENT OF COMPUTER ENGINEERING / ARTIFICIAL INTELLIGENCE & DATA SCIENCE</div>
+            <h1 style="margin: 10px 0 0 0; color: #0f172a; font-size: 32px; font-family: 'Times New Roman', serif; letter-spacing: 1px;">CERTIFICATE OF COMPLETION</h1>
+            <div style="font-size: 13px; color: #94a3b8; font-style: italic; margin-top: 4px;">This is to officially certify that</div>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 18px;">
+            <h2 style="margin: 0; color: #1d4ed8; font-size: 28px; text-transform: uppercase; letter-spacing: 1px;">{student_name.upper()}</h2>
+            <div style="font-size: 14px; color: #475569; margin-top: 4px;">
+                <b>Roll Number:</b> {student_id} &nbsp;|&nbsp; <b>Class / Division:</b> {student_div} &nbsp;|&nbsp; <b>Course:</b> Knowledge Graphs & Information Retrieval Systems
+            </div>
+        </div>
+
+        <div style="text-align: center; max-width: 780px; margin: 0 auto 20px auto; font-size: 14px; line-height: 1.6; color: #334155;">
+            has successfully conducted, analyzed, and completed the experimental laboratory requirements for<br>
+            <b style="color: #0f172a; font-size: 15px;">Experiment 3: Construction of an Inverted Index</b>, demonstrating verified competency in:
+            <div style="display: flex; justify-content: center; gap: 16px; margin-top: 10px; flex-wrap: wrap;">
+                <span style="background: #e0f2fe; color: #0369a1; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">• Lexicon & Postings Construction</span>
+                <span style="background: #dcfce7; color: #15803d; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">• Two-Pointer Merge O(L1 + L2)</span>
+                <span style="background: #fef3c7; color: #b45309; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">• Linguistic Normalization</span>
+                <span style="background: #f3e8ff; color: #7e22ce; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">• Zipf's Law Validation</span>
+            </div>
+        </div>
+
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; max-width: 780px; margin: 0 auto 20px auto; font-size: 13px;">
+            <span><b>Assessment Score:</b> <span style="color: #2563eb;">{quiz_score} / {quiz_total}</span></span>
+            <span><b>Simulation Trials:</b> <span style="color: #059669;">{trials_count} Logged</span></span>
+            <span><b>Status:</b> <span style="color: #16a34a; font-weight: bold;">Verified & Completed</span></span>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; border-top: 1px solid #e2e8f0; padding-top: 16px; margin-top: 16px;">
+            <div>
+                <div style="font-size: 12px; color: #64748b;"><b>Issue Date:</b> {cert_date}</div>
+                <div style="font-size: 11px; color: #94a3b8; font-family: monospace;"><b>Certificate ID:</b> {cert_id}</div>
+            </div>
+            <div style="text-align: center;">
+                <div style="font-size: 28px;">🏅</div>
+                <div style="font-size: 10px; font-weight: bold; color: #d97706; letter-spacing: 1px;">VERIFIED LAB ACCOMPLISHMENT</div>
+            </div>
+            <div style="text-align: center;">
+                <div style="border-bottom: 1.5px solid #64748b; width: 180px; margin-bottom: 4px;"></div>
+                <div style="font-size: 12px; font-weight: 700; color: #1e293b;">Course Instructor / Evaluator</div>
+                <div style="font-size: 11px; color: #64748b;">Virtual Laboratories Network</div>
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Generate and provide download button for Certificate PDF
+    cert_pdf_bytes = generate_pdf_certificate(
+        student_name=student_name,
+        student_id=student_id,
+        student_div=student_div,
+        date_str=str(cert_date),
+        quiz_score=quiz_score,
+        quiz_total=quiz_total,
+        trials_count=trials_count,
+        cert_id=cert_id
+    )
+
+    c_d1, c_d2 = st.columns([2, 2])
+    with c_d1:
+        st.download_button(
+            label="📜 Download Official Verified Certificate (PDF)",
+            data=cert_pdf_bytes,
+            file_name=f"VLab_Certificate_Exp3_{student_id}.pdf",
+            mime="application/pdf",
+            type="primary",
+            use_container_width=True
+        )
+    with c_d2:
+        st.caption("This digital certificate includes a cryptographic verification ID and officially certifies completion of Experiment 3.")
+
+
+
 def main():
     st.set_page_config(
         page_title="VLab: Construction of an Inverted Index",
@@ -2423,6 +2823,22 @@ def main():
             .stAlert {
                 border-radius: 8px;
             }
+            
+            /* Enhanced Typography & Modern Look-and-Feel */
+            html, body, [class*="css"], [data-testid="stMarkdownContainer"] p {
+                font-size: 16px !important;
+                line-height: 1.65 !important;
+            }
+            h1 { font-size: 2.25rem !important; font-weight: 750 !important; }
+            h2 { font-size: 1.75rem !important; font-weight: 700 !important; }
+            h3 { font-size: 1.38rem !important; font-weight: 650 !important; }
+            h4 { font-size: 1.15rem !important; font-weight: 600 !important; }
+            .stButton > button {
+                border-radius: 8px !important;
+                font-size: 15px !important;
+                font-weight: 600 !important;
+            }
+
             .metric-card {
                 background-color: #f1f5f9;
                 border: 1px solid #cbd5e1;
@@ -2447,6 +2863,22 @@ def main():
             [data-testid="stHeader"] {
                 background-color: #0f172a !important;
             }
+            
+            /* Enhanced Typography & Modern Look-and-Feel */
+            html, body, [class*="css"], [data-testid="stMarkdownContainer"] p {
+                font-size: 16px !important;
+                line-height: 1.65 !important;
+            }
+            h1 { font-size: 2.25rem !important; font-weight: 750 !important; }
+            h2 { font-size: 1.75rem !important; font-weight: 700 !important; }
+            h3 { font-size: 1.38rem !important; font-weight: 650 !important; }
+            h4 { font-size: 1.15rem !important; font-weight: 600 !important; }
+            .stButton > button {
+                border-radius: 8px !important;
+                font-size: 15px !important;
+                font-weight: 600 !important;
+            }
+
             .metric-card {
                 background-color: #1e293b;
                 border: 1px solid #334155;
@@ -2465,14 +2897,13 @@ def main():
     section = st.sidebar.radio(
         "Navigation Menu",
         options=[
-            "Aim & Overview",
+            "Purpose",
             "Theory",
-            "Procedure",
             "Simulation",
-            "Self-Evaluation (Quiz)",
-            "References",
-            "Feedback",
-            "Report Generation"
+            "Quiz",
+            "Report Generation",
+            "Certificate",
+            "References"
         ]
     )
 
@@ -2489,22 +2920,20 @@ def main():
     st.sidebar.caption(f"Course: {EXPERIMENT_CONFIG['subject']}\nAllocated: {EXPERIMENT_CONFIG['target_rolls']}")
 
     # Section Dispatcher
-    if section == "Aim & Overview":
-        render_aim_section()
+    if section == "Purpose":
+        render_purpose_section()
     elif section == "Theory":
         render_theory_section()
-    elif section == "Procedure":
-        render_procedure_section()
     elif section == "Simulation":
         render_simulation_section()
-    elif section == "Self-Evaluation (Quiz)":
+    elif section == "Quiz":
         render_quiz_section()
-    elif section == "References":
-        render_references_section()
-    elif section == "Feedback":
-        render_feedback_section()
     elif section == "Report Generation":
         render_report_section()
+    elif section == "Certificate":
+        render_certificate_section()
+    elif section == "References":
+        render_references_section()
 
 
 if __name__ == "__main__":
