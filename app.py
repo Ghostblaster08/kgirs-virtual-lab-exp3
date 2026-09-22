@@ -1088,31 +1088,35 @@ def generate_pdf_report(student_name: str, student_id: str, student_div: str, da
 # ======================================================================================
 
 def render_purpose_section():
-    """Renders comprehensive Purpose, Historical Context, Problem Formulation, and Applications."""
+    """Renders comprehensive Purpose, Historical Context, Problem Formulation, and Applications using Google's color palette."""
     st.markdown("""
-    <div style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); padding: 26px 30px; border-radius: 16px; color: #ffffff; margin-bottom: 24px; border-left: 6px solid #3b82f6; box-shadow: 0 10px 25px rgba(0,0,0,0.15);">
-        <div style="font-size: 12px; font-weight: 700; letter-spacing: 1.5px; color: #38bdf8; text-transform: uppercase; margin-bottom: 6px;">EXPERIMENT 3 • PURPOSE & ARCHITECTURAL FOUNDATION</div>
-        <h1 style="margin: 0; font-size: 30px; font-weight: 800; color: #ffffff;">The Inverted Index: The Engine of Information Retrieval</h1>
-        <p style="margin: 8px 0 0 0; color: #cbd5e1; font-size: 15.5px; line-height: 1.5;">
-            Discover why the Inverted Index is the foundational algorithmic data structure enabling modern web search engines, enterprise databases, and e-commerce platforms to query billions of documents in sub-milliseconds.
+    <div style="background: #ffffff; padding: 28px 32px; border-radius: 16px; border: 1px solid #dadce0; border-left: 6px solid #4285F4; box-shadow: 0 1px 6px rgba(60,64,67,0.10); margin-bottom: 28px;">
+        <div style="font-size: 14px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px;">
+            <span style="color: #4285F4;">E</span><span style="color: #EA4335;">X</span><span style="color: #FBBC05;">P</span> <span style="color: #34A853;">3</span> • <span style="color: #1a73e8;">PURPOSE & ARCHITECTURAL FOUNDATION</span>
+        </div>
+        <h1 style="margin: 0; font-size: 34px; font-weight: 700; color: #202124; letter-spacing: -0.5px;">The Inverted Index: The Engine of Information Retrieval</h1>
+        <p style="margin: 10px 0 0 0; color: #5f6368; font-size: 18px; line-height: 1.65;">
+            Discover why the Inverted Index is the foundational algorithmic data structure enabling modern search engines, enterprise databases, and e-commerce platforms to query billions of documents in sub-milliseconds.
         </p>
     </div>
     """, unsafe_allow_html=True)
 
     # 1. WHY THIS EXPERIMENT?
     st.subheader("1. Why This Experiment? (Pedagogical Rationale)")
-    st.write(
-        "In traditional computer science curricula, students master linear arrays, hash tables, and relational SQL databases. "
-        "However, when searching through **unstructured natural language text** across millions or billions of web documents, "
-        "traditional data structures completely collapse under computational weight."
-    )
-    
+    st.markdown("""
+    <p style="font-size: 18px; line-height: 1.75; color: #202124;">
+        In traditional computer science curricula, students master linear arrays, hash tables, binary search trees, and relational SQL databases. 
+        However, when searching through <b>unstructured natural language text</b> across millions or billions of web documents, 
+        traditional data structures completely collapse under computational and storage weight.
+    </p>
+    """, unsafe_allow_html=True)
+
     col_w1, col_w2 = st.columns(2)
     with col_w1:
         st.markdown("""
-        <div style="background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 12px; padding: 18px; height: 100%;">
-            <h4 style="color: #2563eb; margin-top: 0;">🎯 What You Will Master</h4>
-            <ul style="font-size: 14.5px; line-height: 1.6; margin-bottom: 0;">
+        <div style="background: #ffffff; border: 1px solid #dadce0; border-left: 5px solid #4285F4; border-radius: 12px; padding: 22px; height: 100%; box-shadow: 0 1px 4px rgba(60,64,67,0.08);">
+            <h4 style="color: #1a73e8; margin-top: 0; font-size: 20px; font-weight: 600;">🎯 What You Will Master</h4>
+            <ul style="font-size: 17px; line-height: 1.8; color: #202124; margin-bottom: 0;">
                 <li><b>Index Inversion:</b> How to convert raw document streams into a high-performance Vocabulary Lexicon and sorted Postings Lists.</li>
                 <li><b>Algorithmic Traversal:</b> Implementing the linear-time <code>O(L1 + L2)</code> Two-Pointer Merge algorithm for Boolean retrieval.</li>
                 <li><b>Linguistic Optimization:</b> Quantifying how Case-Folding, Stopword Removal, and Porter Stemming compress index size and accelerate search.</li>
@@ -1122,12 +1126,12 @@ def render_purpose_section():
         """, unsafe_allow_html=True)
     with col_w2:
         st.markdown("""
-        <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 18px; height: 100%;">
-            <h4 style="color: #059669; margin-top: 0;">⚡ The Paradigm Shift</h4>
-            <p style="font-size: 14.5px; line-height: 1.6; color: #334155; margin-bottom: 8px;">
+        <div style="background: #ffffff; border: 1px solid #dadce0; border-left: 5px solid #34A853; border-radius: 12px; padding: 22px; height: 100%; box-shadow: 0 1px 4px rgba(60,64,67,0.08);">
+            <h4 style="color: #1e8e3e; margin-top: 0; font-size: 20px; font-weight: 600;">⚡ The Paradigm Shift</h4>
+            <p style="font-size: 17px; line-height: 1.75; color: #202124; margin-bottom: 10px;">
                 Searching a 10 TB corpus with sequential scanning (like <code>grep</code>) requires reading every single byte from disk—taking <b>several hours per query</b>.
             </p>
-            <p style="font-size: 14.5px; line-height: 1.6; color: #334155; margin-bottom: 0;">
+            <p style="font-size: 17px; line-height: 1.75; color: #202124; margin-bottom: 0;">
                 By pre-computing an <b>Inverted Index</b>, search engines invert the relationship: instead of asking <i>"What words are in Document X?"</i>, we ask <i>"What documents contain Word Y?"</i>—answering queries in <b>less than 15 milliseconds</b>!
             </p>
         </div>
@@ -1137,15 +1141,19 @@ def render_purpose_section():
 
     # 2. WHAT PROBLEM IS IT SOLVING?
     st.subheader("2. What Problem Is It Solving? (The Core Technical Challenges)")
-    st.write("The Inverted Index was engineered to solve five fundamental roadblocks in computer science and text processing:")
+    st.markdown("""
+    <p style="font-size: 18px; line-height: 1.75; color: #202124;">
+        The Inverted Index was engineered to solve five fundamental computational roadblocks in computer science and text processing:
+    </p>
+    """, unsafe_allow_html=True)
 
     p_cols = st.columns(3)
     with p_cols[0]:
         st.markdown("""
-        <div style="border: 1px solid #cbd5e1; border-radius: 12px; padding: 16px; margin-bottom: 12px; background: #ffffff;">
-            <div style="font-size: 24px; margin-bottom: 4px;">🐢</div>
-            <h4 style="margin: 0 0 6px 0; color: #0f172a;">1. The Linear Scan Bottleneck</h4>
-            <p style="font-size: 13.5px; color: #64748b; line-height: 1.5; margin: 0;">
+        <div style="border: 1px solid #dadce0; border-left: 4px solid #4285F4; border-radius: 12px; padding: 20px; margin-bottom: 16px; background: #ffffff; box-shadow: 0 1px 3px rgba(60,64,67,0.08);">
+            <div style="font-size: 26px; margin-bottom: 6px;">🐢</div>
+            <h4 style="margin: 0 0 8px 0; color: #202124; font-size: 18px; font-weight: 600;">1. The Linear Scan Bottleneck</h4>
+            <p style="font-size: 16px; color: #5f6368; line-height: 1.65; margin: 0;">
                 <b>Problem:</b> Scanning text sequentially is <code>O(N · L)</code> where N is total docs and L is text length.<br>
                 <b>Solution:</b> Inverting words into indexed sorted DocID lists reduces search time to <code>O(Postings Length)</code>, eliminating full-text disk scans.
             </p>
@@ -1153,10 +1161,10 @@ def render_purpose_section():
         """, unsafe_allow_html=True)
     with p_cols[1]:
         st.markdown("""
-        <div style="border: 1px solid #cbd5e1; border-radius: 12px; padding: 16px; margin-bottom: 12px; background: #ffffff;">
-            <div style="font-size: 24px; margin-bottom: 4px;">🔤</div>
-            <h4 style="margin: 0 0 6px 0; color: #0f172a;">2. Morphological Variance</h4>
-            <p style="font-size: 13.5px; color: #64748b; line-height: 1.5; margin: 0;">
+        <div style="border: 1px solid #dadce0; border-left: 4px solid #EA4335; border-radius: 12px; padding: 20px; margin-bottom: 16px; background: #ffffff; box-shadow: 0 1px 3px rgba(60,64,67,0.08);">
+            <div style="font-size: 26px; margin-bottom: 6px;">🔤</div>
+            <h4 style="margin: 0 0 8px 0; color: #202124; font-size: 18px; font-weight: 600;">2. Morphological Variance</h4>
+            <p style="font-size: 16px; color: #5f6368; line-height: 1.65; margin: 0;">
                 <b>Problem:</b> Different grammatical forms (<i>retrieval, retrieving, retrieved</i>) cause keyword search misses.<br>
                 <b>Solution:</b> Linguistic preprocessing collapses inflections to base stems, reducing dictionary size by 30–45%.
             </p>
@@ -1164,10 +1172,10 @@ def render_purpose_section():
         """, unsafe_allow_html=True)
     with p_cols[2]:
         st.markdown("""
-        <div style="border: 1px solid #cbd5e1; border-radius: 12px; padding: 16px; margin-bottom: 12px; background: #ffffff;">
-            <div style="font-size: 24px; margin-bottom: 4px;">⚡</div>
-            <h4 style="margin: 0 0 6px 0; color: #0f172a;">3. Multi-Term Boolean Logic</h4>
-            <p style="font-size: 13.5px; color: #64748b; line-height: 1.5; margin: 0;">
+        <div style="border: 1px solid #dadce0; border-left: 4px solid #FBBC05; border-radius: 12px; padding: 20px; margin-bottom: 16px; background: #ffffff; box-shadow: 0 1px 3px rgba(60,64,67,0.08);">
+            <div style="font-size: 26px; margin-bottom: 6px;">⚡</div>
+            <h4 style="margin: 0 0 8px 0; color: #202124; font-size: 18px; font-weight: 600;">3. Multi-Term Boolean Logic</h4>
+            <p style="font-size: 16px; color: #5f6368; line-height: 1.65; margin: 0;">
                 <b>Problem:</b> Evaluating <code>A AND B</code> or <code>A NOT B</code> requires cross-referencing document sets.<br>
                 <b>Solution:</b> Two-pointer list intersection walks both sorted lists in linear time without opening files.
             </p>
@@ -1177,10 +1185,10 @@ def render_purpose_section():
     p_cols2 = st.columns(2)
     with p_cols2[0]:
         st.markdown("""
-        <div style="border: 1px solid #cbd5e1; border-radius: 12px; padding: 16px; background: #ffffff;">
-            <div style="font-size: 24px; margin-bottom: 4px;">📍</div>
-            <h4 style="margin: 0 0 6px 0; color: #0f172a;">4. Exact Phrase & Proximity Constraints</h4>
-            <p style="font-size: 13.5px; color: #64748b; line-height: 1.5; margin: 0;">
+        <div style="border: 1px solid #dadce0; border-left: 4px solid #34A853; border-radius: 12px; padding: 20px; background: #ffffff; box-shadow: 0 1px 3px rgba(60,64,67,0.08);">
+            <div style="font-size: 26px; margin-bottom: 6px;">📍</div>
+            <h4 style="margin: 0 0 8px 0; color: #202124; font-size: 18px; font-weight: 600;">4. Exact Phrase & Proximity Constraints</h4>
+            <p style="font-size: 16px; color: #5f6368; line-height: 1.65; margin: 0;">
                 <b>Problem:</b> How can an engine verify if <i>"information"</i> is adjacent to <i>"retrieval"</i> without re-reading the document?<br>
                 <b>Solution:</b> Positional Inverted Indexes store exact token offsets <code>pos: [0, 4]</code> inside posting nodes, enabling exact phrase and proximity (<code>NEAR/k</code>) matching.
             </p>
@@ -1188,10 +1196,10 @@ def render_purpose_section():
         """, unsafe_allow_html=True)
     with p_cols2[1]:
         st.markdown("""
-        <div style="border: 1px solid #cbd5e1; border-radius: 12px; padding: 16px; background: #ffffff;">
-            <div style="font-size: 24px; margin-bottom: 4px;">💾</div>
-            <h4 style="margin: 0 0 6px 0; color: #0f172a;">5. Extreme Matrix Sparsity (>99%)</h4>
-            <p style="font-size: 13.5px; color: #64748b; line-height: 1.5; margin: 0;">
+        <div style="border: 1px solid #dadce0; border-left: 4px solid #4285F4; border-radius: 12px; padding: 20px; background: #ffffff; box-shadow: 0 1px 3px rgba(60,64,67,0.08);">
+            <div style="font-size: 26px; margin-bottom: 6px;">💾</div>
+            <h4 style="margin: 0 0 8px 0; color: #202124; font-size: 18px; font-weight: 600;">5. Extreme Matrix Sparsity (>99%)</h4>
+            <p style="font-size: 16px; color: #5f6368; line-height: 1.65; margin: 0;">
                 <b>Problem:</b> A full Term-Document matrix of 1M documents and 100k vocabulary words requires 100 Billion cells (mostly zeros).<br>
                 <b>Solution:</b> Inverted postings lists store strictly non-zero occurrences, achieving massive >90% compression in memory.
             </p>
@@ -1202,24 +1210,28 @@ def render_purpose_section():
 
     # 3. HISTORY & EVOLUTION
     st.subheader("3. History & Origins: From Punch Cards to Modern Web Search")
-    st.write("The inverted index is one of the most enduring and influential algorithms in computer science history:")
+    st.markdown("""
+    <p style="font-size: 18px; line-height: 1.75; color: #202124;">
+        The inverted index is one of the most enduring algorithms in computer science history:
+    </p>
+    """, unsafe_allow_html=True)
 
     timeline_items = [
-        ("1957", "Hans Peter Luhn (IBM)", "Introduces automated indexing, token frequency statistics, and Key Word in Context (KWIC), planting the seeds of computer-based information retrieval."),
-        ("1968", "Gerard Salton (Cornell University)", "The 'Father of Information Retrieval' develops the SMART system, establishing the Vector Space Model (VSM), TF-IDF term weighting, and formal inverted index architecture."),
-        ("1970s–80s", "First Commercial Boolean Systems", "Early legal and medical database systems like DIALOG, LexisNexis, and MEDLINE implement inverted indexes on magnetic disks for sub-second keyword search."),
-        ("1994", "Stephen Robertson & Karen Spärck Jones", "Formulate the Probabilistic Relevance Framework leading to Okapi BM25—the gold standard scoring formula for inverted postings lists."),
-        ("1998–2004", "The Web Era & Distributed Inverted Indexes", "Google scales inverted indexing across global server clusters using MapReduce and Bigtable, handling billions of web pages daily."),
-        ("2004–Present", "Open Source & Hybrid Neural Search", "Doug Cutting builds Apache Lucene (powering Elasticsearch and OpenSearch). Today, inverted indexes are unified with dense vector embeddings (HNSW) for hybrid search.")
+        ("1957", "Hans Peter Luhn (IBM)", "Introduces automated indexing, token frequency statistics, and Key Word in Context (KWIC), planting the seeds of computer-based information retrieval.", "#4285F4"),
+        ("1968", "Gerard Salton (Cornell University)", "The 'Father of Information Retrieval' develops the SMART system, establishing the Vector Space Model (VSM), TF-IDF term weighting, and formal inverted index architecture.", "#EA4335"),
+        ("1970s–80s", "Commercial Boolean Systems", "Early legal and medical systems like DIALOG, LexisNexis, and MEDLINE implement inverted indexes on magnetic disks for sub-second keyword search.", "#FBBC05"),
+        ("1994", "Stephen Robertson & Karen Spärck Jones", "Formulate the Probabilistic Relevance Framework leading to Okapi BM25—the gold standard scoring formula for inverted postings lists.", "#34A853"),
+        ("1998–2004", "The Web Era & Distributed Inverted Indexes", "Modern search engines scale inverted indexing across global server clusters using MapReduce and distributed tables, handling billions of web pages daily.", "#4285F4"),
+        ("2004–Present", "Open Source & Hybrid Neural Search", "Doug Cutting builds Apache Lucene (powering Elasticsearch and OpenSearch). Today, inverted indexes are unified with dense vector embeddings (HNSW) for hybrid search.", "#EA4335")
     ]
 
-    for yr, author, desc in timeline_items:
+    for yr, author, desc, pill_color in timeline_items:
         st.markdown(f"""
-        <div style="display: flex; gap: 16px; margin-bottom: 12px; align-items: baseline;">
-            <span style="background: #2563eb; color: #ffffff; font-weight: 700; font-size: 12px; padding: 4px 10px; border-radius: 6px; min-width: 85px; text-align: center;">{yr}</span>
+        <div style="display: flex; gap: 18px; margin-bottom: 16px; align-items: baseline;">
+            <span style="background: {pill_color}; color: #ffffff; font-weight: 700; font-size: 14px; padding: 5px 14px; border-radius: 16px; min-width: 95px; text-align: center;">{yr}</span>
             <div>
-                <b style="color: #0f172a; font-size: 14.5px;">{author}:</b>
-                <span style="color: #475569; font-size: 14px;"> {desc}</span>
+                <b style="color: #202124; font-size: 17px;">{author}:</b>
+                <span style="color: #5f6368; font-size: 16.5px;"> {desc}</span>
             </div>
         </div>
         """, unsafe_allow_html=True)
@@ -1228,51 +1240,55 @@ def render_purpose_section():
 
     # 4. WHERE ALL IS IT USED TODAY?
     st.subheader("4. Where All Is It Used Today? (Real-World & Industrial Applications)")
-    st.write("Almost every software application that features a search bar relies directly on Inverted Indexes:")
+    st.markdown("""
+    <p style="font-size: 18px; line-height: 1.75; color: #202124;">
+        Almost every modern software application that features a search bar relies directly on Inverted Indexes:
+    </p>
+    """, unsafe_allow_html=True)
 
     app_cols = st.columns(3)
     with app_cols[0]:
         st.markdown("""
-        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px; margin-bottom: 12px;">
-            <h4 style="color: #1e293b; margin: 0 0 6px 0;">🌐 Web Search Engines</h4>
-            <p style="font-size: 13.5px; color: #64748b; margin: 0;"><b>Google, Microsoft Bing, DuckDuckGo</b><br>Indexes tens of billions of web documents across distributed inverted clusters to return results in under 50ms.</p>
+        <div style="background: #ffffff; border: 1px solid #dadce0; border-top: 4px solid #4285F4; border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(60,64,67,0.08);">
+            <h4 style="color: #1a73e8; margin: 0 0 8px 0; font-size: 18px; font-weight: 600;">🌐 Web Search Engines</h4>
+            <p style="font-size: 15.5px; color: #5f6368; margin: 0; line-height: 1.65;"><b>Global Web Search Platforms</b><br>Indexes tens of billions of web documents across distributed inverted clusters to return results in under 50ms.</p>
         </div>
         """, unsafe_allow_html=True)
     with app_cols[1]:
         st.markdown("""
-        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px; margin-bottom: 12px;">
-            <h4 style="color: #1e293b; margin: 0 0 6px 0;">📊 Log & Security Analytics</h4>
-            <p style="font-size: 13.5px; color: #64748b; margin: 0;"><b>Elasticsearch, OpenSearch, Splunk</b><br>Ingests petabytes of operational server logs, security event traces, and telemetry for real-time querying.</p>
+        <div style="background: #ffffff; border: 1px solid #dadce0; border-top: 4px solid #EA4335; border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(60,64,67,0.08);">
+            <h4 style="color: #d93025; margin: 0 0 8px 0; font-size: 18px; font-weight: 600;">📊 Log & Security Analytics</h4>
+            <p style="font-size: 15.5px; color: #5f6368; margin: 0; line-height: 1.65;"><b>Elasticsearch, OpenSearch, Splunk</b><br>Ingests petabytes of operational server logs, security event traces, and telemetry for real-time querying.</p>
         </div>
         """, unsafe_allow_html=True)
     with app_cols[2]:
         st.markdown("""
-        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px; margin-bottom: 12px;">
-            <h4 style="color: #1e293b; margin: 0 0 6px 0;">🛒 E-Commerce Catalogs</h4>
-            <p style="font-size: 13.5px; color: #64748b; margin: 0;"><b>Amazon, Flipkart, Shopify</b><br>Enables instant product searches across millions of SKUs with faceted attribute filtering and typo tolerance.</p>
+        <div style="background: #ffffff; border: 1px solid #dadce0; border-top: 4px solid #FBBC05; border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(60,64,67,0.08);">
+            <h4 style="color: #f9ab00; margin: 0 0 8px 0; font-size: 18px; font-weight: 600;">🛒 E-Commerce Catalogs</h4>
+            <p style="font-size: 15.5px; color: #5f6368; margin: 0; line-height: 1.65;"><b>Amazon, Flipkart, Shopify</b><br>Enables instant product searches across millions of SKUs with faceted attribute filtering and typo tolerance.</p>
         </div>
         """, unsafe_allow_html=True)
 
     app_cols2 = st.columns(3)
     with app_cols2[0]:
         st.markdown("""
-        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px;">
-            <h4 style="color: #1e293b; margin: 0 0 6px 0;">💻 Codebase Intelligence</h4>
-            <p style="font-size: 13.5px; color: #64748b; margin: 0;"><b>GitHub Code Search, Sourcegraph, VS Code</b><br>Indexes abstract syntax trees (ASTs), symbols, and identifiers across billions of lines of open-source code.</p>
+        <div style="background: #ffffff; border: 1px solid #dadce0; border-top: 4px solid #34A853; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(60,64,67,0.08);">
+            <h4 style="color: #1e8e3e; margin: 0 0 8px 0; font-size: 18px; font-weight: 600;">💻 Codebase Intelligence</h4>
+            <p style="font-size: 15.5px; color: #5f6368; margin: 0; line-height: 1.65;"><b>GitHub Code Search, Sourcegraph, VS Code</b><br>Indexes abstract syntax trees (ASTs), symbols, and identifiers across billions of lines of code.</p>
         </div>
         """, unsafe_allow_html=True)
     with app_cols2[1]:
         st.markdown("""
-        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px;">
-            <h4 style="color: #1e293b; margin: 0 0 6px 0;">🗄️ Relational & NoSQL DBs</h4>
-            <p style="font-size: 13.5px; color: #64748b; margin: 0;"><b>PostgreSQL GIN, MySQL FULLTEXT, MongoDB</b><br>Powers native full-text search extensions inside relational databases without external search services.</p>
+        <div style="background: #ffffff; border: 1px solid #dadce0; border-top: 4px solid #4285F4; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(60,64,67,0.08);">
+            <h4 style="color: #1a73e8; margin: 0 0 8px 0; font-size: 18px; font-weight: 600;">🗄️ Relational & NoSQL DBs</h4>
+            <p style="font-size: 15.5px; color: #5f6368; margin: 0; line-height: 1.65;"><b>PostgreSQL GIN, MySQL FULLTEXT, MongoDB</b><br>Powers native full-text search extensions inside databases without external search engines.</p>
         </div>
         """, unsafe_allow_html=True)
     with app_cols2[2]:
         st.markdown("""
-        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px;">
-            <h4 style="color: #1e293b; margin: 0 0 6px 0;">🤖 Hybrid AI Search (RAG)</h4>
-            <p style="font-size: 13.5px; color: #64748b; margin: 0;"><b>Qdrant, Pinecone, LanceDB</b><br>Combines sparse BM25 inverted indexes with dense vector embeddings to provide hallucination-free context to LLMs.</p>
+        <div style="background: #ffffff; border: 1px solid #dadce0; border-top: 4px solid #EA4335; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(60,64,67,0.08);">
+            <h4 style="color: #d93025; margin: 0 0 8px 0; font-size: 18px; font-weight: 600;">🤖 Hybrid AI Search (RAG)</h4>
+            <p style="font-size: 15.5px; color: #5f6368; margin: 0; line-height: 1.65;"><b>Qdrant, Pinecone, LanceDB</b><br>Combines sparse BM25 inverted indexes with dense vector embeddings to provide hallucination-free context to LLMs.</p>
         </div>
         """, unsafe_allow_html=True)
 
@@ -1283,15 +1299,17 @@ def render_purpose_section():
     with col_lo1:
         st.subheader("Key Learning Objectives")
         for i, obj in enumerate(EXPERIMENT_CONFIG["objectives"]):
-            st.markdown(f"**{i+1}.** {obj}")
+            st.markdown(f"<p style='font-size: 17px; line-height: 1.7; margin-bottom: 8px;'><b>{i+1}.</b> {obj}</p>", unsafe_allow_html=True)
     with col_lo2:
         st.subheader("Prerequisites & Foundations")
-        st.markdown(r"""
-        - **Data Structures:** Hash Tables, Arrays, Singly Linked Lists, Dictionaries.
-        - **Discrete Mathematics:** Set operations (Intersection $\cap$, Union $\cup$, Difference $\setminus$).
-        - **Text Processing:** Tokenization, Regular Expressions, String Normalization.
-        - **Algorithmic Analysis:** Big-O notation, Two-Pointer Merge Algorithms ($O(L_1 + L_2)$).
-        """)
+        st.markdown("""
+        <ul style="font-size: 17px; line-height: 1.8; color: #202124;">
+            <li><b>Data Structures:</b> Hash Tables, Arrays, Singly Linked Lists, Dictionaries.</li>
+            <li><b>Discrete Mathematics:</b> Set operations (Intersection &cap;, Union &cup;, Difference &setminus;).</li>
+            <li><b>Text Processing:</b> Tokenization, Regular Expressions, String Normalization.</li>
+            <li><b>Algorithmic Analysis:</b> Big-O notation, Two-Pointer Merge Algorithms (<code>O(L1 + L2)</code>).</li>
+        </ul>
+        """, unsafe_allow_html=True)
 
 
 
@@ -1701,8 +1719,8 @@ def render_simulation_section():
     st.markdown("""
     <div class="vlab-header-wrap">
         <div class="vlab-logo-text">
-            <span class="g-blue">G</span><span class="g-red">o</span><span class="g-yellow">o</span><span class="g-blue">g</span><span class="g-green">l</span><span class="g-red">e</span>
-            <span class="vlab-edition-badge">Search Engine Simulator</span>
+            <span class="g-blue">V</span><span class="g-red">L</span><span class="g-yellow">a</span><span class="g-blue">b</span> <span class="g-green">S</span><span class="g-red">e</span><span class="g-yellow">a</span><span class="g-blue">r</span><span class="g-green">c</span><span class="g-red">h</span>
+            <span class="vlab-edition-badge">Engine Simulator</span>
         </div>
         <div class="vlab-subtext">
             Explore how an Information Retrieval search engine works under the hood: Crawling, Linguistic Normalization, Inverted Indexing, Two-Pointer Postings Merge, and SERP Ranking.
@@ -2723,10 +2741,10 @@ def render_certificate_section():
             has successfully conducted, analyzed, and completed the experimental laboratory requirements for<br>
             <b style="color: #0f172a; font-size: 15px;">Experiment 3: Construction of an Inverted Index</b>, demonstrating verified competency in:
             <div style="display: flex; justify-content: center; gap: 16px; margin-top: 10px; flex-wrap: wrap;">
-                <span style="background: #e0f2fe; color: #0369a1; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">• Lexicon & Postings Construction</span>
-                <span style="background: #dcfce7; color: #15803d; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">• Two-Pointer Merge O(L1 + L2)</span>
-                <span style="background: #fef3c7; color: #b45309; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">• Linguistic Normalization</span>
-                <span style="background: #f3e8ff; color: #7e22ce; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">• Zipf's Law Validation</span>
+                <span style="background: #e8f0fe; color: #1a73e8; padding: 5px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;">• Lexicon & Postings Construction</span>
+                <span style="background: #fce8e6; color: #d93025; padding: 5px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;">• Two-Pointer Merge O(L1 + L2)</span>
+                <span style="background: #fef7e0; color: #b06000; padding: 5px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;">• Linguistic Normalization</span>
+                <span style="background: #e6f4ea; color: #1e8e3e; padding: 5px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;">• Zipf's Law Validation</span>
             </div>
         </div>
 
@@ -2783,119 +2801,183 @@ def render_certificate_section():
 
 def main():
     st.set_page_config(
-        page_title="VLab: Construction of an Inverted Index",
-        page_icon="🔬",
+        page_title="Inverted Index Virtual Lab",
+        page_icon="🔍",
         layout="wide",
         initial_sidebar_state="expanded"
     )
 
     init_session_state()
+    st.session_state["theme_mode"] = "☀️ Light Mode"
 
-    # Sidebar: Theme Switcher
-    st.sidebar.markdown("### Virtual Laboratory")
-    st.sidebar.caption("Knowledge Graphs & Information Retrieval")
+    # Google Fonts & Comprehensive Google Design Language Injection
+    st.markdown("""
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Roboto+Mono:wght@400;500;600&display=swap');
 
-    theme_mode = st.sidebar.radio(
-        "Display Mode",
-        options=["☀️ Light Mode", "🌙 Dark Mode", "⚙️ System Default"],
-        index=0 if st.session_state.get("theme_mode") == "☀️ Light Mode" else (1 if st.session_state.get("theme_mode") == "🌙 Dark Mode" else 2),
-        horizontal=True
-    )
-    st.session_state["theme_mode"] = theme_mode
+        /* Universal Typography using Google Sans & Roboto */
+        * {
+            font-family: 'Google Sans', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+        }
+        code, pre, .mono, kbd {
+            font-family: 'Roboto Mono', 'SFMono-Regular', Consolas, Menlo, monospace !important;
+        }
 
-    # CSS Injection for Clean Theming
-    if theme_mode == "☀️ Light Mode":
-        st.markdown("""
-        <style>
-            /* Explicit Light Theme */
-            [data-testid="stAppViewContainer"] {
-                background-color: #ffffff !important;
-                color: #0f172a !important;
-            }
-            [data-testid="stSidebar"] {
-                background-color: #f8fafc !important;
-                color: #0f172a !important;
-                border-right: 1px solid #e2e8f0;
-            }
-            [data-testid="stHeader"] {
-                background-color: #ffffff !important;
-            }
-            .stAlert {
-                border-radius: 8px;
-            }
-            
-            /* Enhanced Typography & Modern Look-and-Feel */
-            html, body, [class*="css"], [data-testid="stMarkdownContainer"] p {
-                font-size: 16px !important;
-                line-height: 1.65 !important;
-            }
-            h1 { font-size: 2.25rem !important; font-weight: 750 !important; }
-            h2 { font-size: 1.75rem !important; font-weight: 700 !important; }
-            h3 { font-size: 1.38rem !important; font-weight: 650 !important; }
-            h4 { font-size: 1.15rem !important; font-weight: 600 !important; }
-            .stButton > button {
-                border-radius: 8px !important;
-                font-size: 15px !important;
-                font-weight: 600 !important;
-            }
+        /* Base Body Typography with Significantly Increased Font Size */
+        html, body, [class*="css"], [data-testid="stMarkdownContainer"] p, [data-testid="stMarkdownContainer"] li {
+            font-size: 18px !important;
+            line-height: 1.75 !important;
+            color: #202124 !important;
+        }
 
-            .metric-card {
-                background-color: #f1f5f9;
-                border: 1px solid #cbd5e1;
-                border-radius: 8px;
-                padding: 12px;
-            }
-        </style>
-        """, unsafe_allow_html=True)
-    elif theme_mode == "🌙 Dark Mode":
-        st.markdown("""
-        <style>
-            /* Explicit Dark Theme */
-            [data-testid="stAppViewContainer"] {
-                background-color: #0f172a !important;
-                color: #f8fafc !important;
-            }
-            [data-testid="stSidebar"] {
-                background-color: #1e293b !important;
-                color: #f8fafc !important;
-                border-right: 1px solid #334155;
-            }
-            [data-testid="stHeader"] {
-                background-color: #0f172a !important;
-            }
-            
-            /* Enhanced Typography & Modern Look-and-Feel */
-            html, body, [class*="css"], [data-testid="stMarkdownContainer"] p {
-                font-size: 16px !important;
-                line-height: 1.65 !important;
-            }
-            h1 { font-size: 2.25rem !important; font-weight: 750 !important; }
-            h2 { font-size: 1.75rem !important; font-weight: 700 !important; }
-            h3 { font-size: 1.38rem !important; font-weight: 650 !important; }
-            h4 { font-size: 1.15rem !important; font-weight: 600 !important; }
-            .stButton > button {
-                border-radius: 8px !important;
-                font-size: 15px !important;
-                font-weight: 600 !important;
-            }
+        /* Headings Hierarchy */
+        h1, .stTitle {
+            font-size: 2.6rem !important;
+            font-weight: 700 !important;
+            color: #202124 !important;
+            letter-spacing: -0.5px !important;
+            margin-bottom: 16px !important;
+        }
+        h2, .stHeader {
+            font-size: 2.1rem !important;
+            font-weight: 650 !important;
+            color: #202124 !important;
+            margin-top: 24px !important;
+            margin-bottom: 12px !important;
+        }
+        h3, .stSubheader {
+            font-size: 1.65rem !important;
+            font-weight: 600 !important;
+            color: #202124 !important;
+            margin-top: 18px !important;
+            margin-bottom: 10px !important;
+        }
+        h4 {
+            font-size: 1.32rem !important;
+            font-weight: 600 !important;
+            color: #202124 !important;
+            margin-top: 14px !important;
+            margin-bottom: 8px !important;
+        }
 
-            .metric-card {
-                background-color: #1e293b;
-                border: 1px solid #334155;
-                border-radius: 8px;
-                padding: 12px;
-            }
-        </style>
-        """, unsafe_allow_html=True)
+        /* Clean Google Surfaces */
+        [data-testid="stAppViewContainer"] {
+            background-color: #ffffff !important;
+            color: #202124 !important;
+        }
+        [data-testid="stHeader"] {
+            background-color: #ffffff !important;
+        }
 
-    # Standard Streamlit Title
+        /* Google Sidebar with Increased Font Size and Clean Spacing */
+        [data-testid="stSidebar"] {
+            background-color: #f8f9fa !important;
+            border-right: 1px solid #dadce0 !important;
+            padding-top: 28px !important;
+        }
+        [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p,
+        [data-testid="stSidebar"] label,
+        [data-testid="stSidebar"] span {
+            font-size: 18px !important;
+            font-weight: 500 !important;
+            color: #202124 !important;
+        }
+        [data-testid="stSidebar"] .stRadio > div {
+            gap: 6px !important;
+        }
+        [data-testid="stSidebar"] .stRadio label {
+            padding: 8px 14px !important;
+            border-radius: 20px !important;
+            transition: all 0.2s ease !important;
+            cursor: pointer !important;
+        }
+        [data-testid="stSidebar"] .stRadio label:hover {
+            background-color: #e8f0fe !important;
+            color: #1a73e8 !important;
+        }
+
+        /* Google Pill Buttons */
+        .stButton > button {
+            font-size: 17px !important;
+            font-weight: 600 !important;
+            border-radius: 24px !important;
+            padding: 10px 26px !important;
+            border: 1px solid #dadce0 !important;
+            background-color: #ffffff !important;
+            color: #202124 !important;
+            box-shadow: 0 1px 3px rgba(60,64,67,0.12) !important;
+            transition: all 0.2s ease !important;
+        }
+        .stButton > button:hover {
+            background-color: #f8f9fa !important;
+            border-color: #dadce0 !important;
+            color: #1a73e8 !important;
+            box-shadow: 0 1px 4px rgba(60,64,67,0.25) !important;
+        }
+        .stButton > button[kind="primary"] {
+            background-color: #1a73e8 !important;
+            border-color: #1a73e8 !important;
+            color: #ffffff !important;
+        }
+        .stButton > button[kind="primary"]:hover {
+            background-color: #1765cc !important;
+            box-shadow: 0 1px 4px rgba(66,133,244,0.4) !important;
+        }
+
+        /* Google Rounded Text Inputs */
+        .stTextInput > div > div > input {
+            font-size: 17.5px !important;
+            border-radius: 24px !important;
+            border: 1px solid #dfe1e5 !important;
+            padding: 11px 22px !important;
+            color: #202124 !important;
+        }
+        .stTextInput > div > div > input:focus {
+            border-color: #4285F4 !important;
+            box-shadow: 0 1px 6px rgba(66,133,244,0.3) !important;
+        }
+
+        /* Streamlit Tabs */
+        .stTabs [data-baseweb="tab-list"] {
+            gap: 8px;
+            border-bottom: 2px solid #dadce0;
+        }
+        .stTabs [data-baseweb="tab"] {
+            font-size: 17.5px !important;
+            font-weight: 500 !important;
+            color: #5f6368 !important;
+            padding: 10px 18px !important;
+            border-radius: 8px 8px 0 0 !important;
+        }
+        .stTabs [aria-selected="true"] {
+            color: #1a73e8 !important;
+            border-bottom: 3px solid #1a73e8 !important;
+            font-weight: 600 !important;
+        }
+
+        /* Clean Google Metric Cards */
+        .metric-card {
+            background-color: #ffffff !important;
+            border: 1px solid #dadce0 !important;
+            border-radius: 12px !important;
+            padding: 18px !important;
+            box-shadow: 0 1px 3px rgba(60,64,67,0.08) !important;
+        }
+
+        /* Streamlit Alerts & Banners */
+        .stAlert {
+            border-radius: 12px !important;
+            font-size: 17px !important;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+
+    # Clean Title (Without subtitle)
     st.title(EXPERIMENT_CONFIG["title"])
-    st.caption(f"{EXPERIMENT_CONFIG['portal']} | {EXPERIMENT_CONFIG['subject']}")
 
-    st.sidebar.divider()
-
+    # Sidebar: Strictly and exclusively the requested 7 Navigation items
     section = st.sidebar.radio(
-        "Navigation Menu",
+        "Navigation",
         options=[
             "Purpose",
             "Theory",
@@ -2904,20 +2986,9 @@ def main():
             "Report Generation",
             "Certificate",
             "References"
-        ]
+        ],
+        label_visibility="collapsed"
     )
-
-    st.sidebar.divider()
-    st.sidebar.subheader("Session Progress Tracker")
-    st.sidebar.write(f"- **Active Section:** `{section}`")
-    st.sidebar.write(f"- **Recorded Trials:** `{len(st.session_state['trials'])}`")
-    quiz_done = st.session_state.get("quiz_submitted", False)
-    st.sidebar.write(f"- **Quiz Completed:** `{'Yes' if quiz_done else 'Pending'}`")
-    if quiz_done:
-        st.sidebar.write(f"- **Quiz Score:** `{st.session_state.get('quiz_score', 0)} / {len(QUIZ_QUESTIONS)}`")
-
-    st.sidebar.divider()
-    st.sidebar.caption(f"Course: {EXPERIMENT_CONFIG['subject']}\nAllocated: {EXPERIMENT_CONFIG['target_rolls']}")
 
     # Section Dispatcher
     if section == "Purpose":
