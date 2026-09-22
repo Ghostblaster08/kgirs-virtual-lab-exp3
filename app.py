@@ -1396,7 +1396,7 @@ def highlight_search_terms(text: str, query_str: str) -> str:
 
 
 def inject_vlab_search_styles(is_dark_mode: bool = False):
-    """Injects authentic, clean Google Search Engine styling for the interactive simulator."""
+    """Injects authentic, clean Google Search Engine styling for the interactive simulator with consistent enlarged fonts."""
     bg_card = "#202124" if is_dark_mode else "#ffffff"
     border_card = "#3c4043" if is_dark_mode else "#dadce0"
     text_primary = "#e8eaed" if is_dark_mode else "#202124"
@@ -1417,12 +1417,12 @@ def inject_vlab_search_styles(is_dark_mode: bool = False):
     /* VLab Search Header */
     .vlab-header-wrap {{
         text-align: center;
-        padding: 16px 0 10px 0;
-        margin-bottom: 8px;
+        padding: 20px 0 14px 0;
+        margin-bottom: 12px;
     }}
     .vlab-logo-text {{
-        font-family: 'Product Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        font-size: 38px;
+        font-family: 'Product Sans', 'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-size: 42px;
         font-weight: 700;
         letter-spacing: -1.2px;
         display: inline-block;
@@ -1433,153 +1433,160 @@ def inject_vlab_search_styles(is_dark_mode: bool = False):
     .g-yellow {{ color: #FBBC05; }}
     .g-green {{ color: #34A853; }}
     .vlab-edition-badge {{
-        font-size: 13px;
+        font-size: 15px;
         font-weight: 600;
         color: {text_secondary};
-        letter-spacing: 0.5px;
+        letter-spacing: 0.8px;
         text-transform: uppercase;
-        margin-left: 8px;
+        margin-left: 10px;
         vertical-align: middle;
     }}
     .vlab-subtext {{
-        font-size: 14px;
+        font-size: 16.5px;
         color: {text_secondary};
-        margin-top: 4px;
+        margin-top: 6px;
+        line-height: 1.6;
     }}
 
     /* Search Bar Wrapper */
     .vlab-search-container {{
-        max-width: 760px;
-        margin: 0 auto 14px auto;
+        max-width: 820px;
+        margin: 0 auto 18px auto;
     }}
 
     /* Stepper Navigation Bar */
     .vlab-stepper-wrap {{
         background: {bg_card};
         border: 1px solid {border_card};
-        border-radius: 12px;
-        padding: 14px 18px;
-        margin: 16px 0;
-        box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        border-radius: 14px;
+        padding: 18px 24px;
+        margin: 18px 0;
+        box-shadow: 0 1px 4px rgba(60,64,67,0.08);
     }}
     .stepper-label {{
-        font-size: 11px;
+        font-size: 14px;
         font-weight: 700;
         letter-spacing: 1px;
         text-transform: uppercase;
         color: #1a73e8;
-        margin-bottom: 8px;
+        margin-bottom: 10px;
     }}
     .stepper-pipeline-flow {{
         display: flex;
         flex-wrap: wrap;
-        gap: 6px;
+        gap: 8px;
         align-items: center;
         margin-bottom: 8px;
     }}
     .step-pill {{
         background: {chip_bg};
         border: 1px solid {chip_border};
-        border-radius: 20px;
-        padding: 5px 14px;
-        font-size: 12px;
+        border-radius: 24px;
+        padding: 7px 18px;
+        font-size: 15.5px;
         font-weight: 600;
         color: {text_secondary};
         display: inline-flex;
         align-items: center;
-        gap: 6px;
+        gap: 8px;
+        transition: all 0.2s ease;
     }}
     .step-pill.active {{
         background: #1a73e8;
         border-color: #1a73e8;
         color: #ffffff !important;
-        box-shadow: 0 2px 6px rgba(26, 115, 232, 0.35);
+        box-shadow: 0 2px 8px rgba(26, 115, 232, 0.4);
     }}
     .step-arrow {{
         color: {text_secondary};
-        font-size: 12px;
+        font-size: 16px;
+        font-weight: bold;
     }}
 
     /* Cards */
     .vlab-card {{
         background: {bg_card};
         border: 1px solid {border_card};
-        border-radius: 10px;
-        padding: 16px 20px;
-        margin-bottom: 12px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        border-radius: 12px;
+        padding: 20px 24px;
+        margin-bottom: 16px;
+        box-shadow: 0 1px 3px rgba(60,64,67,0.08);
+        font-size: 17px;
     }}
     .vlab-doc-card {{
         background: {bg_card};
         border: 1px solid {border_card};
-        border-left: 4px solid #4285F4;
-        border-radius: 8px;
-        padding: 12px 16px;
-        margin-bottom: 10px;
+        border-left: 5px solid #4285F4;
+        border-radius: 10px;
+        padding: 16px 22px;
+        margin-bottom: 14px;
+        box-shadow: 0 1px 3px rgba(60,64,67,0.06);
     }}
     .vlab-token-badge {{
         display: inline-flex;
         align-items: center;
         background: {chip_bg};
         border: 1px solid {chip_border};
-        border-radius: 6px;
-        padding: 3px 8px;
-        margin: 3px;
-        font-family: monospace;
-        font-size: 12px;
+        border-radius: 8px;
+        padding: 5px 12px;
+        margin: 4px;
+        font-family: 'Roboto Mono', monospace;
+        font-size: 15.5px;
         color: {text_primary};
     }}
     .vlab-token-badge small {{
         color: #1a73e8;
         font-weight: bold;
-        margin-left: 5px;
+        margin-left: 6px;
+        font-size: 13.5px;
     }}
 
     /* Postings Chain */
     .postings-row {{
         background: {bg_card};
         border: 1px solid {border_card};
-        border-radius: 8px;
-        padding: 10px 14px;
-        margin-bottom: 8px;
+        border-radius: 10px;
+        padding: 12px 18px;
+        margin-bottom: 10px;
         display: flex;
         flex-wrap: wrap;
         align-items: center;
-        gap: 8px;
+        gap: 10px;
     }}
     .dict-term-pill {{
         background: #1a73e8;
         color: #ffffff;
         font-weight: 600;
-        font-family: monospace;
-        font-size: 13px;
-        padding: 4px 12px;
-        border-radius: 6px;
+        font-family: 'Roboto Mono', monospace;
+        font-size: 16.5px;
+        padding: 6px 14px;
+        border-radius: 8px;
         display: inline-flex;
         align-items: center;
-        gap: 6px;
+        gap: 8px;
     }}
     .dict-freq-tag {{
         background: rgba(255, 255, 255, 0.25);
         color: #ffffff;
-        font-size: 10px;
-        padding: 1px 5px;
-        border-radius: 4px;
+        font-size: 13px;
+        padding: 2px 7px;
+        border-radius: 5px;
+        font-weight: 500;
     }}
     .posting-node {{
         background: {post_node_bg};
         border: 1px solid {post_node_border};
         color: {post_node_text};
-        font-size: 12px;
-        border-radius: 6px;
-        padding: 4px 10px;
+        font-size: 15.5px;
+        border-radius: 8px;
+        padding: 6px 14px;
         display: inline-flex;
         align-items: center;
-        gap: 6px;
+        gap: 8px;
     }}
     .chain-arrow {{
         color: {text_secondary};
-        font-size: 14px;
+        font-size: 16px;
         font-weight: bold;
     }}
 
@@ -1587,16 +1594,16 @@ def inject_vlab_search_styles(is_dark_mode: bool = False):
     .pointer-film-track {{
         display: flex;
         flex-wrap: wrap;
-        gap: 6px;
-        margin: 6px 0;
+        gap: 8px;
+        margin: 8px 0;
     }}
     .track-pill {{
         background: {chip_bg};
         border: 1px solid {chip_border};
-        border-radius: 6px;
-        padding: 4px 10px;
-        font-size: 12px;
-        font-family: monospace;
+        border-radius: 8px;
+        padding: 6px 14px;
+        font-size: 15.5px;
+        font-family: 'Roboto Mono', monospace;
         color: {text_primary};
     }}
     .track-pill.matched {{
@@ -1604,26 +1611,27 @@ def inject_vlab_search_styles(is_dark_mode: bool = False):
         border-color: {match_border};
         color: {match_text} !important;
         font-weight: 700;
+        box-shadow: 0 1px 3px rgba(30, 142, 62, 0.2);
     }}
 
     /* Real Google SERP Styling */
     .serp-container {{
         background: {bg_card};
         border: 1px solid {border_card};
-        border-radius: 12px;
-        padding: 20px 24px;
-        margin-top: 14px;
+        border-radius: 14px;
+        padding: 24px 28px;
+        margin-top: 16px;
     }}
     .serp-stats {{
-        font-size: 13px;
+        font-size: 16.5px;
         color: {text_secondary};
-        padding-bottom: 12px;
-        margin-bottom: 14px;
+        padding-bottom: 14px;
+        margin-bottom: 16px;
         border-bottom: 1px solid {border_card};
     }}
     .serp-item {{
-        margin-bottom: 20px;
-        padding-bottom: 16px;
+        margin-bottom: 24px;
+        padding-bottom: 18px;
         border-bottom: 1px dashed {border_card};
     }}
     .serp-item:last-child {{
@@ -1632,36 +1640,37 @@ def inject_vlab_search_styles(is_dark_mode: bool = False):
         padding-bottom: 0;
     }}
     .serp-url {{
-        font-size: 12px;
+        font-size: 15.5px;
         color: {serp_url};
-        margin-bottom: 3px;
+        margin-bottom: 4px;
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: 8px;
     }}
     .serp-favicon {{
-        width: 16px;
-        height: 16px;
+        width: 20px;
+        height: 20px;
         border-radius: 50%;
         background: #1a73e8;
         color: #ffffff;
-        font-size: 10px;
+        font-size: 12px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         font-weight: bold;
     }}
     .serp-title {{
-        font-size: 18px;
+        font-size: 22px;
         font-weight: 500;
         color: {serp_title};
-        margin-bottom: 4px;
+        margin-bottom: 6px;
+        line-height: 1.35;
     }}
     .serp-snippet {{
-        font-size: 13.5px;
-        line-height: 1.5;
+        font-size: 17px;
+        line-height: 1.65;
         color: {text_primary};
-        margin-bottom: 6px;
+        margin-bottom: 8px;
     }}
     .serp-snippet b {{
         font-weight: 700;
@@ -1672,29 +1681,30 @@ def inject_vlab_search_styles(is_dark_mode: bool = False):
         align-items: center;
         background: {chip_bg};
         border: 1px solid {chip_border};
-        border-radius: 4px;
-        font-size: 11px;
+        border-radius: 6px;
+        font-size: 14.5px;
         color: {text_secondary};
-        padding: 2px 8px;
+        padding: 4px 10px;
     }}
     .no-results-box {{
-        padding: 20px;
+        padding: 24px;
         background: {chip_bg};
         border: 1px solid {chip_border};
-        border-radius: 8px;
+        border-radius: 10px;
         color: {text_primary};
+        font-size: 17px;
     }}
     .radar-stat-pill {{
         background: {chip_bg};
         border: 1px solid {chip_border};
-        padding: 6px 12px;
-        border-radius: 6px;
-        font-size: 12px;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 15.5px;
         display: inline-flex;
         align-items: center;
-        gap: 6px;
-        margin-right: 8px;
-        margin-bottom: 8px;
+        gap: 8px;
+        margin-right: 10px;
+        margin-bottom: 10px;
     }}
     </style>
     """, unsafe_allow_html=True)
@@ -1920,6 +1930,11 @@ def render_simulation_section():
         t_end = time.perf_counter()
         query_latency_us = round((t_end - t_start) * 1_000_000, 2)
 
+    # Persist search telemetry for sidebar logger access
+    st.session_state["last_query"] = executed_query_str
+    st.session_state["last_hits"] = len(query_result_docs)
+    st.session_state["last_time_us"] = query_latency_us
+
     # Pipeline Stepper & Controls
     st.divider()
     active_step = st.session_state["sim_active_step"]
@@ -1937,7 +1952,7 @@ def render_simulation_section():
     <div class="vlab-stepper-wrap">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap;">
             <span class="stepper-label">HOW VLAB SEARCH WORKS: 5-STAGE IR PIPELINE</span>
-            <span style="font-size: 12px; color: #1a73e8; font-weight: 600;">Currently Active: {step_titles[active_step]}</span>
+            <span style="font-size: 15.5px; color: #1a73e8; font-weight: 600;">Currently Active: {step_titles[active_step]}</span>
         </div>
         <div class="stepper-pipeline-flow">
             <span class="step-pill {'active' if active_step == 1 else ''}">1. Web Crawl & Corpus</span>
@@ -2052,12 +2067,12 @@ def render_simulation_section():
             word_count = len(text.split())
             st.markdown(f"""
             <div class="vlab-doc-card">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                    <span style="font-weight: 600; color: #1a73e8; font-size: 13px;">https://corpus.vlab.internal › documents › doc{doc_id}</span>
-                    <span style="font-size: 11px; color: #9aa0a6;">DocID: {doc_id} | {word_count} words</span>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                    <span style="font-weight: 600; color: #1a73e8; font-size: 15.5px;">https://corpus.vlab.internal › documents › doc{doc_id}</span>
+                    <span style="font-size: 14.5px; color: #5f6368;">DocID: {doc_id} | {word_count} words</span>
                 </div>
-                <div style="font-size: 14px; font-weight: 500; margin-bottom: 4px;">Document {doc_id} Content</div>
-                <div style="font-size: 13px; color: #5f6368;">"{text}"</div>
+                <div style="font-size: 18px; font-weight: 600; margin-bottom: 6px; color: #202124;">Document {doc_id} Content</div>
+                <div style="font-size: 17px; color: #3c4043; line-height: 1.65;">"{text}"</div>
             </div>
             """, unsafe_allow_html=True)
 
@@ -2106,11 +2121,11 @@ def render_simulation_section():
             raw_text = active_corpus.get(doc_id, "")
             st.markdown(f"""
             <div class="vlab-card">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
-                    <span style="font-weight: 600; font-size: 13px; color: #1a73e8;">Doc {doc_id} Normalized Stream</span>
-                    <span style="font-size: 11px; color: #9aa0a6;">{len(tokens)} normalized tokens</span>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                    <span style="font-weight: 600; font-size: 17px; color: #1a73e8;">Doc {doc_id} Normalized Stream</span>
+                    <span style="font-size: 14.5px; color: #5f6368;">{len(tokens)} normalized tokens</span>
                 </div>
-                <div style="font-size: 12px; color: #70757a; margin-bottom: 6px; font-style: italic;">Original: "{raw_text}"</div>
+                <div style="font-size: 16px; color: #5f6368; margin-bottom: 10px; font-style: italic;">Original: "{raw_text}"</div>
                 <div>{chips_html}</div>
             </div>
             """, unsafe_allow_html=True)
@@ -2163,7 +2178,7 @@ def render_simulation_section():
                 <span class="posting-node">
                     <b>Doc {d}</b>
                     <span style="color: #1a73e8;">tf:{data['tf']}</span>
-                    <span style="color: #70757a; font-size: 11px;">pos:{data['positions']}</span>
+                    <span style="color: #5f6368; font-size: 13.5px;">pos:{data['positions']}</span>
                 </span>
                 """)
             nodes_rendered = '<span class="chain-arrow">──►</span>'.join(nodes_html)
@@ -2214,9 +2229,9 @@ def render_simulation_section():
 
         st.markdown(f"""
         <div class="vlab-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #dadce0; padding-bottom: 8px; margin-bottom: 10px; flex-wrap: wrap;">
-                <span style="font-weight: 600; font-size: 13px; color: #1a73e8;">QUERY EXECUTION TELEMETRY</span>
-                <span style="font-size: 12px; color: #5f6368;">Active Query: <code style="color: #1a73e8;">{executed_query_str}</code></span>
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #dadce0; padding-bottom: 10px; margin-bottom: 12px; flex-wrap: wrap;">
+                <span style="font-weight: 700; font-size: 16px; color: #1a73e8;">QUERY EXECUTION TELEMETRY</span>
+                <span style="font-size: 15.5px; color: #5f6368;">Active Query: <code style="color: #1a73e8; font-size: 15.5px;">{executed_query_str}</code></span>
             </div>
             <div style="display: flex; flex-wrap: wrap;">
                 <span class="radar-stat-pill">⚡ <b>Engine Latency:</b> <span style="color: #1a73e8;">{query_latency_us} µs</span></span>
@@ -2239,11 +2254,11 @@ def render_simulation_section():
             ])
             st.markdown(f"""
             <div class="vlab-card">
-                <div style="margin-bottom: 4px; font-size: 12px; color: #1a73e8; font-weight: 600;"><b>Pointer 1:</b> Term '{t1_label}' Postings ({len(p1_docs_global)} docs)</div>
+                <div style="margin-bottom: 6px; font-size: 16.5px; color: #1a73e8; font-weight: 600;"><b>Pointer 1:</b> Term '{t1_label}' Postings ({len(p1_docs_global)} docs)</div>
                 <div class="pointer-film-track">{t1_pills}</div>
-                <div style="margin-top: 10px; margin-bottom: 4px; font-size: 12px; color: #5f6368; font-weight: 600;"><b>Pointer 2:</b> Term '{t2_label}' Postings ({len(p2_docs_global)} docs)</div>
+                <div style="margin-top: 14px; margin-bottom: 6px; font-size: 16.5px; color: #5f6368; font-weight: 600;"><b>Pointer 2:</b> Term '{t2_label}' Postings ({len(p2_docs_global)} docs)</div>
                 <div class="pointer-film-track">{t2_pills}</div>
-                <div style="margin-top: 8px; font-size: 11.5px; color: #1e8e3e;">● Highlighted green boxes indicate intersected matching documents added to the results list.</div>
+                <div style="margin-top: 12px; font-size: 15px; color: #1e8e3e; font-weight: 500;">● Highlighted green boxes indicate intersected matching documents added to the results list.</div>
             </div>
             """, unsafe_allow_html=True)
 
@@ -2299,8 +2314,8 @@ def render_simulation_section():
             st.markdown(f"""
             <div class="no-results-box">
                 <p>Your search - <b>{executed_query_str}</b> - did not match any documents in the active index.</p>
-                <p style="margin-top: 10px; font-size: 13px;">Suggestions:</p>
-                <ul style="font-size: 13px; color: #5f6368;">
+                <p style="margin-top: 12px; font-size: 16.5px; font-weight: 600;">Suggestions:</p>
+                <ul style="font-size: 16px; color: #5f6368; line-height: 1.7;">
                     <li>Make sure all words are spelled correctly.</li>
                     <li>Try different keywords or terms present in the corpus.</li>
                     <li>Try a disjunctive query with <code>OR</code> instead of <code>AND</code>.</li>
@@ -2382,47 +2397,23 @@ def render_simulation_section():
             )
             st.plotly_chart(fig_df, use_container_width=True)
 
-    # Experimental Trial Logger
+    # Experimental Trial Logger Callout (Moved to Sidebar)
     st.divider()
-    st.subheader("7. Experimental Data Log Book")
-    col_log1, col_log2 = st.columns([1.5, 3.5])
-
-    with col_log1:
-        st.caption("Record experimental parameters and retrieval metrics into your session log:")
-        if st.button("Record Current Trial", type="primary", use_container_width=True):
-            trial_record = {
-                "Trial #": len(st.session_state["trials"]) + 1,
-                "Corpus": active_corpus_name.split(":")[0],
-                "Stopwords": "ON" if st.session_state["opt_stopwords"] else "OFF",
-                "Stemming": "ON" if st.session_state["opt_stemming"] else "OFF",
-                "Vocab |V|": index_results["vocab_size"],
-                "Total Postings": index_results["total_postings"],
-                "Query": executed_query_str,
-                "Hits": len(query_result_docs),
-                "Time (us)": query_latency_us,
-                "Timestamp": datetime.now().strftime("%H:%M:%S")
-            }
-            st.session_state["trials"].append(trial_record)
-            st.toast(f"Trial #{trial_record['Trial #']} successfully recorded into session log!", icon="✅")
-
-        if st.button("Clear Logged Trials", use_container_width=True):
-            st.session_state["trials"] = []
-            st.toast("Experimental trials reset.")
-
-    with col_log2:
-        if st.session_state["trials"]:
-            df_trials = pd.DataFrame(st.session_state["trials"])
-            st.dataframe(df_trials, use_container_width=True, hide_index=True)
-            csv_data = df_trials.to_csv(index=False).encode('utf-8')
-            st.download_button(
-                label="Download Trials as CSV",
-                data=csv_data,
-                file_name="inverted_index_trials.csv",
-                mime="text/csv",
-                use_container_width=True
-            )
-        else:
-            st.info("No trials recorded yet. Click 'Record Current Trial' to capture index and query metrics.")
+    st.markdown("""
+    <div style="background: #ffffff; border: 1px solid #dadce0; border-left: 5px solid #4285F4; border-radius: 12px; padding: 20px 24px; box-shadow: 0 1px 4px rgba(60,64,67,0.08); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;">
+        <div>
+            <div style="font-size: 18px; font-weight: 600; color: #202124;">📝 Session Data Log Book is in the Sidebar</div>
+            <div style="font-size: 16px; color: #5f6368; margin-top: 4px;">
+                Record current query latency, hit counts, and vocabulary statistics directly into your session log using the <b>Session Data Log</b> in the sidebar.
+            </div>
+        </div>
+        <div>
+            <span style="background: #e8f0fe; color: #1a73e8; font-weight: 600; font-size: 15px; padding: 7px 16px; border-radius: 20px;">
+                👈 Access via Sidebar
+            </span>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
 
 
@@ -2799,6 +2790,75 @@ def render_certificate_section():
 
 
 
+def render_sidebar_logger():
+    """Renders comprehensive experimental trial logging functionality in the sidebar."""
+    st.sidebar.divider()
+    st.sidebar.markdown("""
+    <div style="font-size: 17.5px; font-weight: 700; color: #202124; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+        <span>📝</span> <span>Session Data Log</span>
+    </div>
+    """, unsafe_allow_html=True)
+
+    trials = st.session_state.get("trials", [])
+
+    col_s1, col_s2 = st.sidebar.columns(2)
+    with col_s1:
+        st.metric("Recorded", f"{len(trials)}")
+    with col_s2:
+        last_hits = st.session_state.get("last_hits", 0)
+        st.metric("Last Hits", f"{last_hits}")
+
+    if st.sidebar.button("➕ Record Trial", type="primary", use_container_width=True, help="Captures active corpus, preprocessing flags, query, hits, and latency"):
+        c_name = str(st.session_state.get("last_active_corpus_name", "Academic IR Corpus")).split(":")[0]
+        sw = "ON" if st.session_state.get("opt_stopwords", True) else "OFF"
+        st_flag = "ON" if st.session_state.get("opt_stemming", True) else "OFF"
+        v_size = st.session_state.get("last_vocab_size", "-")
+        p_count = st.session_state.get("last_postings_count", "-")
+        q_str = st.session_state.get("last_query", st.session_state.get("search_query", "information AND retrieval"))
+        h_count = st.session_state.get("last_hits", 0)
+        lat = st.session_state.get("last_time_us", 0.0)
+
+        record = {
+            "Trial #": len(trials) + 1,
+            "Corpus": c_name,
+            "Stopwords": sw,
+            "Stemming": st_flag,
+            "Vocab |V|": v_size,
+            "Total Postings": p_count,
+            "Query": q_str,
+            "Hits": h_count,
+            "Time (us)": lat,
+            "Timestamp": datetime.now().strftime("%H:%M:%S")
+        }
+        st.session_state["trials"].append(record)
+        st.toast(f"Trial #{record['Trial #']} successfully recorded into session log!", icon="✅")
+        st.rerun()
+
+    if trials:
+        with st.sidebar.expander(f"📋 View Logged Trials ({len(trials)})", expanded=False):
+            df_side = pd.DataFrame(trials)
+            disp_cols = [c for c in ["Trial #", "Corpus", "Query", "Hits", "Time (us)"] if c in df_side.columns]
+            st.dataframe(df_side[disp_cols], hide_index=True, use_container_width=True)
+
+        df_all = pd.DataFrame(trials)
+        csv_bytes = df_all.to_csv(index=False).encode('utf-8')
+        st.sidebar.download_button(
+            label="📥 Download Trials CSV",
+            data=csv_bytes,
+            file_name="inverted_index_trials.csv",
+            mime="text/csv",
+            use_container_width=True
+        )
+
+        if st.sidebar.button("🗑️ Clear Logged Trials", use_container_width=True):
+            st.session_state["trials"] = []
+            st.toast("Experimental trials reset.")
+            st.rerun()
+    else:
+        st.sidebar.caption("No trials logged yet. Run queries in the simulator and click '➕ Record Trial'.")
+
+
+
 def main():
     st.set_page_config(
         page_title="Inverted Index Virtual Lab",
@@ -2860,6 +2920,62 @@ def main():
             margin-bottom: 8px !important;
         }
 
+        /* Form Controls, Radios, and Checkboxes */
+        [data-testid="stCheckbox"] label, [data-testid="stCheckbox"] span,
+        [data-testid="stRadio"] label, [data-testid="stRadio"] span {
+            font-size: 17.5px !important;
+            color: #202124 !important;
+        }
+
+        /* Tables and Dataframes */
+        table, th, td, [data-testid="stTable"] td, [data-testid="stTable"] th {
+            font-size: 17px !important;
+            line-height: 1.6 !important;
+        }
+
+        /* Captions and Explanatory text */
+        [data-testid="stCaptionContainer"], small {
+            font-size: 15.5px !important;
+            color: #5f6368 !important;
+            line-height: 1.5 !important;
+        }
+
+        /* Expanders */
+        [data-testid="stExpander"] details summary span {
+            font-size: 18px !important;
+            font-weight: 600 !important;
+            color: #202124 !important;
+        }
+
+        /* Text Inputs & Textareas */
+        .stTextArea textarea, .stSelectbox [data-baseweb="select"] {
+            font-size: 17px !important;
+            line-height: 1.6 !important;
+        }
+        .stTextInput > div > div > input {
+            font-size: 17.5px !important;
+            border-radius: 24px !important;
+            border: 1px solid #dfe1e5 !important;
+            padding: 11px 22px !important;
+            color: #202124 !important;
+        }
+        .stTextInput > div > div > input:focus {
+            border-color: #4285F4 !important;
+            box-shadow: 0 1px 6px rgba(66,133,244,0.3) !important;
+        }
+
+        /* Metric Values & Labels */
+        [data-testid="stMetricValue"] {
+            font-size: 28px !important;
+            font-weight: 700 !important;
+            color: #1a73e8 !important;
+        }
+        [data-testid="stMetricLabel"] {
+            font-size: 15.5px !important;
+            font-weight: 500 !important;
+            color: #5f6368 !important;
+        }
+
         /* Clean Google Surfaces */
         [data-testid="stAppViewContainer"] {
             background-color: #ffffff !important;
@@ -2873,12 +2989,12 @@ def main():
         [data-testid="stSidebar"] {
             background-color: #f8f9fa !important;
             border-right: 1px solid #dadce0 !important;
-            padding-top: 28px !important;
+            padding-top: 24px !important;
         }
         [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p,
         [data-testid="stSidebar"] label,
         [data-testid="stSidebar"] span {
-            font-size: 18px !important;
+            font-size: 17.5px !important;
             font-weight: 500 !important;
             color: #202124 !important;
         }
@@ -2898,10 +3014,10 @@ def main():
 
         /* Google Pill Buttons */
         .stButton > button {
-            font-size: 17px !important;
+            font-size: 16.5px !important;
             font-weight: 600 !important;
             border-radius: 24px !important;
-            padding: 10px 26px !important;
+            padding: 9px 24px !important;
             border: 1px solid #dadce0 !important;
             background-color: #ffffff !important;
             color: #202124 !important;
@@ -2922,19 +3038,6 @@ def main():
         .stButton > button[kind="primary"]:hover {
             background-color: #1765cc !important;
             box-shadow: 0 1px 4px rgba(66,133,244,0.4) !important;
-        }
-
-        /* Google Rounded Text Inputs */
-        .stTextInput > div > div > input {
-            font-size: 17.5px !important;
-            border-radius: 24px !important;
-            border: 1px solid #dfe1e5 !important;
-            padding: 11px 22px !important;
-            color: #202124 !important;
-        }
-        .stTextInput > div > div > input:focus {
-            border-color: #4285F4 !important;
-            box-shadow: 0 1px 6px rgba(66,133,244,0.3) !important;
         }
 
         /* Streamlit Tabs */
@@ -2989,6 +3092,9 @@ def main():
         ],
         label_visibility="collapsed"
     )
+
+    # Session Data Log Book in Sidebar
+    render_sidebar_logger()
 
     # Section Dispatcher
     if section == "Purpose":
