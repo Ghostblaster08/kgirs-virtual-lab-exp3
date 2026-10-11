@@ -53,7 +53,7 @@ EXPERIMENT_CONFIG = {
         "Implement and visualize linear-time Boolean retrieval algorithms (AND, OR, NOT) using sorted posting list pointer intersections.",
         "Execute positional phrase queries and proximity searches by matching token offsets within identical document postings.",
         "Quantify the empirical effect of linguistic preprocessing (case folding, stopword removal, Porter stemming) on vocabulary size and index compression.",
-        "Analyze collection-wide term frequency distributions and empirically validate Zipf's Law and Heaps' Law."
+        "Analyze collection-wide term frequency and document frequency distributions across vocabulary terms."
     ]
 }
 
@@ -175,7 +175,7 @@ PROCEDURE_STEPS = [
     "Step 6: Inspect the Dictionary statistics (Vocabulary size, Document Frequency df, Collection Frequency cf).",
     "Step 7: Execute Keyword, Boolean (AND, OR, NOT), Phrase, and Proximity search queries in the Query Console.",
     "Step 8: Observe the step-by-step Pointer Comparison Trace to understand the linear-time merge algorithm.",
-    "Step 9: Analyze the analytical plots: Zipf's Law rank-frequency curve and Postings List Length distribution.",
+    "Step 9: Analyze the analytical plot: Document Frequency (df) distribution for top vocabulary terms.",
     "Step 10: Click 'Record Current Trial' to capture metrics across at least 3 distinct preprocessing configurations.",
     "Step 11: Complete the Self-Evaluation Quiz to verify conceptual mastery and generate instant feedback.",
     "Step 12: Open Report Generation, enter your Student Roll Number and Name, and download the verified PDF report."
@@ -284,7 +284,7 @@ QUIZ_QUESTIONS = [
     },
     {
         "id": 6,
-        "question": "How does aggressive stopword removal and Porter stemming affect the vocabulary size |V| according to Heaps' Law?",
+        "question": "How does aggressive stopword removal and Porter stemming affect the vocabulary size |V| of an inverted index?",
         "options": [
             "A) It significantly decreases vocabulary size |V| and compresses postings lists by merging morphological variants.",
             "B) It increases vocabulary size exponentially by creating new root words.",
@@ -296,7 +296,7 @@ QUIZ_QUESTIONS = [
     },
     {
         "id": 7,
-        "question": "Zipf's Law states that collection frequency f is inversely proportional to frequency rank r (f * r ≈ C). What does this imply about natural language corpora?",
+        "question": "In an inverted index collection, what does a heavy-tailed term frequency distribution imply about natural language text?",
         "options": [
             "A) Every word in the language appears with identical frequency.",
             "B) A small set of frequent words accounts for a huge portion of all tokens, while the vast majority of words appear very rarely (long tail).",
@@ -304,7 +304,7 @@ QUIZ_QUESTIONS = [
             "D) Term frequencies increase exponentially as rank increases."
         ],
         "answer_index": 1,
-        "explanation": "Zipf's law describes the heavy-tailed power-law distribution in text: the top 50-100 words (stopwords) make up ~50% of any collection, while thousands of rare terms occur only once or twice."
+        "explanation": "Natural language text exhibits a heavy-tailed distribution: top common words (stopwords) make up ~50% of tokens in any collection, while thousands of rare terms occur only once or twice."
     },
     {
         "id": 8,
@@ -937,10 +937,10 @@ def generate_pdf_report(student_name: str, student_id: str, student_div: str, da
     pdf.set_font("Helvetica", "", 8)
     pdf.set_text_color(51, 65, 85)
     obs_text = student_notes.strip() if student_notes.strip() else (
-        "1. Stopword removal and Porter stemming significantly reduced vocabulary size |V|, validating Heaps' Law.\n"
+        "1. Stopword removal and Porter stemming significantly reduced vocabulary size |V|.\n"
         "2. Conjunctive Boolean queries executed in sub-millisecond linear time O(L1 + L2) through sorted pointer intersection.\n"
         "3. Positional postings allowed exact phrase verification with zero false positives by matching consecutive token offsets.\n"
-        "4. Empirical term frequency distribution conforms to the heavy-tailed power law modeled by Zipf's Law."
+        "4. Empirical document frequency distributions highlight how indexing discriminates topical terms from common vocabulary."
     )
     pdf.multi_cell(0, 4, sanitize_pdf_text(obs_text))
     pdf.ln(6)
@@ -981,7 +981,7 @@ def render_purpose_section():
                 <li><b>Index Inversion:</b> How to convert raw document streams into a high-performance Vocabulary Lexicon and sorted Postings Lists.</li>
                 <li><b>Algorithmic Traversal:</b> Implementing the linear-time <code>O(L1 + L2)</code> Two-Pointer Merge algorithm for Boolean retrieval.</li>
                 <li><b>Linguistic Optimization:</b> Quantifying how Case-Folding, Stopword Removal, and Porter Stemming compress index size and accelerate search.</li>
-                <li><b>Empirical Validation:</b> Validating mathematical power-law distributions (Zipf's Law and Heaps' Law) on real document text.</li>
+                <li><b>Analytical Insight:</b> Analyzing term frequency and document frequency distributions across vocabulary terms.</li>
             </ul>
         </div>
         """, unsafe_allow_html=True)
@@ -2190,73 +2190,40 @@ def render_simulation_section():
         st.markdown("<br>", unsafe_allow_html=True)
         st.info("💡 **How did the engine produce these results?** Click **Step 1 - 4** in the pipeline above to inspect the step-by-step crawl, normalization, index, and pointer duel!")
 
-    # Plotly Analytical Visualizations (Google Palette)
+    # Plotly Analytical Visualization: Document Frequency Distribution
     st.divider()
-    st.subheader("6. Analytical Visualizations: Zipf's Law & Term Distribution")
+    st.subheader("6. Analytical Visualization: Document Frequency Distribution")
 
-    plot_col1, plot_col2 = st.columns(2)
-
-    sorted_terms = sorted(index_results["index"].items(), key=lambda x: x[1]["cf"], reverse=True)
+    sorted_terms = sorted(index_results["index"].items(), key=lambda x: (x[1]["df"], x[1]["cf"]), reverse=True)
     if sorted_terms:
-        ranks = list(range(1, len(sorted_terms) + 1))
-        frequencies = [m["cf"] for _, m in sorted_terms]
-        c_val = frequencies[0]
-        zipf_theoretical = [round(c_val / r, 2) for r in ranks]
-
         p_template = "plotly_dark" if is_dark else "plotly_white"
         p_paper_bg = "#202124" if is_dark else "#ffffff"
         p_plot_bg = "#303134" if is_dark else "#f8f9fa"
         p_font_color = "#e8eaed" if is_dark else "#202124"
 
-        with plot_col1:
-            fig_zipf = go.Figure()
-            fig_zipf.add_trace(go.Scatter(
-                x=ranks, y=frequencies, mode="lines+markers",
-                name="Empirical Frequency (cf)",
-                line=dict(color="#4285F4", width=3),
-                marker=dict(size=6, color="#4285F4")
-            ))
-            fig_zipf.add_trace(go.Scatter(
-                x=ranks, y=zipf_theoretical, mode="lines",
-                name="Zipf's Theoretical (C/r)",
-                line=dict(color="#EA4335", dash="dash", width=2)
-            ))
-            fig_zipf.update_layout(
-                title="📈 Zipf's Law: Term Rank vs. Collection Frequency",
-                xaxis_title="Term Frequency Rank (r)",
-                yaxis_title="Collection Frequency (cf)",
-                hovermode="x unified",
-                template=p_template,
-                paper_bgcolor=p_paper_bg,
-                plot_bgcolor=p_plot_bg,
-                font=dict(color=p_font_color),
-                height=340,
-                margin=dict(l=20, r=20, t=45, b=20)
-            )
-            st.plotly_chart(fig_zipf, use_container_width=True)
-
-        with plot_col2:
-            top_terms = sorted_terms[:15]
-            fig_df = go.Figure(go.Bar(
-                x=[t for t, _ in top_terms],
-                y=[m["df"] for _, m in top_terms],
-                marker=dict(
-                    color="#34A853",
-                    line=dict(color="#1e8e3e", width=1)
-                )
-            ))
-            fig_df.update_layout(
-                title="📊 Document Frequency (df) for Top Vocabulary Terms",
-                xaxis_title="Vocabulary Term",
-                yaxis_title="Document Frequency (df)",
-                template=p_template,
-                paper_bgcolor=p_paper_bg,
-                plot_bgcolor=p_plot_bg,
-                font=dict(color=p_font_color),
-                height=340,
-                margin=dict(l=20, r=20, t=45, b=20)
-            )
-            st.plotly_chart(fig_df, use_container_width=True)
+        top_terms = sorted_terms[:15]
+        fig_df = go.Figure(go.Bar(
+            x=[t for t, _ in top_terms],
+            y=[m["df"] for _, m in top_terms],
+            marker=dict(
+                color="#34A853",
+                line=dict(color="#1e8e3e", width=1)
+            ),
+            text=[f"df={m['df']}" for _, m in top_terms],
+            textposition="auto"
+        ))
+        fig_df.update_layout(
+            title="📊 Document Frequency (df) for Top Vocabulary Terms",
+            xaxis_title="Vocabulary Term",
+            yaxis_title="Document Frequency (df)",
+            template=p_template,
+            paper_bgcolor=p_paper_bg,
+            plot_bgcolor=p_plot_bg,
+            font=dict(color=p_font_color),
+            height=360,
+            margin=dict(l=20, r=20, t=45, b=20)
+        )
+        st.plotly_chart(fig_df, use_container_width=True)
 
     # Experimental Trial Logger Callout (Moved to Sidebar)
     st.divider()
@@ -2411,7 +2378,7 @@ def render_report_section():
             "substantially decreasing index storage while preserving keyword search effectiveness.\n"
             "2. Boolean query processing: The linear-time two-pointer intersection algorithm evaluated conjunctive queries in O(L1 + L2) comparisons.\n"
             "3. Positional indexing: Recording token positions enabled exact phrase queries without false positives.\n"
-            "4. Term distribution: Term frequencies follow Zipf's Law, demonstrating a power-law distribution across vocabulary ranks."
+            "4. Term distribution: Document frequency (df) distribution highlights how topical terms differentiate across corpus documents."
         )),
         height=140
     )
