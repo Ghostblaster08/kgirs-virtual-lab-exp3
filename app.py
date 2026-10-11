@@ -151,25 +151,6 @@ For phrase query `"term1 term2"`, the query engine intersects their document pos
 $$
 \exists p \in \text{positions}(\text{term}_1, d) \quad \text{such that} \quad (p + 1) \in \text{positions}(\text{term}_2, d)
 $$
-
----
-
-### 6. Empirical Laws: Zipf's Law & Heaps' Law
-
-* **Zipf's Law**: The frequency $f$ of any word is inversely proportional to its rank $r$ in the frequency table:
-
-$$
-f(r) \propto \frac{1}{r^s} \implies \log f(r) = \log C - s \cdot \log r
-$$
-
-  A tiny percentage of terms (stopwords) account for a massive fraction of all tokens.
-* **Heaps' Law**: Empirically models vocabulary growth $|V|$ as a function of total token count $N$:
-
-$$
-|V| = k \cdot N^\beta
-$$
-
-  where $30 \le k \le 100$ and $\beta \approx 0.4 - 0.6$. The vocabulary continues growing with corpus size.
     """,
     "key_terms": {
         "Inverted Index": "Core IR data structure mapping terms to documents containing them.",
