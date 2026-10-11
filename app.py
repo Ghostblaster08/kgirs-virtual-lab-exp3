@@ -2873,14 +2873,37 @@ def main():
     # Google Fonts & Comprehensive Google Design Language Injection
     st.markdown("""
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Roboto+Mono:wght@400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Roboto+Mono:wght@400;500;600&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap');
 
-        /* Universal Typography using Google Sans & Roboto */
-        * {
+        /* Typography using Google Sans & Roboto (Scoped so it does NOT override icon glyphs) */
+        html, body, [class*="css"], [data-testid="stAppViewContainer"], [data-testid="stSidebar"], [data-testid="stMarkdownContainer"] p, [data-testid="stMarkdownContainer"] li, .stButton, input, select, textarea, label {
             font-family: 'Google Sans', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
         }
         code, pre, .mono, kbd {
             font-family: 'Roboto Mono', 'SFMono-Regular', Consolas, Menlo, monospace !important;
+        }
+
+        /* Protect and enforce Streamlit Material Symbols icon ligatures (Fixes sidebar expansion icon glitch) */
+        [data-testid="stIconMaterial"],
+        [data-testid="stSidebarCollapseButton"] span,
+        [data-testid="stSidebarExpandButton"] span,
+        [data-testid="collapsedControl"] span,
+        .material-symbols-rounded,
+        .material-symbols-outlined,
+        .material-icons {
+            font-family: 'Material Symbols Rounded', 'Material Symbols Outlined', 'Material Icons' !important;
+            font-weight: normal !important;
+            font-style: normal !important;
+            line-height: 1 !important;
+            letter-spacing: normal !important;
+            text-transform: none !important;
+            display: inline-block !important;
+            white-space: nowrap !important;
+            word-wrap: normal !important;
+            direction: ltr !important;
+            -webkit-font-feature-settings: 'liga' 1 !important;
+            font-feature-settings: 'liga' 1 !important;
+            -webkit-font-smoothing: antialiased !important;
         }
 
         /* Base Body Typography with Significantly Increased Font Size */
