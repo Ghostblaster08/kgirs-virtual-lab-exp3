@@ -18,6 +18,7 @@ Note: Designed using native Streamlit UI components and Plotly for seamless Ligh
 
 import os
 import re
+import textwrap
 import time
 import unicodedata
 from datetime import datetime
@@ -744,6 +745,11 @@ def execute_proximity_query(term1: str, term2: str, max_dist: int, index: dict, 
     }
 
 
+def render_html(html_str: str):
+    """Renders HTML safely without triggering Markdown indented code block formatting."""
+    st.markdown(textwrap.dedent(html_str).strip(), unsafe_allow_html=True)
+
+
 # ======================================================================================
 # 3. VERIFIED PDF LAB REPORT EXPORTER (FPDF2 - LATIN-1 SAFE)
 # ======================================================================================
@@ -964,17 +970,17 @@ def render_purpose_section():
     """Renders comprehensive Purpose, Historical Context, Problem Formulation, and Applications using Google's color palette."""
     # 1. WHY THIS EXPERIMENT?
     st.subheader("1. Why This Experiment? (Pedagogical Rationale)")
-    st.markdown("""
+    render_html("""
     <p style="font-size: 18px; line-height: 1.75; color: #202124;">
         In traditional computer science curricula, students master linear arrays, hash tables, binary search trees, and relational SQL databases. 
         However, when searching through <b>unstructured natural language text</b> across millions or billions of web documents, 
         traditional data structures completely collapse under computational and storage weight.
     </p>
-    """, unsafe_allow_html=True)
+    """)
 
     col_w1, col_w2 = st.columns(2)
     with col_w1:
-        st.markdown("""
+        render_html("""
         <div style="background: #ffffff; border: 1px solid #dadce0; border-left: 5px solid #4285F4; border-radius: 12px; padding: 22px; height: 100%; box-shadow: 0 1px 4px rgba(60,64,67,0.08);">
             <h4 style="color: #1a73e8; margin-top: 0; font-size: 20px; font-weight: 600;">🎯 What You Will Master</h4>
             <ul style="font-size: 17px; line-height: 1.8; color: #202124; margin-bottom: 0;">
@@ -984,9 +990,9 @@ def render_purpose_section():
                 <li><b>Analytical Insight:</b> Analyzing term frequency and document frequency distributions across vocabulary terms.</li>
             </ul>
         </div>
-        """, unsafe_allow_html=True)
+        """)
     with col_w2:
-        st.markdown("""
+        render_html("""
         <div style="background: #ffffff; border: 1px solid #dadce0; border-left: 5px solid #34A853; border-radius: 12px; padding: 22px; height: 100%; box-shadow: 0 1px 4px rgba(60,64,67,0.08);">
             <h4 style="color: #1e8e3e; margin-top: 0; font-size: 20px; font-weight: 600;">⚡ The Paradigm Shift</h4>
             <p style="font-size: 17px; line-height: 1.75; color: #202124; margin-bottom: 10px;">
@@ -996,21 +1002,21 @@ def render_purpose_section():
                 By pre-computing an <b>Inverted Index</b>, search engines invert the relationship: instead of asking <i>"What words are in Document X?"</i>, we ask <i>"What documents contain Word Y?"</i>—answering queries in <b>less than 15 milliseconds</b>!
             </p>
         </div>
-        """, unsafe_allow_html=True)
+        """)
 
     st.divider()
 
     # 2. WHAT PROBLEM IS IT SOLVING?
     st.subheader("2. What Problem Is It Solving? (The Core Technical Challenges)")
-    st.markdown("""
+    render_html("""
     <p style="font-size: 18px; line-height: 1.75; color: #202124;">
         The Inverted Index was engineered to solve five fundamental computational roadblocks in computer science and text processing:
     </p>
-    """, unsafe_allow_html=True)
+    """)
 
     p_cols = st.columns(3)
     with p_cols[0]:
-        st.markdown("""
+        render_html("""
         <div style="border: 1px solid #dadce0; border-left: 4px solid #4285F4; border-radius: 12px; padding: 20px; margin-bottom: 16px; background: #ffffff; box-shadow: 0 1px 3px rgba(60,64,67,0.08);">
             <div style="font-size: 26px; margin-bottom: 6px;">🐢</div>
             <h4 style="margin: 0 0 8px 0; color: #202124; font-size: 18px; font-weight: 600;">1. The Linear Scan Bottleneck</h4>
@@ -1019,9 +1025,9 @@ def render_purpose_section():
                 <b>Solution:</b> Inverting words into indexed sorted DocID lists reduces search time to <code>O(Postings Length)</code>, eliminating full-text disk scans.
             </p>
         </div>
-        """, unsafe_allow_html=True)
+        """)
     with p_cols[1]:
-        st.markdown("""
+        render_html("""
         <div style="border: 1px solid #dadce0; border-left: 4px solid #EA4335; border-radius: 12px; padding: 20px; margin-bottom: 16px; background: #ffffff; box-shadow: 0 1px 3px rgba(60,64,67,0.08);">
             <div style="font-size: 26px; margin-bottom: 6px;">🔤</div>
             <h4 style="margin: 0 0 8px 0; color: #202124; font-size: 18px; font-weight: 600;">2. Morphological Variance</h4>
@@ -1030,9 +1036,9 @@ def render_purpose_section():
                 <b>Solution:</b> Linguistic preprocessing collapses inflections to base stems, reducing dictionary size by 30–45%.
             </p>
         </div>
-        """, unsafe_allow_html=True)
+        """)
     with p_cols[2]:
-        st.markdown("""
+        render_html("""
         <div style="border: 1px solid #dadce0; border-left: 4px solid #FBBC05; border-radius: 12px; padding: 20px; margin-bottom: 16px; background: #ffffff; box-shadow: 0 1px 3px rgba(60,64,67,0.08);">
             <div style="font-size: 26px; margin-bottom: 6px;">⚡</div>
             <h4 style="margin: 0 0 8px 0; color: #202124; font-size: 18px; font-weight: 600;">3. Multi-Term Boolean Logic</h4>
@@ -1041,11 +1047,11 @@ def render_purpose_section():
                 <b>Solution:</b> Two-pointer list intersection walks both sorted lists in linear time without opening files.
             </p>
         </div>
-        """, unsafe_allow_html=True)
+        """)
 
     p_cols2 = st.columns(2)
     with p_cols2[0]:
-        st.markdown("""
+        render_html("""
         <div style="border: 1px solid #dadce0; border-left: 4px solid #34A853; border-radius: 12px; padding: 20px; background: #ffffff; box-shadow: 0 1px 3px rgba(60,64,67,0.08);">
             <div style="font-size: 26px; margin-bottom: 6px;">📍</div>
             <h4 style="margin: 0 0 8px 0; color: #202124; font-size: 18px; font-weight: 600;">4. Exact Phrase & Proximity Constraints</h4>
@@ -1054,9 +1060,9 @@ def render_purpose_section():
                 <b>Solution:</b> Positional Inverted Indexes store exact token offsets <code>pos: [0, 4]</code> inside posting nodes, enabling exact phrase and proximity (<code>NEAR/k</code>) matching.
             </p>
         </div>
-        """, unsafe_allow_html=True)
+        """)
     with p_cols2[1]:
-        st.markdown("""
+        render_html("""
         <div style="border: 1px solid #dadce0; border-left: 4px solid #4285F4; border-radius: 12px; padding: 20px; background: #ffffff; box-shadow: 0 1px 3px rgba(60,64,67,0.08);">
             <div style="font-size: 26px; margin-bottom: 6px;">💾</div>
             <h4 style="margin: 0 0 8px 0; color: #202124; font-size: 18px; font-weight: 600;">5. Extreme Matrix Sparsity (>99%)</h4>
@@ -1065,17 +1071,17 @@ def render_purpose_section():
                 <b>Solution:</b> Inverted postings lists store strictly non-zero occurrences, achieving massive >90% compression in memory.
             </p>
         </div>
-        """, unsafe_allow_html=True)
+        """)
 
     st.divider()
 
     # 3. HISTORY & EVOLUTION
     st.subheader("3. History & Origins: From Punch Cards to Modern Web Search")
-    st.markdown("""
+    render_html("""
     <p style="font-size: 18px; line-height: 1.75; color: #202124;">
         The inverted index is one of the most enduring algorithms in computer science history:
     </p>
-    """, unsafe_allow_html=True)
+    """)
 
     timeline_items = [
         ("1957", "Hans Peter Luhn (IBM)", "Introduces automated indexing, token frequency statistics, and Key Word in Context (KWIC), planting the seeds of computer-based information retrieval.", "#4285F4"),
@@ -1087,7 +1093,7 @@ def render_purpose_section():
     ]
 
     for yr, author, desc, pill_color in timeline_items:
-        st.markdown(f"""
+        render_html(f"""
         <div style="display: flex; gap: 18px; margin-bottom: 16px; align-items: baseline;">
             <span style="background: {pill_color}; color: #ffffff; font-weight: 700; font-size: 14px; padding: 5px 14px; border-radius: 16px; min-width: 95px; text-align: center;">{yr}</span>
             <div>
@@ -1095,63 +1101,63 @@ def render_purpose_section():
                 <span style="color: #5f6368; font-size: 16.5px;"> {desc}</span>
             </div>
         </div>
-        """, unsafe_allow_html=True)
+        """)
 
     st.divider()
 
     # 4. WHERE ALL IS IT USED TODAY?
     st.subheader("4. Where All Is It Used Today? (Real-World & Industrial Applications)")
-    st.markdown("""
+    render_html("""
     <p style="font-size: 18px; line-height: 1.75; color: #202124;">
         Almost every modern software application that features a search bar relies directly on Inverted Indexes:
     </p>
-    """, unsafe_allow_html=True)
+    """)
 
     app_cols = st.columns(3)
     with app_cols[0]:
-        st.markdown("""
+        render_html("""
         <div style="background: #ffffff; border: 1px solid #dadce0; border-top: 4px solid #4285F4; border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(60,64,67,0.08);">
             <h4 style="color: #1a73e8; margin: 0 0 8px 0; font-size: 18px; font-weight: 600;">🌐 Web Search Engines</h4>
             <p style="font-size: 15.5px; color: #5f6368; margin: 0; line-height: 1.65;"><b>Global Web Search Platforms</b><br>Indexes tens of billions of web documents across distributed inverted clusters to return results in under 50ms.</p>
         </div>
-        """, unsafe_allow_html=True)
+        """)
     with app_cols[1]:
-        st.markdown("""
+        render_html("""
         <div style="background: #ffffff; border: 1px solid #dadce0; border-top: 4px solid #EA4335; border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(60,64,67,0.08);">
             <h4 style="color: #d93025; margin: 0 0 8px 0; font-size: 18px; font-weight: 600;">📊 Log & Security Analytics</h4>
             <p style="font-size: 15.5px; color: #5f6368; margin: 0; line-height: 1.65;"><b>Elasticsearch, OpenSearch, Splunk</b><br>Ingests petabytes of operational server logs, security event traces, and telemetry for real-time querying.</p>
         </div>
-        """, unsafe_allow_html=True)
+        """)
     with app_cols[2]:
-        st.markdown("""
+        render_html("""
         <div style="background: #ffffff; border: 1px solid #dadce0; border-top: 4px solid #FBBC05; border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(60,64,67,0.08);">
             <h4 style="color: #f9ab00; margin: 0 0 8px 0; font-size: 18px; font-weight: 600;">🛒 E-Commerce Catalogs</h4>
             <p style="font-size: 15.5px; color: #5f6368; margin: 0; line-height: 1.65;"><b>Amazon, Flipkart, Shopify</b><br>Enables instant product searches across millions of SKUs with faceted attribute filtering and typo tolerance.</p>
         </div>
-        """, unsafe_allow_html=True)
+        """)
 
     app_cols2 = st.columns(3)
     with app_cols2[0]:
-        st.markdown("""
+        render_html("""
         <div style="background: #ffffff; border: 1px solid #dadce0; border-top: 4px solid #34A853; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(60,64,67,0.08);">
             <h4 style="color: #1e8e3e; margin: 0 0 8px 0; font-size: 18px; font-weight: 600;">💻 Codebase Intelligence</h4>
             <p style="font-size: 15.5px; color: #5f6368; margin: 0; line-height: 1.65;"><b>GitHub Code Search, Sourcegraph, VS Code</b><br>Indexes abstract syntax trees (ASTs), symbols, and identifiers across billions of lines of code.</p>
         </div>
-        """, unsafe_allow_html=True)
+        """)
     with app_cols2[1]:
-        st.markdown("""
+        render_html("""
         <div style="background: #ffffff; border: 1px solid #dadce0; border-top: 4px solid #4285F4; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(60,64,67,0.08);">
             <h4 style="color: #1a73e8; margin: 0 0 8px 0; font-size: 18px; font-weight: 600;">🗄️ Relational & NoSQL DBs</h4>
             <p style="font-size: 15.5px; color: #5f6368; margin: 0; line-height: 1.65;"><b>PostgreSQL GIN, MySQL FULLTEXT, MongoDB</b><br>Powers native full-text search extensions inside databases without external search engines.</p>
         </div>
-        """, unsafe_allow_html=True)
+        """)
     with app_cols2[2]:
-        st.markdown("""
+        render_html("""
         <div style="background: #ffffff; border: 1px solid #dadce0; border-top: 4px solid #EA4335; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(60,64,67,0.08);">
             <h4 style="color: #d93025; margin: 0 0 8px 0; font-size: 18px; font-weight: 600;">🤖 Hybrid AI Search (RAG)</h4>
             <p style="font-size: 15.5px; color: #5f6368; margin: 0; line-height: 1.65;"><b>Qdrant, Pinecone, LanceDB</b><br>Combines sparse BM25 inverted indexes with dense vector embeddings to provide hallucination-free context to LLMs.</p>
         </div>
-        """, unsafe_allow_html=True)
+        """)
 
     st.divider()
 
@@ -1160,17 +1166,17 @@ def render_purpose_section():
     with col_lo1:
         st.subheader("Key Learning Objectives")
         for i, obj in enumerate(EXPERIMENT_CONFIG["objectives"]):
-            st.markdown(f"<p style='font-size: 17px; line-height: 1.7; margin-bottom: 8px;'><b>{i+1}.</b> {obj}</p>", unsafe_allow_html=True)
+            render_html(f"<p style='font-size: 17px; line-height: 1.7; margin-bottom: 8px;'><b>{i+1}.</b> {obj}</p>")
     with col_lo2:
         st.subheader("Prerequisites & Foundations")
-        st.markdown("""
+        render_html("""
         <ul style="font-size: 17px; line-height: 1.8; color: #202124;">
             <li><b>Data Structures:</b> Hash Tables, Arrays, Singly Linked Lists, Dictionaries.</li>
             <li><b>Discrete Mathematics:</b> Set operations (Intersection &cap;, Union &cup;, Difference &setminus;).</li>
             <li><b>Text Processing:</b> Tokenization, Regular Expressions, String Normalization.</li>
             <li><b>Algorithmic Analysis:</b> Big-O notation, Two-Pointer Merge Algorithms (<code>O(L1 + L2)</code>).</li>
         </ul>
-        """, unsafe_allow_html=True)
+        """)
 
 
 
@@ -1587,7 +1593,7 @@ def render_simulation_section():
         st.session_state["selected_corpus_name"] = list(BENCHMARK_CORPORA.keys())[0]
 
     # Google Search Header
-    st.markdown("""
+    render_html("""
     <div class="vlab-header-wrap">
         <div class="vlab-logo-text">
             <span class="g-blue">V</span><span class="g-red">L</span><span class="g-yellow">a</span><span class="g-blue">b</span> <span class="g-green">S</span><span class="g-red">e</span><span class="g-yellow">a</span><span class="g-blue">r</span><span class="g-green">c</span><span class="g-red">h</span>
@@ -1597,7 +1603,7 @@ def render_simulation_section():
             Explore how an Information Retrieval search engine works under the hood: Crawling, Linguistic Normalization, Inverted Indexing, Two-Pointer Postings Merge, and SERP Ranking.
         </div>
     </div>
-    """, unsafe_allow_html=True)
+    """)
 
     # Active Corpus Selection (used across all steps)
     active_corpus_name = st.session_state["selected_corpus_name"]
@@ -1926,7 +1932,7 @@ def render_simulation_section():
         st.caption(f"Displaying {len(active_corpus)} crawled documents in repository:")
         for doc_id, text in active_corpus.items():
             word_count = len(text.split())
-            st.markdown(f"""
+            render_html(f"""
             <div class="vlab-doc-card">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
                     <span style="font-weight: 600; color: #1a73e8; font-size: 15.5px;">https://corpus.vlab.internal › documents › doc{doc_id}</span>
@@ -1935,7 +1941,7 @@ def render_simulation_section():
                 <div style="font-size: 18px; font-weight: 600; margin-bottom: 6px; color: #202124;">Document {doc_id} Content</div>
                 <div style="font-size: 17px; color: #3c4043; line-height: 1.65;">"{text}"</div>
             </div>
-            """, unsafe_allow_html=True)
+            """)
 
         if st.button("Proceed to Step 2: Linguistic Preprocessing ➔", type="primary"):
             st.session_state["sim_active_step"] = 2
@@ -1980,7 +1986,7 @@ def render_simulation_section():
                 for term, pos, _ in tokens
             ])
             raw_text = active_corpus.get(doc_id, "")
-            st.markdown(f"""
+            render_html(f"""
             <div class="vlab-card">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
                     <span style="font-weight: 600; font-size: 17px; color: #1a73e8;">Doc {doc_id} Normalized Stream</span>
@@ -1989,7 +1995,7 @@ def render_simulation_section():
                 <div style="font-size: 16px; color: #5f6368; margin-bottom: 10px; font-style: italic;">Original: "{raw_text}"</div>
                 <div>{chips_html}</div>
             </div>
-            """, unsafe_allow_html=True)
+            """)
 
         with st.expander("🔬 View Emitted (Term, DocID, Position) 3-Tuples", expanded=False):
             triples_df = pd.DataFrame(index_results["stage2_triples"])
@@ -2033,27 +2039,23 @@ def render_simulation_section():
 
         st.caption(f"Showing {len(filtered_items)} dictionary entries:")
         for term, meta in filtered_items[:25]:
-            nodes_html = []
-            for d, data in sorted(meta["postings"].items()):
-                nodes_html.append(f"""
-                <span class="posting-node">
-                    <b>Doc {d}</b>
-                    <span style="color: #1a73e8;">tf:{data['tf']}</span>
-                    <span style="color: #5f6368; font-size: 13.5px;">pos:{data['positions']}</span>
-                </span>
-                """)
+            nodes_html = [
+                f'<span class="posting-node"><b>Doc {d}</b> <span style="color: #1a73e8;">tf:{data["tf"]}</span> <span style="color: #5f6368; font-size: 13.5px;">pos:{data["positions"]}</span></span>'
+                for d, data in sorted(meta["postings"].items())
+            ]
             nodes_rendered = '<span class="chain-arrow">──►</span>'.join(nodes_html)
-            st.markdown(f"""
-            <div class="postings-row">
-                <div class="dict-term-pill">
-                    <span>{term}</span>
-                    <span class="dict-freq-tag">df: {meta['df']}</span>
-                    <span class="dict-freq-tag">cf: {meta['cf']}</span>
-                </div>
-                <span class="chain-arrow">──►</span>
-                {nodes_rendered}
-            </div>
-            """, unsafe_allow_html=True)
+            row_html = (
+                f'<div class="postings-row">'
+                f'<div class="dict-term-pill">'
+                f'<span>{term}</span> '
+                f'<span class="dict-freq-tag">df: {meta["df"]}</span> '
+                f'<span class="dict-freq-tag">cf: {meta["cf"]}</span>'
+                f'</div>'
+                f'<span class="chain-arrow">──►</span>'
+                f'{nodes_rendered}'
+                f'</div>'
+            )
+            render_html(row_html)
 
         if len(filtered_items) > 25:
             st.caption(f"... and {len(filtered_items) - 25} more terms in dictionary.")
@@ -2088,7 +2090,7 @@ def render_simulation_section():
             "using the **Two-Pointer Intersection Algorithm** in linear time $O(L_1 + L_2)$."
         )
 
-        st.markdown(f"""
+        render_html(f"""
         <div class="vlab-card">
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #dadce0; padding-bottom: 10px; margin-bottom: 12px; flex-wrap: wrap;">
                 <span style="font-weight: 700; font-size: 16px; color: #1a73e8;">QUERY EXECUTION TELEMETRY</span>
@@ -2100,7 +2102,7 @@ def render_simulation_section():
                 <span class="radar-stat-pill">🚀 <b>Algorithm:</b> Two-Pointer Linear Merge O(L1 + L2)</span>
             </div>
         </div>
-        """, unsafe_allow_html=True)
+        """)
 
         if p1_docs_global and p2_docs_global:
             st.markdown("#### 1. Visual Two-Pointer Intersection Tracks")
@@ -2113,7 +2115,7 @@ def render_simulation_section():
                 f'<span class="track-pill {"matched" if d in query_result_docs else ""}">Doc {d}</span>'
                 for d in p2_docs_global
             ])
-            st.markdown(f"""
+            render_html(f"""
             <div class="vlab-card">
                 <div style="margin-bottom: 6px; font-size: 16.5px; color: #1a73e8; font-weight: 600;"><b>Pointer 1:</b> Term '{t1_label}' Postings ({len(p1_docs_global)} docs)</div>
                 <div class="pointer-film-track">{t1_pills}</div>
@@ -2121,7 +2123,7 @@ def render_simulation_section():
                 <div class="pointer-film-track">{t2_pills}</div>
                 <div style="margin-top: 12px; font-size: 15px; color: #1e8e3e; font-weight: 500;">● Highlighted green boxes indicate intersected matching documents added to the results list.</div>
             </div>
-            """, unsafe_allow_html=True)
+            """)
 
         st.markdown("#### 2. Step-by-Step Pointer Trace Log")
         st.caption("Detailed chronological trace of comparisons performed by the pointer algorithm:")
@@ -2143,20 +2145,13 @@ def render_simulation_section():
             "ranked, and presented as a Search Engine Results Page (SERP) with relevant snippets and highlighted keywords."
         )
 
-        st.markdown(f"""
-        <div class="serp-container">
-            <div class="serp-stats">
-                About {len(query_result_docs)} results ({query_latency_us / 1_000_000:.6f} seconds) for <b>{executed_query_str}</b>
-            </div>
-        """, unsafe_allow_html=True)
-
+        items_html = []
         if query_result_docs:
             for d in query_result_docs:
                 raw_text = active_corpus.get(d, "")
                 highlighted_snippet = highlight_search_terms(raw_text, executed_query_str)
                 title_preview = " ".join(raw_text.split()[:7]) + ("..." if len(raw_text.split()) > 7 else "")
-
-                st.markdown(f"""
+                items_html.append(f"""
                 <div class="serp-item">
                     <div class="serp-url">
                         <span class="serp-favicon">V</span>
@@ -2170,9 +2165,9 @@ def render_simulation_section():
                         <span class="serp-meta-badge" style="margin-left: 6px; color: #1e8e3e; font-weight: bold;">✓ Matched</span>
                     </div>
                 </div>
-                """, unsafe_allow_html=True)
+                """)
         else:
-            st.markdown(f"""
+            items_html.append(f"""
             <div class="no-results-box">
                 <p>Your search - <b>{executed_query_str}</b> - did not match any documents in the active index.</p>
                 <p style="margin-top: 12px; font-size: 16.5px; font-weight: 600;">Suggestions:</p>
@@ -2183,9 +2178,18 @@ def render_simulation_section():
                     <li>Check if your terms were filtered out by the stopword list in Step 2.</li>
                 </ul>
             </div>
-            """, unsafe_allow_html=True)
+            """)
 
-        st.markdown("</div>", unsafe_allow_html=True)
+        rendered_serp_content = "".join([textwrap.dedent(it).strip() for it in items_html])
+        serp_full_html = f"""
+        <div class="serp-container">
+            <div class="serp-stats">
+                About {len(query_result_docs)} results ({query_latency_us / 1_000_000:.6f} seconds) for <b>{executed_query_str}</b>
+            </div>
+            {rendered_serp_content}
+        </div>
+        """
+        render_html(serp_full_html)
 
         st.markdown("<br>", unsafe_allow_html=True)
         st.info("💡 **How did the engine produce these results?** Click **Step 1 - 4** in the pipeline above to inspect the step-by-step crawl, normalization, index, and pointer duel!")
@@ -2227,7 +2231,7 @@ def render_simulation_section():
 
     # Experimental Trial Logger Callout (Moved to Sidebar)
     st.divider()
-    st.markdown("""
+    render_html("""
     <div style="background: #ffffff; border: 1px solid #dadce0; border-left: 5px solid #4285F4; border-radius: 12px; padding: 20px 24px; box-shadow: 0 1px 4px rgba(60,64,67,0.08); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;">
         <div>
             <div style="font-size: 18px; font-weight: 600; color: #202124;">📝 Session Data Log Book is in the Sidebar</div>
@@ -2241,7 +2245,7 @@ def render_simulation_section():
             </span>
         </div>
     </div>
-    """, unsafe_allow_html=True)
+    """)
 
 
 
