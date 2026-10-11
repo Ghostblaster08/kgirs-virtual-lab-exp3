@@ -1586,9 +1586,9 @@ def render_simulation_section():
     if "sim_active_step" not in st.session_state:
         st.session_state["sim_active_step"] = 5  # default to showing the Google SERP results
     if "search_query" not in st.session_state:
-        st.session_state["search_query"] = "information AND retrieval"
+        st.session_state["search_query"] = "retrieval"
     if "query_type_select" not in st.session_state:
-        st.session_state["query_type_select"] = "Conjunctive Boolean Query (AND)"
+        st.session_state["query_type_select"] = "Single Keyword Lookup"
     if "selected_corpus_name" not in st.session_state:
         st.session_state["selected_corpus_name"] = list(BENCHMARK_CORPORA.keys())[0]
 
@@ -1640,29 +1640,23 @@ def render_simulation_section():
         user_query = st.text_input(
             "Search Query:",
             value=st.session_state["search_query"],
-            placeholder="Type a search query (e.g. information AND retrieval)...",
+            placeholder="Type a search query (e.g. retrieval, information AND retrieval)...",
             label_visibility="collapsed",
             key="google_search_input"
         )
     with col_mode:
+        query_mode_options = [
+            "Single Keyword Lookup",
+            "Conjunctive Boolean Query (AND)",
+            "Disjunctive Boolean Query (OR)",
+            "Negation Boolean Query (NOT)",
+            "Exact Phrase Query (\"term1 term2\")",
+            "Proximity Query (NEAR / k)"
+        ]
         q_mode = st.selectbox(
             "Query Mode:",
-            options=[
-                "Conjunctive Boolean Query (AND)",
-                "Disjunctive Boolean Query (OR)",
-                "Negation Boolean Query (NOT)",
-                "Exact Phrase Query (\"term1 term2\")",
-                "Proximity Query (NEAR / k)",
-                "Single Keyword Lookup"
-            ],
-            index=[
-                "Conjunctive Boolean Query (AND)",
-                "Disjunctive Boolean Query (OR)",
-                "Negation Boolean Query (NOT)",
-                "Exact Phrase Query (\"term1 term2\")",
-                "Proximity Query (NEAR / k)",
-                "Single Keyword Lookup"
-            ].index(st.session_state["query_type_select"]),
+            options=query_mode_options,
+            index=query_mode_options.index(st.session_state["query_type_select"]) if st.session_state["query_type_select"] in query_mode_options else 0,
             label_visibility="collapsed",
             key="google_mode_select"
         )
@@ -1671,33 +1665,33 @@ def render_simulation_section():
     # Quick Suggestion Chips
     c_s1, c_s2, c_s3, c_s4, c_s5 = st.columns(5)
     with c_s1:
+        if st.button("retrieval", use_container_width=True):
+            st.session_state["search_query"] = "retrieval"
+            st.session_state["query_type_select"] = "Single Keyword Lookup"
+            st.session_state["sim_active_step"] = 5
+            st.rerun()
+    with c_s2:
         if st.button("information AND retrieval", use_container_width=True):
             st.session_state["search_query"] = "information AND retrieval"
             st.session_state["query_type_select"] = "Conjunctive Boolean Query (AND)"
             st.session_state["sim_active_step"] = 5
             st.rerun()
-    with c_s2:
+    with c_s3:
         if st.button("graph OR index", use_container_width=True):
             st.session_state["search_query"] = "graph OR index"
             st.session_state["query_type_select"] = "Disjunctive Boolean Query (OR)"
             st.session_state["sim_active_step"] = 5
             st.rerun()
-    with c_s3:
+    with c_s4:
         if st.button("retrieval NOT graph", use_container_width=True):
             st.session_state["search_query"] = "retrieval NOT graph"
             st.session_state["query_type_select"] = "Negation Boolean Query (NOT)"
             st.session_state["sim_active_step"] = 5
             st.rerun()
-    with c_s4:
+    with c_s5:
         if st.button('"information retrieval"', use_container_width=True):
             st.session_state["search_query"] = "information retrieval"
             st.session_state["query_type_select"] = 'Exact Phrase Query ("term1 term2")'
-            st.session_state["sim_active_step"] = 5
-            st.rerun()
-    with c_s5:
-        if st.button("retrieval", use_container_width=True):
-            st.session_state["search_query"] = "retrieval"
-            st.session_state["query_type_select"] = "Single Keyword Lookup"
             st.session_state["sim_active_step"] = 5
             st.rerun()
 
@@ -1807,15 +1801,17 @@ def render_simulation_section():
     active_step = st.session_state["sim_active_step"]
 
     # Stepper Indicator Pills
+    is_single_kw = (q_mode == "Single Keyword Lookup")
+    step4_short = "Postings Retrieval" if is_single_kw else "Two-Pointer Merge"
     step_titles = {
         1: "Step 1: Document Corpus (Web Crawl)",
         2: "Step 2: Linguistic Preprocessing",
         3: "Step 3: Inverted Index (Lexicon & Postings)",
-        4: "Step 4: Two-Pointer Merge Duel",
+        4: f"Step 4: {'Direct Postings Retrieval' if is_single_kw else 'Two-Pointer Merge Duel'}",
         5: "Step 5: Search Results Page (SERP)"
     }
 
-    st.markdown(f"""
+    render_html(f"""
     <div class="vlab-stepper-wrap">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap;">
             <span class="stepper-label">HOW VLAB SEARCH WORKS: 5-STAGE IR PIPELINE</span>
@@ -1828,12 +1824,12 @@ def render_simulation_section():
             <span class="step-arrow">➔</span>
             <span class="step-pill {'active' if active_step == 3 else ''}">3. Inverted Index</span>
             <span class="step-arrow">➔</span>
-            <span class="step-pill {'active' if active_step == 4 else ''}">4. Two-Pointer Merge</span>
+            <span class="step-pill {'active' if active_step == 4 else ''}">4. {step4_short}</span>
             <span class="step-arrow">➔</span>
             <span class="step-pill {'active' if active_step == 5 else ''}">5. Search Results (SERP)</span>
         </div>
     </div>
-    """, unsafe_allow_html=True)
+    """)
 
     # Step Navigation Buttons: Prev, Direct 1-5 buttons, Next, Auto-Play
     c_prev, c_s1_btn, c_s2_btn, c_s3_btn, c_s4_btn, c_s5_btn, c_next, c_auto = st.columns([1, 1, 1, 1, 1, 1, 1, 1.8])
@@ -1875,8 +1871,8 @@ def render_simulation_section():
             (1, "🌐 Step 1: Crawling & Ingesting web documents into memory...", 20),
             (2, "⚙️ Step 2: Running Linguistic Normalization (Case Folding, Stopwords, Stemming)...", 40),
             (3, "📑 Step 3: Inverting Matrix into Lexicon Dictionary & Sorted Postings Lists...", 60),
-            (4, f"⚡ Step 4: Executing Two-Pointer Merge on query '{executed_query_str}'...", 80),
-            (5, "🔍 Step 5: Formatting Ranked Results into Search Results Page (SERP)...", 100)
+            (4, f"⚡ Step 4: Direct dictionary lookup & postings fetch for '{executed_query_str}'..." if is_single_kw else f"⚡ Step 4: Executing Two-Pointer Merge on query '{executed_query_str}'...", 80),
+            (5, "🔍 Step 5: Formatting Inverted Index Match Results into SERP...", 100)
         ]
         for s_idx, s_desc, pct in anim_steps:
             status_box.info(s_desc)
@@ -2075,61 +2071,145 @@ def render_simulation_section():
                 })
             st.dataframe(pd.DataFrame(dict_records), hide_index=True, use_container_width=True, height=260)
 
-        if st.button("Proceed to Step 4: Two-Pointer Query Merge ➔", type="primary"):
+        st.markdown("#### 3. Document Frequency (df) Vocabulary Distribution")
+        st.caption("Document Frequency (df) measures how many documents contain each vocabulary term:")
+        sorted_terms = sorted(index_results["index"].items(), key=lambda x: (x[1]["df"], x[1]["cf"]), reverse=True)
+        if sorted_terms:
+            p_template = "plotly_dark" if is_dark else "plotly_white"
+            p_paper_bg = "#202124" if is_dark else "#ffffff"
+            p_plot_bg = "#303134" if is_dark else "#f8f9fa"
+            p_font_color = "#e8eaed" if is_dark else "#202124"
+
+            top_terms = sorted_terms[:15]
+            fig_df = go.Figure(go.Bar(
+                x=[t for t, _ in top_terms],
+                y=[m["df"] for _, m in top_terms],
+                marker=dict(
+                    color="#34A853",
+                    line=dict(color="#1e8e3e", width=1)
+                ),
+                text=[f"df={m['df']}" for _, m in top_terms],
+                textposition="auto"
+            ))
+            fig_df.update_layout(
+                title="📊 Document Frequency (df) for Top Vocabulary Terms",
+                xaxis_title="Vocabulary Term",
+                yaxis_title="Document Frequency (df)",
+                template=p_template,
+                paper_bgcolor=p_paper_bg,
+                plot_bgcolor=p_plot_bg,
+                font=dict(color=p_font_color),
+                height=340,
+                margin=dict(l=20, r=20, t=45, b=20)
+            )
+            st.plotly_chart(fig_df, use_container_width=True)
+
+        step4_next_label = f"Proceed to Step 4: {'Direct Postings Retrieval' if is_single_kw else 'Two-Pointer Query Merge'} ➔"
+        if st.button(step4_next_label, type="primary"):
             st.session_state["sim_active_step"] = 4
             st.rerun()
 
     # -------------------------------------------------------------------------
-    # STEP 4: Two-Pointer Merge Duel
+    # STEP 4: Query Evaluation & Postings Retrieval / Merge Duel
     # -------------------------------------------------------------------------
     elif active_step == 4:
-        st.markdown("### ⚡ Step 4: Two-Pointer Postings Merge Algorithm")
-        st.write(
-            f"When evaluating multi-term queries like `'{executed_query_str}'`, the VLab Search engine does NOT inspect the documents directly. "
-            "Instead, it fetches the pre-sorted postings lists for each query term from the Inverted Index and merges them "
-            "using the **Two-Pointer Intersection Algorithm** in linear time $O(L_1 + L_2)$."
-        )
+        if is_single_kw:
+            clean_kw = pure_porter_stem(executed_query_str.lower()) if st.session_state["opt_stemming"] else executed_query_str.lower()
+            st.markdown("### ⚡ Step 4: Direct Postings List Retrieval (Lexicon Lookup)")
+            st.write(
+                f"Because **'{executed_query_str}'** is a single keyword query, there are **no multiple postings lists to intersect or merge**. "
+                "Instead, the search engine performs an immediate **$O(1)$ Hash Table / Dictionary Lookup** into the Vocabulary Lexicon "
+                "and directly retrieves its pre-computed postings list containing all matching Document IDs, term frequencies (tf), and token offsets."
+            )
 
-        render_html(f"""
-        <div class="vlab-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #dadce0; padding-bottom: 10px; margin-bottom: 12px; flex-wrap: wrap;">
-                <span style="font-weight: 700; font-size: 16px; color: #1a73e8;">QUERY EXECUTION TELEMETRY</span>
-                <span style="font-size: 15.5px; color: #5f6368;">Active Query: <code style="color: #1a73e8; font-size: 15.5px;">{executed_query_str}</code></span>
-            </div>
-            <div style="display: flex; flex-wrap: wrap;">
-                <span class="radar-stat-pill">⚡ <b>Engine Latency:</b> <span style="color: #1a73e8;">{query_latency_us} µs</span></span>
-                <span class="radar-stat-pill">🎯 <b>Matched Documents:</b> <span style="color: #1e8e3e;">{len(query_result_docs)}</span></span>
-                <span class="radar-stat-pill">🚀 <b>Algorithm:</b> Two-Pointer Linear Merge O(L1 + L2)</span>
-            </div>
-        </div>
-        """)
-
-        if p1_docs_global and p2_docs_global:
-            st.markdown("#### 1. Visual Two-Pointer Intersection Tracks")
-            st.caption("Pointers walk down the two postings lists simultaneously. Matching DocIDs are highlighted in green:")
-            t1_pills = "".join([
-                f'<span class="track-pill {"matched" if d in query_result_docs else ""}">Doc {d}</span>'
-                for d in p1_docs_global
-            ])
-            t2_pills = "".join([
-                f'<span class="track-pill {"matched" if d in query_result_docs else ""}">Doc {d}</span>'
-                for d in p2_docs_global
-            ])
             render_html(f"""
             <div class="vlab-card">
-                <div style="margin-bottom: 6px; font-size: 16.5px; color: #1a73e8; font-weight: 600;"><b>Pointer 1:</b> Term '{t1_label}' Postings ({len(p1_docs_global)} docs)</div>
-                <div class="pointer-film-track">{t1_pills}</div>
-                <div style="margin-top: 14px; margin-bottom: 6px; font-size: 16.5px; color: #5f6368; font-weight: 600;"><b>Pointer 2:</b> Term '{t2_label}' Postings ({len(p2_docs_global)} docs)</div>
-                <div class="pointer-film-track">{t2_pills}</div>
-                <div style="margin-top: 12px; font-size: 15px; color: #1e8e3e; font-weight: 500;">● Highlighted green boxes indicate intersected matching documents added to the results list.</div>
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #dadce0; padding-bottom: 10px; margin-bottom: 12px; flex-wrap: wrap;">
+                    <span style="font-weight: 700; font-size: 16px; color: #1a73e8;">LEXICON LOOKUP TELEMETRY</span>
+                    <span style="font-size: 15.5px; color: #5f6368;">Active Term: <code style="color: #1a73e8; font-size: 15.5px;">{clean_kw}</code></span>
+                </div>
+                <div style="display: flex; flex-wrap: wrap;">
+                    <span class="radar-stat-pill">⚡ <b>Lookup Latency:</b> <span style="color: #1a73e8;">{query_latency_us} µs</span></span>
+                    <span class="radar-stat-pill">🎯 <b>Retrieved Documents:</b> <span style="color: #1e8e3e;">{len(query_result_docs)}</span></span>
+                    <span class="radar-stat-pill">🚀 <b>Algorithm:</b> O(1) Hash Table Lookup (No Merge Duel Needed)</span>
+                </div>
             </div>
             """)
 
-        st.markdown("#### 2. Step-by-Step Pointer Trace Log")
-        st.caption("Detailed chronological trace of comparisons performed by the pointer algorithm:")
-        with st.container(height=180):
-            for line in query_trace:
-                st.text(f"> {line}")
+            st.markdown(f"#### 1. Retrieved Postings List for '{clean_kw}'")
+            st.caption("Documents are fetched directly from the inverted index and returned in canonical Document ID order:")
+            if query_result_docs:
+                term_postings = index_results["index"].get(clean_kw, {}).get("postings", {})
+                p_pills = "".join([
+                    f'<span class="track-pill matched">Doc {d} (tf:{term_postings.get(d, {}).get("tf", 1)})</span>'
+                    for d in query_result_docs
+                ])
+                render_html(f"""
+                <div class="vlab-card">
+                    <div style="margin-bottom: 6px; font-size: 16.5px; color: #1a73e8; font-weight: 600;"><b>Lexicon Entry:</b> Term '{clean_kw}' (df = {len(query_result_docs)}, cf = {index_results['index'].get(clean_kw, {}).get('cf', 0)})</div>
+                    <div class="pointer-film-track">{p_pills}</div>
+                    <div style="margin-top: 12px; font-size: 15px; color: #1e8e3e; font-weight: 500;">● Matched documents are retrieved directly from the index without multi-list pointer comparisons.</div>
+                </div>
+                """)
+            else:
+                st.warning(f"Term '{clean_kw}' does not appear in the inverted index vocabulary.")
+
+            st.markdown("#### 2. Retrieval Execution Trace")
+            st.caption("Execution log of the direct lexicon lookup:")
+            with st.container(height=140):
+                for line in query_trace:
+                    st.text(f"> {line}")
+                if query_result_docs:
+                    st.text(f"> Postings list contains DocIDs: {query_result_docs}. Passing candidate set directly to SERP in Document ID order.")
+
+        else:
+            st.markdown("### ⚡ Step 4: Two-Pointer Postings Merge Algorithm")
+            st.write(
+                f"When evaluating multi-term queries like `'{executed_query_str}'`, the VLab Search engine does NOT inspect the documents directly. "
+                "Instead, it fetches the pre-sorted postings lists for each query term from the Inverted Index and merges them "
+                "using the **Two-Pointer Intersection Algorithm** in linear time $O(L_1 + L_2)$."
+            )
+
+            render_html(f"""
+            <div class="vlab-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #dadce0; padding-bottom: 10px; margin-bottom: 12px; flex-wrap: wrap;">
+                    <span style="font-weight: 700; font-size: 16px; color: #1a73e8;">QUERY EXECUTION TELEMETRY</span>
+                    <span style="font-size: 15.5px; color: #5f6368;">Active Query: <code style="color: #1a73e8; font-size: 15.5px;">{executed_query_str}</code></span>
+                </div>
+                <div style="display: flex; flex-wrap: wrap;">
+                    <span class="radar-stat-pill">⚡ <b>Engine Latency:</b> <span style="color: #1a73e8;">{query_latency_us} µs</span></span>
+                    <span class="radar-stat-pill">🎯 <b>Matched Documents:</b> <span style="color: #1e8e3e;">{len(query_result_docs)}</span></span>
+                    <span class="radar-stat-pill">🚀 <b>Algorithm:</b> Two-Pointer Linear Merge O(L1 + L2)</span>
+                </div>
+            </div>
+            """)
+
+            if p1_docs_global and p2_docs_global:
+                st.markdown("#### 1. Visual Two-Pointer Intersection Tracks")
+                st.caption("Pointers walk down the two postings lists simultaneously. Matching DocIDs are highlighted in green:")
+                t1_pills = "".join([
+                    f'<span class="track-pill {"matched" if d in query_result_docs else ""}">Doc {d}</span>'
+                    for d in p1_docs_global
+                ])
+                t2_pills = "".join([
+                    f'<span class="track-pill {"matched" if d in query_result_docs else ""}">Doc {d}</span>'
+                    for d in p2_docs_global
+                ])
+                render_html(f"""
+                <div class="vlab-card">
+                    <div style="margin-bottom: 6px; font-size: 16.5px; color: #1a73e8; font-weight: 600;"><b>Pointer 1:</b> Term '{t1_label}' Postings ({len(p1_docs_global)} docs)</div>
+                    <div class="pointer-film-track">{t1_pills}</div>
+                    <div style="margin-top: 14px; margin-bottom: 6px; font-size: 16.5px; color: #5f6368; font-weight: 600;"><b>Pointer 2:</b> Term '{t2_label}' Postings ({len(p2_docs_global)} docs)</div>
+                    <div class="pointer-film-track">{t2_pills}</div>
+                    <div style="margin-top: 12px; font-size: 15px; color: #1e8e3e; font-weight: 500;">● Highlighted green boxes indicate intersected matching documents added to the results list.</div>
+                </div>
+                """)
+
+            st.markdown("#### 2. Step-by-Step Pointer Trace Log")
+            st.caption("Detailed chronological trace of comparisons performed by the pointer algorithm:")
+            with st.container(height=180):
+                for line in query_trace:
+                    st.text(f"> {line}")
 
         if st.button("Proceed to Step 5: Search Results (SERP) ➔", type="primary"):
             st.session_state["sim_active_step"] = 5
@@ -2141,16 +2221,34 @@ def render_simulation_section():
     else:
         st.markdown("### 🔍 Step 5: Search Engine Results Page (SERP)")
         st.write(
-            "The final phase of the search engine: Documents matched by the index traversal are retrieved, "
-            "ranked, and presented as a Search Engine Results Page (SERP) with relevant snippets and highlighted keywords."
+            "In a classical **Inverted Index (Boolean Retrieval Model)**, there is no TF-IDF, vector distance, or probabilistic relevance ranking. "
+            "Retrieval operates strictly on **postings list set membership**: every document containing the query term(s) is retrieved directly "
+            r"from the inverted index postings list and presented in canonical **Document ID order** ($Doc 1, Doc 2, \dots$)."
         )
 
         items_html = []
         if query_result_docs:
+            opt_stem = st.session_state["opt_stemming"]
             for d in query_result_docs:
                 raw_text = active_corpus.get(d, "")
                 highlighted_snippet = highlight_search_terms(raw_text, executed_query_str)
                 title_preview = " ".join(raw_text.split()[:7]) + ("..." if len(raw_text.split()) > 7 else "")
+
+                # Extract postings evidence for doc d
+                postings_info = []
+                if is_single_kw:
+                    clean_k = pure_porter_stem(executed_query_str.lower()) if opt_stem else executed_query_str.lower()
+                    p_entry = index_results["index"].get(clean_k, {}).get("postings", {}).get(d, {})
+                    if p_entry:
+                        postings_info.append(f"tf: {p_entry.get('tf', 1)}")
+                        postings_info.append(f"pos: {p_entry.get('positions', [])}")
+                else:
+                    for t, m in index_results["index"].items():
+                        if d in m["postings"] and t in executed_query_str.lower():
+                            postings_info.append(f"{t} (tf:{m['postings'][d]['tf']})")
+
+                postings_badge = f'<span class="serp-meta-badge" style="margin-left: 6px; color: #1a73e8; font-weight: 500;">Postings Match: {" | ".join(postings_info[:2])}</span>' if postings_info else ""
+
                 items_html.append(f"""
                 <div class="serp-item">
                     <div class="serp-url">
@@ -2162,7 +2260,8 @@ def render_simulation_section():
                     <div>
                         <span class="serp-meta-badge">DocID: {d}</span>
                         <span class="serp-meta-badge" style="margin-left: 6px;">Corpus: {active_corpus_name.split(':')[0]}</span>
-                        <span class="serp-meta-badge" style="margin-left: 6px; color: #1e8e3e; font-weight: bold;">✓ Matched</span>
+                        {postings_badge}
+                        <span class="serp-meta-badge" style="margin-left: 6px; color: #1e8e3e; font-weight: bold;">✓ Inverted Index Set Member</span>
                     </div>
                 </div>
                 """)
@@ -2193,41 +2292,6 @@ def render_simulation_section():
 
         st.markdown("<br>", unsafe_allow_html=True)
         st.info("💡 **How did the engine produce these results?** Click **Step 1 - 4** in the pipeline above to inspect the step-by-step crawl, normalization, index, and pointer duel!")
-
-    # Plotly Analytical Visualization: Document Frequency Distribution
-    st.divider()
-    st.subheader("6. Analytical Visualization: Document Frequency Distribution")
-
-    sorted_terms = sorted(index_results["index"].items(), key=lambda x: (x[1]["df"], x[1]["cf"]), reverse=True)
-    if sorted_terms:
-        p_template = "plotly_dark" if is_dark else "plotly_white"
-        p_paper_bg = "#202124" if is_dark else "#ffffff"
-        p_plot_bg = "#303134" if is_dark else "#f8f9fa"
-        p_font_color = "#e8eaed" if is_dark else "#202124"
-
-        top_terms = sorted_terms[:15]
-        fig_df = go.Figure(go.Bar(
-            x=[t for t, _ in top_terms],
-            y=[m["df"] for _, m in top_terms],
-            marker=dict(
-                color="#34A853",
-                line=dict(color="#1e8e3e", width=1)
-            ),
-            text=[f"df={m['df']}" for _, m in top_terms],
-            textposition="auto"
-        ))
-        fig_df.update_layout(
-            title="📊 Document Frequency (df) for Top Vocabulary Terms",
-            xaxis_title="Vocabulary Term",
-            yaxis_title="Document Frequency (df)",
-            template=p_template,
-            paper_bgcolor=p_paper_bg,
-            plot_bgcolor=p_plot_bg,
-            font=dict(color=p_font_color),
-            height=360,
-            margin=dict(l=20, r=20, t=45, b=20)
-        )
-        st.plotly_chart(fig_df, use_container_width=True)
 
     # Experimental Trial Logger Callout (Moved to Sidebar)
     st.divider()
