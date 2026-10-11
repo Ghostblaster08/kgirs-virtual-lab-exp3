@@ -1089,18 +1089,6 @@ def generate_pdf_report(student_name: str, student_id: str, student_div: str, da
 
 def render_purpose_section():
     """Renders comprehensive Purpose, Historical Context, Problem Formulation, and Applications using Google's color palette."""
-    st.markdown("""
-    <div style="background: #ffffff; padding: 28px 32px; border-radius: 16px; border: 1px solid #dadce0; border-left: 6px solid #4285F4; box-shadow: 0 1px 6px rgba(60,64,67,0.10); margin-bottom: 28px;">
-        <div style="font-size: 14px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px;">
-            <span style="color: #4285F4;">E</span><span style="color: #EA4335;">X</span><span style="color: #FBBC05;">P</span> <span style="color: #34A853;">3</span> • <span style="color: #1a73e8;">PURPOSE & ARCHITECTURAL FOUNDATION</span>
-        </div>
-        <h1 style="margin: 0; font-size: 34px; font-weight: 700; color: #202124; letter-spacing: -0.5px;">The Inverted Index: The Engine of Information Retrieval</h1>
-        <p style="margin: 10px 0 0 0; color: #5f6368; font-size: 18px; line-height: 1.65;">
-            Discover why the Inverted Index is the foundational algorithmic data structure enabling modern search engines, enterprise databases, and e-commerce platforms to query billions of documents in sub-milliseconds.
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
-
     # 1. WHY THIS EXPERIMENT?
     st.subheader("1. Why This Experiment? (Pedagogical Rationale)")
     st.markdown("""
