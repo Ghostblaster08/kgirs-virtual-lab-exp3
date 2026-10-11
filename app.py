@@ -803,114 +803,6 @@ class VirtualLabReportPDF(FPDF):
 
 
 
-def generate_pdf_certificate(student_name: str, student_id: str, student_div: str,
-                             date_str: str, quiz_score: int, quiz_total: int,
-                             trials_count: int, cert_id: str) -> bytes:
-    """Generates an official Virtual Lab Certificate of Completion PDF."""
-    pdf = FPDF(orientation="L", unit="mm", format="A4")  # Landscape A4: 297mm x 210mm
-    pdf.set_auto_page_break(auto=False)
-    pdf.add_page()
-
-    # Outer Decorative Border
-    pdf.set_draw_color(30, 41, 59)
-    pdf.set_line_width(2.0)
-    pdf.rect(10, 10, 277, 190)
-
-    # Inner Gold Border
-    pdf.set_draw_color(217, 119, 6)
-    pdf.set_line_width(0.8)
-    pdf.rect(14, 14, 269, 182)
-
-    # Top Emblem / Institution Header
-    pdf.set_xy(20, 22)
-    pdf.set_font("Helvetica", "B", 13)
-    pdf.set_text_color(71, 85, 105)
-    pdf.cell(257, 7, sanitize_pdf_text("VIRTUAL LABS - AN INITIATIVE OF MINISTRY OF EDUCATION (vlabs.ac.in)"), align="C", new_x="LMARGIN", new_y="NEXT")
-
-    pdf.set_font("Helvetica", "B", 11)
-    pdf.set_text_color(100, 116, 139)
-    pdf.cell(257, 6, sanitize_pdf_text("DEPARTMENT OF COMPUTER ENGINEERING / ARTIFICIAL INTELLIGENCE & DATA SCIENCE"), align="C", new_x="LMARGIN", new_y="NEXT")
-
-    pdf.ln(3)
-
-    # Certificate Title
-    pdf.set_font("Helvetica", "B", 24)
-    pdf.set_text_color(15, 23, 42)
-    pdf.cell(257, 12, sanitize_pdf_text("CERTIFICATE OF COMPLETION"), align="C", new_x="LMARGIN", new_y="NEXT")
-
-    pdf.set_font("Helvetica", "I", 11)
-    pdf.set_text_color(148, 163, 184)
-    pdf.cell(257, 6, sanitize_pdf_text("This is to officially certify that"), align="C", new_x="LMARGIN", new_y="NEXT")
-
-    pdf.ln(2)
-
-    # Student Name
-    pdf.set_font("Helvetica", "B", 20)
-    pdf.set_text_color(37, 99, 235)
-    pdf.cell(257, 10, sanitize_pdf_text(student_name.upper() if student_name else "STUDENT NAME"), align="C", new_x="LMARGIN", new_y="NEXT")
-
-    pdf.set_font("Helvetica", "", 11)
-    pdf.set_text_color(51, 65, 85)
-    meta_line = f"Roll Number: {student_id}   |   Division: {student_div}   |   Course: Knowledge Graphs & IR Systems"
-    pdf.cell(257, 7, sanitize_pdf_text(meta_line), align="C", new_x="LMARGIN", new_y="NEXT")
-
-    pdf.ln(2)
-
-    # Body description
-    body_text = (
-        "has successfully conducted, analyzed, and completed the experimental laboratory requirements for\n"
-        "Experiment 3: Construction of an Inverted Index, demonstrating practical proficiency in:\n"
-        "1. Document Ingestion, Tokenization, and Linguistic Preprocessing (Stopwords, Porter Stemming)\n"
-        "2. Lexicographical Sorting and Inverted Postings List Generation with Positional Offsets\n"
-        "3. Linear Two-Pointer Postings Intersection (O(L1 + L2)) for Conjunctive & Disjunctive Queries\n"
-        "4. Empirical Frequency Modeling and Validation of Zipf's Law on Textual Corpora"
-    )
-    pdf.set_font("Helvetica", "", 9.5)
-    pdf.set_text_color(71, 85, 105)
-    for line in body_text.split("\n"):
-        pdf.cell(257, 5, sanitize_pdf_text(line), align="C", new_x="LMARGIN", new_y="NEXT")
-
-    pdf.ln(4)
-
-    # Performance Stats Box
-    pdf.set_fill_color(248, 250, 252)
-    pdf.set_draw_color(226, 232, 240)
-    pdf.rect(48, 136, 201, 14, "FD")
-
-    pdf.set_xy(50, 138)
-    pdf.set_font("Helvetica", "B", 9)
-    pdf.set_text_color(30, 41, 59)
-    perf_text = f"Assessment Score: {quiz_score} / {quiz_total}   |   Simulation Trials Executed: {trials_count}   |   Status: Verified & Completed"
-    pdf.cell(197, 10, sanitize_pdf_text(perf_text), align="C")
-
-    # Bottom Signatures and Verification
-    pdf.set_xy(25, 162)
-    pdf.set_font("Helvetica", "B", 9)
-    pdf.set_text_color(71, 85, 105)
-    pdf.cell(70, 5, sanitize_pdf_text(f"Issue Date: {date_str}"), align="L")
-
-    pdf.set_xy(25, 168)
-    pdf.set_font("Helvetica", "", 8)
-    pdf.set_text_color(100, 116, 139)
-    pdf.cell(70, 5, sanitize_pdf_text(f"Certificate ID: {cert_id}"), align="L")
-
-    # Instructor Signature Line
-    pdf.set_xy(190, 160)
-    pdf.set_draw_color(148, 163, 184)
-    pdf.line(190, 168, 260, 168)
-    pdf.set_xy(190, 169)
-    pdf.set_font("Helvetica", "B", 9)
-    pdf.set_text_color(30, 41, 59)
-    pdf.cell(70, 5, sanitize_pdf_text("Course Instructor / Evaluator"), align="C")
-
-    pdf.set_xy(190, 174)
-    pdf.set_font("Helvetica", "", 8)
-    pdf.set_text_color(100, 116, 139)
-    pdf.cell(70, 5, sanitize_pdf_text("Virtual Laboratories Network"), align="C")
-
-    return bytes(pdf.output())
-
-
 def generate_pdf_report(student_name: str, student_id: str, student_div: str, date_str: str,
                         trials_df: pd.DataFrame, quiz_score: int, quiz_total: int,
                         student_notes: str, corpus_name: str, vocab_size: int,
@@ -2653,130 +2545,6 @@ def init_session_state():
         st.session_state["theme_mode"] = "☀️ Light Mode"
 
 
-def render_certificate_section():
-    """Renders official Virtual Lab Certificate of Completion with interactive PDF download."""
-    st.header("Virtual Lab Certificate of Completion")
-    st.write("Generate and download your official, digitally verified Certificate of Completion for Experiment 3.")
-
-    # Student Details Form
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        student_name = st.text_input("Full Name:", value=st.session_state["student_info"].get("name", "Student Name"), key="cert_name_input")
-    with col2:
-        student_id = st.text_input("Roll / Student ID:", value=st.session_state["student_info"].get("id", "EXP3-11"), key="cert_id_input")
-    with col3:
-        student_div = st.text_input("Class / Division:", value=st.session_state["student_info"].get("div", "D17B"), key="cert_div_input")
-
-    cert_date = st.date_input("Certification Date:", value=datetime.now(), key="cert_date_input")
-
-    st.session_state["student_info"]["name"] = student_name
-    st.session_state["student_info"]["id"] = student_id
-    st.session_state["student_info"]["div"] = student_div
-
-    # Completion Criteria Checklist
-    st.divider()
-    st.subheader("Experiment Completion Verification")
-    
-    trials_count = len(st.session_state.get("trials", []))
-    quiz_done = st.session_state.get("quiz_submitted", False)
-    quiz_score = st.session_state.get("quiz_score", 0)
-    quiz_total = len(QUIZ_QUESTIONS)
-
-    chk1, chk2, chk3 = st.columns(3)
-    with chk1:
-        st.markdown(f"**1. Student Profile:** {'✅ Verified' if student_name.strip() else '⚠️ Missing'}")
-        st.caption(f"{student_name} ({student_id})")
-    with chk2:
-        st.markdown(f"**2. Simulation Trials:** {'✅ Completed' if trials_count > 0 else '⚠️ Incomplete'}")
-        st.caption(f"{trials_count} trial(s) logged in session")
-    with chk3:
-        st.markdown(f"**3. Assessment Quiz:** {'✅ Evaluated' if quiz_done else '⚠️ Pending'}")
-        st.caption(f"Score: {quiz_score} / {quiz_total}")
-
-    # Generate unique Certificate Hash / ID
-    cert_id = f"VLAB-EXP3-KGIRS-2026-{abs(hash(student_name + student_id)) % 1000000:06d}"
-
-    st.divider()
-    st.subheader("Official Certificate Preview")
-
-    # Gorgeous On-Screen Certificate Preview
-    st.markdown(f"""
-    <div style="border: 6px double #d97706; padding: 32px 36px; background: #fffdfa; color: #0f172a; border-radius: 16px; box-shadow: 0 12px 36px rgba(0,0,0,0.08); position: relative; margin-bottom: 24px;">
-        <div style="text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 14px; margin-bottom: 18px;">
-            <div style="font-size: 13px; font-weight: 800; letter-spacing: 2px; color: #475569; text-transform: uppercase;">VIRTUAL LABS • AN INITIATIVE OF MINISTRY OF EDUCATION (vlabs.ac.in)</div>
-            <div style="font-size: 12px; font-weight: 700; color: #64748b; letter-spacing: 1px; margin-top: 3px;">DEPARTMENT OF COMPUTER ENGINEERING / ARTIFICIAL INTELLIGENCE & DATA SCIENCE</div>
-            <h1 style="margin: 10px 0 0 0; color: #0f172a; font-size: 32px; font-family: 'Times New Roman', serif; letter-spacing: 1px;">CERTIFICATE OF COMPLETION</h1>
-            <div style="font-size: 13px; color: #94a3b8; font-style: italic; margin-top: 4px;">This is to officially certify that</div>
-        </div>
-
-        <div style="text-align: center; margin-bottom: 18px;">
-            <h2 style="margin: 0; color: #1d4ed8; font-size: 28px; text-transform: uppercase; letter-spacing: 1px;">{student_name.upper()}</h2>
-            <div style="font-size: 14px; color: #475569; margin-top: 4px;">
-                <b>Roll Number:</b> {student_id} &nbsp;|&nbsp; <b>Class / Division:</b> {student_div} &nbsp;|&nbsp; <b>Course:</b> Knowledge Graphs & Information Retrieval Systems
-            </div>
-        </div>
-
-        <div style="text-align: center; max-width: 780px; margin: 0 auto 20px auto; font-size: 14px; line-height: 1.6; color: #334155;">
-            has successfully conducted, analyzed, and completed the experimental laboratory requirements for<br>
-            <b style="color: #0f172a; font-size: 15px;">Experiment 3: Construction of an Inverted Index</b>, demonstrating verified competency in:
-            <div style="display: flex; justify-content: center; gap: 16px; margin-top: 10px; flex-wrap: wrap;">
-                <span style="background: #e8f0fe; color: #1a73e8; padding: 5px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;">• Lexicon & Postings Construction</span>
-                <span style="background: #fce8e6; color: #d93025; padding: 5px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;">• Two-Pointer Merge O(L1 + L2)</span>
-                <span style="background: #fef7e0; color: #b06000; padding: 5px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;">• Linguistic Normalization</span>
-                <span style="background: #e6f4ea; color: #1e8e3e; padding: 5px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;">• Zipf's Law Validation</span>
-            </div>
-        </div>
-
-        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; max-width: 780px; margin: 0 auto 20px auto; font-size: 13px;">
-            <span><b>Assessment Score:</b> <span style="color: #2563eb;">{quiz_score} / {quiz_total}</span></span>
-            <span><b>Simulation Trials:</b> <span style="color: #059669;">{trials_count} Logged</span></span>
-            <span><b>Status:</b> <span style="color: #16a34a; font-weight: bold;">Verified & Completed</span></span>
-        </div>
-
-        <div style="display: flex; justify-content: space-between; align-items: flex-end; border-top: 1px solid #e2e8f0; padding-top: 16px; margin-top: 16px;">
-            <div>
-                <div style="font-size: 12px; color: #64748b;"><b>Issue Date:</b> {cert_date}</div>
-                <div style="font-size: 11px; color: #94a3b8; font-family: monospace;"><b>Certificate ID:</b> {cert_id}</div>
-            </div>
-            <div style="text-align: center;">
-                <div style="font-size: 28px;">🏅</div>
-                <div style="font-size: 10px; font-weight: bold; color: #d97706; letter-spacing: 1px;">VERIFIED LAB ACCOMPLISHMENT</div>
-            </div>
-            <div style="text-align: center;">
-                <div style="border-bottom: 1.5px solid #64748b; width: 180px; margin-bottom: 4px;"></div>
-                <div style="font-size: 12px; font-weight: 700; color: #1e293b;">Course Instructor / Evaluator</div>
-                <div style="font-size: 11px; color: #64748b;">Virtual Laboratories Network</div>
-            </div>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-    # Generate and provide download button for Certificate PDF
-    cert_pdf_bytes = generate_pdf_certificate(
-        student_name=student_name,
-        student_id=student_id,
-        student_div=student_div,
-        date_str=str(cert_date),
-        quiz_score=quiz_score,
-        quiz_total=quiz_total,
-        trials_count=trials_count,
-        cert_id=cert_id
-    )
-
-    c_d1, c_d2 = st.columns([2, 2])
-    with c_d1:
-        st.download_button(
-            label="📜 Download Official Verified Certificate (PDF)",
-            data=cert_pdf_bytes,
-            file_name=f"VLab_Certificate_Exp3_{student_id}.pdf",
-            mime="application/pdf",
-            type="primary",
-            use_container_width=True
-        )
-    with c_d2:
-        st.caption("This digital certificate includes a cryptographic verification ID and officially certifies completion of Experiment 3.")
-
-
 
 def render_sidebar_logger():
     """Renders comprehensive experimental trial logging functionality in the sidebar."""
@@ -3089,7 +2857,7 @@ def main():
     # Clean Title (Without subtitle)
     st.title(EXPERIMENT_CONFIG["title"])
 
-    # Sidebar: Strictly and exclusively the requested 7 Navigation items
+    # Sidebar: Navigation items
     section = st.sidebar.radio(
         "Navigation",
         options=[
@@ -3098,7 +2866,6 @@ def main():
             "Simulation",
             "Quiz",
             "Report Generation",
-            "Certificate",
             "References"
         ],
         label_visibility="collapsed"
@@ -3118,8 +2885,6 @@ def main():
         render_quiz_section()
     elif section == "Report Generation":
         render_report_section()
-    elif section == "Certificate":
-        render_certificate_section()
     elif section == "References":
         render_references_section()
 
